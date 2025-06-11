@@ -1,78 +1,89 @@
 // AWIP Mission Control Dashboard Configuration
-// This file contains configuration settings for the dashboard
-// Sensitive credentials should be set via environment variables or GitHub secrets
-
 const AWIP_CONFIG = {
-    // GitHub Configuration
-    github: {
-        token: process.env.GITHUB_TOKEN || 'your-github-token-here',
-        username: process.env.GITHUB_USERNAME || 'your-username',
-        repository: 'Genspark-AWIP',
-        apiUrl: 'https://api.github.com'
+    // Supabase Configuration - Use environment variables in production
+    supabase: {
+        url: process.env.SUPABASE_URL || 'https://nkjckkaqcdscrtzmmyyt.supabase.co',
+        anonKey: process.env.SUPABASE_ANON_KEY || 'YOUR_SUPABASE_ANON_KEY_HERE',
+        serviceRoleKey: process.env.SUPABASE_SERVICE_ROLE_KEY || 'YOUR_SUPABASE_SERVICE_KEY_HERE'
     },
 
-    // Supabase Configuration  
-    supabase: {
-        url: process.env.SUPABASE_URL || 'https://your-project.supabase.co',
-        serviceKey: process.env.SUPABASE_SERVICE_KEY || 'your-supabase-service-key',
-        anonKey: process.env.SUPABASE_ANON_KEY || 'your-supabase-anon-key'
+    // GitHub Configuration - Use environment variables in production
+    github: {
+        token: process.env.GITHUB_TOKEN || 'YOUR_GITHUB_TOKEN_HERE',
+        repository: 'cjaisingh/awip-mission-control',
+        api_base: 'https://api.github.com'
     },
 
     // Monitoring Configuration
     monitoring: {
         refreshInterval: 30000, // 30 seconds
-        memoryThreshold: 80, // Percentage
-        alertThreshold: 90, // Percentage
-        maxLogEntries: 100
+        memoryThreshold: 85, // Percentage
+        emailAlerts: false,
+        maxLogEntries: 50,
+        chartDataPoints: 10
     },
 
     // Agent Configuration
     agents: [
-        { id: 1, name: 'DevOps Agent', color: '#3b82f6', icon: 'fas fa-server' },
-        { id: 2, name: 'Database Agent', color: '#10b981', icon: 'fas fa-database' },
-        { id: 3, name: 'Strategic Agent', color: '#8b5cf6', icon: 'fas fa-brain' },
-        { id: 15, name: 'AI Assistant Agent', color: '#f59e0b', icon: 'fas fa-robot' },
-        { id: 16, name: 'UI/UX Agent', color: '#ec4899', icon: 'fas fa-paint-brush' }
+        {
+            id: 'ai-assistant',
+            name: 'AI Assistant Agent',
+            description: 'Conversational Interface',
+            color: '#3b82f6',
+            icon: 'fas fa-comments',
+            status: 'active'
+        },
+        {
+            id: 'devops',
+            name: 'DevOps Agent',
+            description: 'Infrastructure Monitoring',
+            color: '#10b981',
+            icon: 'fas fa-server',
+            status: 'monitoring'
+        },
+        {
+            id: 'database',
+            name: 'Database Agent', 
+            description: 'Data Management',
+            color: '#3b82f6',
+            icon: 'fas fa-database',
+            status: 'high-load'
+        },
+        {
+            id: 'strategic',
+            name: 'Strategic Agent',
+            description: 'Strategic Planning',
+            color: '#8b5cf6',
+            icon: 'fas fa-chart-line',
+            status: 'idle'
+        }
     ],
 
-    // Email Configuration
+    // Email Configuration (for alerts)
     email: {
-        enabled: false, // Set to true when email service is configured
-        alertEmail: 'your-email@example.com',
-        smtpServer: 'smtp.gmail.com',
-        smtpPort: 587
+        enabled: false,
+        service: 'emailjs',
+        serviceId: '',
+        templateId: '',
+        userId: ''
     },
 
-    // Discussion Monitoring
+    // Discussion Memory Configuration
     discussion: {
-        tokenLimit: 4000,
-        warningThreshold: 3200,
-        criticalThreshold: 3600
+        maxTokens: 4000,
+        warningThreshold: 0.8, // 80%
+        criticalThreshold: 0.9 // 90%
     },
 
-    // System Status Endpoints
+    // API Endpoints
     endpoints: {
-        health: '/api/health',
-        metrics: '/api/metrics',
-        agents: '/api/agents',
-        logs: '/api/logs'
+        supabase_tables: '/rest/v1/information_schema.tables',
+        github_repo: '/repos/cjaisingh/awip-mission-control',
+        system_health: '/api/v1/system/health'
     }
 };
 
-// Export configuration for use in other modules
+// Export for use in other modules
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = AWIP_CONFIG;
 }
-
-// Make available globally for browser use
-if (typeof window !== 'undefined') {
-    window.AWIP_CONFIG = AWIP_CONFIG;
-}
-
-// Setup instructions for sensitive data:
-// 1. For GitHub Pages: Set repository secrets in GitHub Settings > Secrets and variables > Actions
-// 2. For local development: Create a .env file with your credentials
-// 3. For production: Use environment variables or secure configuration management
-
-console.log('AWIP Dashboard Configuration Loaded');
-console.log('Note: Please configure your API credentials before using the dashboard');

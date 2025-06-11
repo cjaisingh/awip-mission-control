@@ -1,0 +1,360 @@
+/* AWIP Mission Control Dashboard Styles */
+
+:root {
+    /* Cognitive Intelligence Color Palette */
+    --cognitive-primary: #667eea;
+    --cognitive-secondary: #764ba2;
+    --success: #10b981;
+    --warning: #f59e0b;
+    --error: #ef4444;
+    --info: #3b82f6;
+
+    /* Agent Category Colors */
+    --devops-color: #2563eb;
+    --database-color: #059669;
+    --strategic-color: #7c3aed;
+    --assistant-color: #ec4899;
+    --memory-color: #6366f1;
+
+    /* UI Colors */
+    --bg-primary: #f9fafb;
+    --bg-secondary: #ffffff;
+    --text-primary: #1f2937;
+    --text-secondary: #6b7280;
+    --border-color: #e5e7eb;
+}
+
+/* Gradient Definitions */
+.cognitive-gradient {
+    background: linear-gradient(135deg, var(--cognitive-primary) 0%, var(--cognitive-secondary) 100%);
+}
+
+.status-gradient-online {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+}
+
+.status-gradient-warning {
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+}
+
+.status-gradient-error {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+}
+
+/* Animations */
+.ai-pulse {
+    animation: ai-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes ai-pulse {
+    0%, 100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0.8;
+        transform: scale(1.05);
+    }
+}
+
+.loading-spin {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* Agent Status Colors */
+.agent-devops { border-left: 4px solid var(--devops-color); }
+.agent-database { border-left: 4px solid var(--database-color); }
+.agent-strategic { border-left: 4px solid var(--strategic-color); }
+.agent-assistant { border-left: 4px solid var(--assistant-color); }
+.agent-memory { border-left: 4px solid var(--memory-color); }
+
+/* Status Indicators */
+.status-online { color: var(--success); }
+.status-warning { color: var(--warning); }
+.status-error { color: var(--error); }
+.status-info { color: var(--info); }
+
+/* Memory Bar Styling */
+.memory-bar-safe { background-color: var(--success); }
+.memory-bar-warning { background-color: var(--warning); }
+.memory-bar-critical { background-color: var(--error); }
+
+/* Toggle Switch */
+.toggle-switch {
+    position: relative;
+    appearance: none;
+    width: 48px;
+    height: 24px;
+    background-color: #e5e7eb;
+    border-radius: 12px;
+    transition: background-color 0.2s;
+    cursor: pointer;
+}
+
+.toggle-switch:checked {
+    background-color: var(--cognitive-primary);
+}
+
+.toggle-switch::before {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 20px;
+    height: 20px;
+    background-color: white;
+    border-radius: 50%;
+    transition: transform 0.2s;
+}
+
+.toggle-switch:checked::before {
+    transform: translateX(24px);
+}
+
+/* Chart Container */
+.chart-container {
+    position: relative;
+    height: 200px;
+    width: 100%;
+}
+
+/* Activity Log Styling */
+.activity-item {
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    transition: all 0.2s ease;
+}
+
+.activity-item:hover {
+    background-color: #f3f4f6;
+    border-color: #d1d5db;
+}
+
+.activity-item.success {
+    border-left: 4px solid var(--success);
+    background-color: #f0fdf4;
+}
+
+.activity-item.warning {
+    border-left: 4px solid var(--warning);
+    background-color: #fffbeb;
+}
+
+.activity-item.error {
+    border-left: 4px solid var(--error);
+    background-color: #fef2f2;
+}
+
+/* Agent Pipeline Styling */
+.agent-card {
+    background: white;
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    padding: 16px;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.agent-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.agent-status-indicator {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+}
+
+.agent-status-active {
+    background-color: var(--success);
+    box-shadow: 0 0 8px rgba(16, 185, 129, 0.4);
+}
+
+.agent-status-idle {
+    background-color: var(--warning);
+}
+
+.agent-status-error {
+    background-color: var(--error);
+    animation: ai-pulse 1s infinite;
+}
+
+.agent-status-learning {
+    background: linear-gradient(45deg, var(--cognitive-primary), var(--cognitive-secondary));
+    animation: ai-pulse 2s infinite;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    /* Mobile-first critical data display */
+    .mobile-priority {
+        order: -1;
+    }
+
+    .mobile-hidden {
+        display: none;
+    }
+
+    .mobile-full-width {
+        width: 100%;
+    }
+
+    /* Smaller text on mobile */
+    .text-2xl {
+        font-size: 1.5rem;
+    }
+
+    .text-xl {
+        font-size: 1.25rem;
+    }
+
+    /* Compact padding on mobile */
+    .p-6 {
+        padding: 1rem;
+    }
+
+    .px-6 {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+}
+
+@media (max-width: 640px) {
+    /* Extra small mobile adjustments */
+    .grid-cols-2 {
+        grid-template-columns: repeat(1, minmax(0, 1fr));
+    }
+
+    .space-x-4 > :not([hidden]) ~ :not([hidden]) {
+        margin-left: 0.5rem;
+    }
+}
+
+/* Dark mode support (optional) */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --bg-primary: #111827;
+        --bg-secondary: #1f2937;
+        --text-primary: #f9fafb;
+        --text-secondary: #d1d5db;
+        --border-color: #374151;
+    }
+}
+
+/* Accessibility */
+@media (prefers-reduced-motion: reduce) {
+    .ai-pulse,
+    .loading-spin {
+        animation: none;
+    }
+
+    .agent-card {
+        transition: none;
+    }
+}
+
+/* Print styles */
+@media print {
+    .no-print {
+        display: none;
+    }
+
+    body {
+        background: white;
+        color: black;
+    }
+
+    .cognitive-gradient {
+        background: #667eea;
+        color: white;
+    }
+}
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+    :root {
+        --border-color: #000000;
+        --text-secondary: #000000;
+    }
+
+    .border-gray-200 {
+        border-color: #000000;
+    }
+}
+
+/* Connection status indicator */
+.connection-indicator {
+    transition: all 0.3s ease;
+}
+
+.connection-online {
+    background-color: var(--success);
+    box-shadow: 0 0 8px rgba(16, 185, 129, 0.4);
+}
+
+.connection-offline {
+    background-color: var(--error);
+    animation: ai-pulse 1s infinite;
+}
+
+.connection-unstable {
+    background-color: var(--warning);
+}
+
+/* Custom scrollbar */
+.custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 3px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background: var(--cognitive-primary);
+    border-radius: 3px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: var(--cognitive-secondary);
+}
+
+/* Tooltip styles */
+.tooltip {
+    position: relative;
+    display: inline-block;
+}
+
+.tooltip .tooltiptext {
+    visibility: hidden;
+    width: 120px;
+    background-color: #1f2937;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px;
+    position: absolute;
+    z-index: 1;
+    bottom: 125%;
+    left: 50%;
+    margin-left: -60px;
+    opacity: 0;
+    transition: opacity 0.3s;
+    font-size: 12px;
+}
+
+.tooltip:hover .tooltiptext {
+    visibility: visible;
+    opacity: 1;
+}

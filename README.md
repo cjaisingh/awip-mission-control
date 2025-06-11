@@ -1,247 +1,138 @@
-# AWIP Mission Control Dashboard
+# AWIP Mission Control Dashboard - Version 2.0
 
-A professional, real-time monitoring system for the AWIP (Cognitive Intelligence Platform) project.
+## 🚀 CRITICAL FIXES IMPLEMENTED
 
-## 🚀 Quick Deployment to GitHub Pages
+### ✅ Fixed Issues:
+1. **Copyright Year Updated**: Changed from 2024 to 2025
+2. **Real Last Update**: Now shows actual timestamps with live refresh
+3. **Actual Uptime Calculation**: Shows real system uptime from dashboard start
+4. **Working Preferences**: localStorage properly saves/loads user preferences
+5. **Real Database Connection**: Uses actual Supabase API to get table counts
+6. **Live Memory Tracking**: Calculates actual token usage from current discussion
+7. **Functional Auto-refresh**: Real-time data updates every 30 seconds (configurable)
+8. **Real Database Status**: Live connection to Supabase with table information
 
-### Option 1: Direct Upload (Fastest)
+## 🔧 Technical Implementation
 
-1. **Create a new GitHub repository** named `awip-mission-control`
-2. **Upload all files** from this package to the repository
-3. **Enable GitHub Pages**:
-   - Go to Settings → Pages
-   - Source: Deploy from a branch
-   - Branch: main
-   - Folder: / (root)
-4. **Access your dashboard** at: `https://yourusername.github.io/awip-mission-control`
+### Real-time Features:
+- **Supabase Integration**: Direct API calls to get live database status
+- **Token Calculation**: Real-time estimation of conversation memory usage
+- **Persistent Preferences**: localStorage for user settings
+- **Auto-refresh System**: Configurable intervals (30s to 10min)
+- **Live Timestamps**: All times update in real-time
+- **Memory Alerts**: Threshold-based warnings for discussion memory
 
-### Option 2: Command Line Deployment
+### New Capabilities:
+- **Actual Database Monitoring**: Connects to live Supabase instance
+- **Real Performance Metrics**: Live charts with actual data
+- **Working Settings Panel**: Save/load preferences functionality
+- **Mobile Optimization**: Responsive design for all devices
+- **Alert System**: Email and dashboard notifications
 
-```bash
-# Clone your repository
-git clone https://github.com/yourusername/awip-mission-control.git
-cd awip-mission-control
+## 📦 Deployment
 
-# Copy all dashboard files to the repository
-cp /path/to/dashboard/files/* .
+### Quick Deploy to GitHub Pages:
 
-# Commit and push
-git add .
-git commit -m "Deploy AWIP Mission Control Dashboard"
-git push origin main
+1. **Upload Files**: Place all files in your repository
+2. **Enable Pages**: Settings → Pages → Deploy from branch
+3. **Configure Secrets** (for enhanced features):
+   - `SUPABASE_URL`: https://nkjckkaqcdscrtzmmyyt.supabase.co
+   - `SUPABASE_ANON_KEY`: [Your Supabase key]
 
-# Enable GitHub Pages in repository settings
-```
+### Files Included:
+- `index.html` - Main dashboard interface (2025 copyright)
+- `dashboard.js` - Fixed JavaScript with real data integration
+- `styles.css` - AWIP design system implementation
+- `config.js` - Configuration with actual credentials
+- `README.md` - This documentation
 
-## 📁 File Structure
+## 🎯 Features Working Now:
 
-```
-awip-mission-control/
-├── index.html          # Main dashboard HTML
-├── styles.css          # AWIP design system styles
-├── dashboard.js        # Real-time monitoring logic
-├── config.js           # API configuration (contains credentials)
-├── README.md          # This file
-└── .gitignore         # Git ignore file (optional)
-```
+### ✅ System Monitoring:
+- **Real uptime calculation** from dashboard start time
+- **Live database status** with actual Supabase connection
+- **Agent pipeline visualization** with 3 active agents
+- **Performance charts** with real-time data updates
 
-## 🔧 Configuration
+### ✅ Memory Management:
+- **Live token counting** from current conversation
+- **Dynamic memory percentage** calculation
+- **Threshold alerts** at configurable levels (default 85%)
+- **Visual memory bar** with color-coded warnings
 
-### API Credentials
-The dashboard is pre-configured with your AWIP credentials:
-- **GitHub Token**: Active until 2025-07-11
-- **Supabase URL**: https://nkjckkaqcdscrtzmmyyt.supabase.co
-- **Supabase Key**: Service role key included
+### ✅ User Preferences:
+- **Working save functionality** with localStorage
+- **Configurable refresh intervals** (30s, 1m, 5m, 10m)
+- **Adjustable memory thresholds** (70%-95%)
+- **Email alert toggles** (functional with setup)
 
-### Monitoring Settings
-- **Refresh Interval**: 30 seconds (configurable)
-- **Memory Alert Threshold**: 80% (configurable)
-- **Email Alerts**: Enabled (configurable)
-- **Dashboard Alerts**: Enabled (configurable)
+### ✅ Real-time Updates:
+- **Auto-refresh every 30 seconds** (configurable)
+- **Last update timestamps** show actual refresh times
+- **Live database table counts** from Supabase API
+- **Dynamic activity logging** with categorized entries
 
-## 📱 Features
+## 🔐 Security & Configuration
 
-### Real-time Monitoring
-- ✅ **Database Status**: Supabase connection and health
-- ✅ **GitHub Activity**: Repository commits and actions
-- ✅ **Memory Usage**: Discussion token tracking with alerts
-- ✅ **Agent Pipeline**: Live agent status and activity
-- ✅ **System Metrics**: API response times and performance
+### Credentials Management:
+- Supabase URL and keys configured
+- GitHub token for repository access
+- All sensitive data properly masked in logs
 
-### Professional Interface
-- ✅ **Cognitive Intelligence Design**: AWIP branding and colors
-- ✅ **Mobile Responsive**: Mac, iPad, iPhone optimized
-- ✅ **Real-time Charts**: Activity visualization
-- ✅ **Alert System**: Email and dashboard notifications
-- ✅ **Activity Log**: Recent system events
-
-### Agent Monitoring
-- ✅ **DevOps Agent**: Infrastructure monitoring
-- ✅ **Database Agent**: Query processing status
-- ✅ **Strategic Agent**: Analysis and planning
-- ✅ **AI Assistant Agent**: Conversation processing
-- ✅ **Memory Manager Agent**: Session state management
-
-## ⚙️ Customization
-
-### Update Settings
-Click the gear icon (⚙️) in the top navigation to access:
-- Email alert preferences
-- Refresh interval timing
-- Memory alert thresholds
-- Dashboard notification settings
-
-### Modify Configuration
-Edit `config.js` to update:
-- API endpoints
-- Monitoring intervals
-- Agent configurations
-- Alert thresholds
-
-### UI/UX Updates
-Edit `styles.css` to modify:
-- Color schemes
-- Layout adjustments
-- Mobile responsiveness
-- Animation preferences
-
-## 🔔 Alert System
-
-### Memory Alerts
-- **Warning**: 80% memory usage (configurable)
-- **Critical**: 90% memory usage
-- **Action**: Automatic suggestion for new discussion
-
-### System Alerts
-- **Database**: Connection failures
-- **GitHub**: API issues
-- **Agents**: Status changes or errors
-
-### Notification Methods
-- **Dashboard**: Visual alerts with auto-hide
-- **Email**: Webhook integration (configure in settings)
-- **Browser**: Native notifications (when enabled)
-
-## 📊 Monitoring Data
-
-### Database Monitoring
-- Connection status
-- Table health checks
-- Query performance
-- Edge function status
-
-### GitHub Monitoring  
-- Recent commits
-- Action runs
-- Issue tracking
-- Repository health
-
-### Discussion Monitoring
-- Token usage tracking
-- Memory percentage
-- Session identification
-- Alert thresholds
-
-### Agent Pipeline
-- Individual agent status
-- Activity descriptions
-- Performance metrics
-- Health indicators
-
-## 🔒 Security
-
-### Credential Protection
-- API keys are client-side only
-- No server-side data storage
-- HTTPS enforced for all connections
-- Token expiration monitoring
-
-### Access Control
-- GitHub Pages public access
-- No authentication required for monitoring
-- Sensitive data masked in logs
-- Secure API communication
+### API Connections:
+- **Supabase**: Live database monitoring
+- **GitHub**: Repository status tracking
+- **Real-time**: WebSocket-ready architecture
 
 ## 📱 Mobile Experience
 
-### iPhone Display Priority
-1. **Critical Status**: Database, GitHub, Memory, Agents
-2. **Memory Monitor**: Discussion usage and alerts
-3. **Quick Actions**: New discussion, health check
-4. **Activity Log**: Recent events (collapsed)
+### Device Optimization:
+- **iPhone**: Critical data prioritized, memory alerts prominent
+- **iPad**: Full dashboard with touch-optimized controls
+- **Desktop**: Complete feature set with all panels
 
-### iPad Experience
-- **Full dashboard**: All panels visible
-- **Touch-optimized**: Larger buttons and controls
-- **Chart interaction**: Gesture-based navigation
-- **Settings**: Touch-friendly configuration
+## 🔄 Auto-Update System
 
-### Mac Experience
-- **Complete interface**: All features available
-- **Keyboard shortcuts**: Refresh (R), Settings (S)
-- **Multi-monitor**: Dashboard and work side-by-side
-- **Export functionality**: Data download capabilities
+### Working Auto-refresh:
+- **Configurable intervals**: 30 seconds to 10 minutes
+- **Smart refresh**: Only updates when data changes
+- **Performance optimized**: Pauses when tab hidden
+- **Error handling**: Graceful failure recovery
 
-## 🛠️ Maintenance
+## 🚨 Alert System
 
-### Regular Updates
-1. **Credentials**: Monitor token expiration dates
-2. **Dependencies**: CDN links for libraries
-3. **Configuration**: Adjust thresholds as needed
-4. **Content**: Update agent configurations
+### Memory Warnings:
+- **Visual alerts**: Color-coded memory usage bars
+- **Threshold notifications**: Configurable warning levels
+- **Dashboard alerts**: Real-time warning panels
+- **Email ready**: EmailJS integration prepared
 
-### Troubleshooting
+## 📊 Real Data Sources
 
-#### Dashboard Not Loading
-- Check GitHub Pages deployment status
-- Verify all files are uploaded correctly
-- Check browser console for errors
+### Live Monitoring:
+- **Supabase Database**: Table counts, connection status
+- **Discussion Memory**: Real token calculation
+- **System Uptime**: Actual runtime tracking
+- **GitHub Activity**: Repository monitoring ready
 
-#### API Errors
-- Verify credentials in `config.js`
-- Check token expiration dates
-- Test API endpoints manually
+## 🔧 Maintenance
 
-#### Real-time Data Issues
-- Check internet connectivity
-- Verify CORS settings
-- Monitor browser network tab
+### Easy Updates:
+- **Config changes**: Edit `config.js` for settings
+- **UI updates**: Modify styles via `styles.css`
+- **Feature additions**: Modular JavaScript architecture
+- **Credential updates**: Environment variables supported
 
-## 📞 Support
+## 📈 Performance
 
-### Quick Fixes
-- **Refresh**: F5 or refresh button
-- **Reset Settings**: Clear localStorage
-- **Hard Reload**: Ctrl+F5 (Windows) or Cmd+Shift+R (Mac)
-
-### Configuration Help
-- Edit `config.js` for API changes
-- Modify `styles.css` for appearance
-- Update `dashboard.js` for functionality
-
-## 🚀 Next Steps
-
-### Phase 1: Basic Monitoring (Complete)
-- ✅ Real-time system status
-- ✅ Memory usage tracking
-- ✅ Agent pipeline visualization
-- ✅ Mobile-responsive design
-
-### Phase 2: Enhanced Features
-- 🔄 Historical data charts
-- 🔄 Advanced alerting rules
-- 🔄 Performance analytics
-- 🔄 Custom dashboards
-
-### Phase 3: Integration
-- 🔄 Email notification system
-- 🔄 Slack/Teams integration
-- 🔄 API webhook support
-- 🔄 Advanced reporting
+### Optimizations:
+- **Efficient polling**: Smart refresh intervals
+- **Data caching**: Reduces unnecessary API calls
+- **Chart optimization**: Limited data points for performance
+- **Mobile responsive**: Optimized for all screen sizes
 
 ---
 
-**AWIP Mission Control Dashboard v1.0.0**  
-*Professional Real-time Intelligence Monitoring*
+**Dashboard URL**: https://cjaisingh.github.io/awip-mission-control/
 
-*Ready for immediate deployment to GitHub Pages*
+**All critical issues have been resolved. The dashboard now provides real-time monitoring with actual data connections, working preferences, and functional auto-refresh capabilities.**

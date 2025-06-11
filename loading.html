@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AWIP Mission Control - Loading</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        .container {
+            text-align: center;
+            max-width: 600px;
+            padding: 2rem;
+        }
+        .spinner {
+            border: 4px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top: 4px solid white;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 2rem;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .status {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+        }
+        .note {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="spinner"></div>
+        <h1>🚀 AWIP Mission Control</h1>
+        <div class="status">Dashboard Initializing...</div>
+        <div class="note">
+            The AWIP Mission Control Dashboard is being prepared.<br>
+            Please wait while we configure the monitoring systems.<br><br>
+            <strong>Status:</strong> Deployment Complete<br>
+            <strong>Repository:</strong> <a href="https://github.com/cjaisingh/awip-mission-control" style="color: #fff;">GitHub Repository</a><br>
+            <strong>Note:</strong> Configure API credentials in repository secrets for full functionality.
+        </div>
+    </div>
+
+    <script>
+        // Redirect to main dashboard after 10 seconds if it exists
+        setTimeout(() => {
+            window.location.reload();
+        }, 10000);
+    </script>
+</body>
+</html>

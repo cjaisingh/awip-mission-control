@@ -1,0 +1,30 @@
+name: Deploy AWIP Dashboard
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Configure credentials
+      run: |
+        # Replace placeholders in config.js with actual secrets
+        sed -i 's/your-github-token-here/${{ secrets.GITHUB_TOKEN }}/g' config.js
+        sed -i 's/your-username/${{ github.repository_owner }}/g' config.js
+        sed -i 's/your-project.supabase.co/${{ secrets.SUPABASE_URL }}/g' config.js || true
+        sed -i 's/your-supabase-service-key/${{ secrets.SUPABASE_SERVICE_KEY }}/g' config.js || true
+        sed -i 's/your-supabase-anon-key/${{ secrets.SUPABASE_ANON_KEY }}/g' config.js || true
+
+    - name: Deploy to GitHub Pages
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: .
+        publish_branch: gh-pages

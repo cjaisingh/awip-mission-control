@@ -3,299 +3,251 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AWIP Mission Control - Real-time Intelligence Platform</title>
+    <title>AWIP Mission Control - Real-time Intelligence Dashboard</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="styles.css">
 </head>
-<body class="bg-gray-50 h-screen flex flex-col">
-    <!-- Alert Bar -->
-    <div id="alertBar" class="bg-red-500 text-white px-6 py-2 text-sm font-medium hidden">
-        <i class="fas fa-exclamation-triangle mr-2"></i>
-        <span id="alertMessage">System Alert</span>
-        <button onclick="hideAlert()" class="float-right text-white hover:text-gray-200">
-            <i class="fas fa-times"></i>
-        </button>
-    </div>
-
-    <!-- Top Navigation -->
-    <nav class="bg-white border-b border-gray-200 px-6 py-3 shadow-sm">
+<body class="bg-gray-50 min-h-screen">
+    <!-- Header -->
+    <header class="bg-white border-b border-gray-200 px-6 py-4 shadow-sm">
         <div class="flex justify-between items-center">
             <div class="flex items-center space-x-3">
                 <div class="w-10 h-10 cognitive-gradient rounded-lg flex items-center justify-center">
                     <i class="fas fa-brain text-white text-lg"></i>
                 </div>
                 <div>
-                    <h1 class="text-xl font-bold text-gray-800">AWIP Mission Control</h1>
-                    <p class="text-xs text-gray-500">Real-time Intelligence Monitoring</p>
-                </div>
-                <div class="flex items-center space-x-2">
-                    <div id="connectionStatus" class="w-3 h-3 bg-green-500 rounded-full ai-pulse"></div>
-                    <span class="text-xs text-gray-600">LIVE</span>
+                    <h1 class="text-2xl font-bold text-gray-800">AWIP Mission Control</h1>
+                    <p class="text-sm text-gray-500">Cognitive Intelligence Platform</p>
                 </div>
             </div>
-
             <div class="flex items-center space-x-4">
-                <!-- System Status -->
-                <div class="hidden md:flex items-center space-x-3 bg-gray-50 px-3 py-2 rounded-lg">
-                    <div class="flex items-center space-x-1">
-                        <i class="fas fa-database text-blue-600 text-sm"></i>
-                        <span id="dbStatus" class="text-xs font-medium text-gray-700">DB: OK</span>
-                    </div>
-                    <div class="flex items-center space-x-1">
-                        <i class="fab fa-github text-gray-700 text-sm"></i>
-                        <span id="githubStatus" class="text-xs font-medium text-gray-700">GH: OK</span>
-                    </div>
-                    <div class="flex items-center space-x-1">
-                        <i class="fas fa-memory text-purple-600 text-sm"></i>
-                        <span id="memoryStatus" class="text-xs font-medium text-gray-700">MEM: 67%</span>
+                <div class="text-right">
+                    <div class="text-sm font-medium text-gray-700">System Status</div>
+                    <div id="system-status" class="text-sm text-green-600">
+                        <i class="fas fa-circle text-green-500 mr-1"></i>
+                        <span id="overall-status">Operational</span>
                     </div>
                 </div>
-
-                <!-- Settings & Alerts -->
-                <button onclick="toggleAlerts()" class="p-2 text-gray-500 hover:text-blue-600 transition-colors relative">
-                    <i class="fas fa-bell"></i>
-                    <span id="alertCount" class="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white text-xs rounded-full hidden items-center justify-center">0</span>
-                </button>
-                <button onclick="toggleSettings()" class="p-2 text-gray-500 hover:text-gray-800 transition-colors">
+                <button id="settings-btn" class="p-2 text-gray-500 hover:text-blue-600 transition-colors">
                     <i class="fas fa-cog"></i>
                 </button>
-                <button onclick="refreshDashboard()" class="p-2 text-gray-500 hover:text-green-600 transition-colors">
-                    <i class="fas fa-sync-alt" id="refreshIcon"></i>
+                <button id="refresh-btn" class="p-2 text-gray-500 hover:text-green-600 transition-colors">
+                    <i class="fas fa-sync-alt"></i>
                 </button>
             </div>
         </div>
-    </nav>
+    </header>
 
-    <!-- Main Dashboard Content -->
-    <div class="flex-1 overflow-hidden">
-        <!-- Mobile: Stack layout, Desktop: Grid layout -->
-        <div class="h-full grid grid-cols-1 lg:grid-cols-12 gap-4 p-4">
-
-            <!-- System Overview Panel -->
-            <div class="lg:col-span-8 space-y-4">
-                <!-- Critical Metrics Row -->
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
-                    <!-- Database Status -->
-                    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
-                        <div class="flex items-center justify-between">
-                            <div>
-                                <p class="text-sm font-medium text-gray-600">Database</p>
-                                <p id="dbMetric" class="text-2xl font-bold text-green-600">ONLINE</p>
-                                <p id="dbDetails" class="text-xs text-gray-500">19 tables ready</p>
-                            </div>
-                            <div class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
-                                <i class="fas fa-database text-green-600"></i>
-                            </div>
-                        </div>
+    <!-- Main Dashboard -->
+    <main class="container mx-auto px-6 py-8">
+        <!-- Status Overview Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <!-- System Health -->
+            <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm font-medium text-gray-600">System Health</p>
+                        <p id="system-health" class="text-2xl font-bold text-green-600">96.8%</p>
+                        <p class="text-xs text-gray-500">Uptime: <span id="system-uptime">Loading...</span></p>
                     </div>
-
-                    <!-- GitHub Activity -->
-                    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
-                        <div class="flex items-center justify-between">
-                            <div>
-                                <p class="text-sm font-medium text-gray-600">GitHub</p>
-                                <p id="githubMetric" class="text-2xl font-bold text-blue-600">ACTIVE</p>
-                                <p id="githubDetails" class="text-xs text-gray-500">Last push: 2h ago</p>
-                            </div>
-                            <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
-                                <i class="fab fa-github text-blue-600"></i>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Memory Usage -->
-                    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
-                        <div class="flex items-center justify-between">
-                            <div>
-                                <p class="text-sm font-medium text-gray-600">Memory</p>
-                                <p id="memoryMetric" class="text-2xl font-bold text-yellow-600">67%</p>
-                                <p id="memoryDetails" class="text-xs text-gray-500">847/1000 tokens</p>
-                            </div>
-                            <div class="w-10 h-10 bg-yellow-100 rounded-full flex items-center justify-center">
-                                <i class="fas fa-memory text-yellow-600"></i>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Active Agents -->
-                    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
-                        <div class="flex items-center justify-between">
-                            <div>
-                                <p class="text-sm font-medium text-gray-600">Agents</p>
-                                <p id="agentsMetric" class="text-2xl font-bold text-purple-600">3/20</p>
-                                <p id="agentsDetails" class="text-xs text-gray-500">2 learning</p>
-                            </div>
-                            <div class="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center">
-                                <i class="fas fa-robot text-purple-600 ai-pulse"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Agent Pipeline Visualization -->
-                <div class="bg-white rounded-lg shadow-sm border border-gray-200">
-                    <div class="px-6 py-4 border-b border-gray-200">
-                        <h3 class="text-lg font-semibold text-gray-800">Agent Pipeline Status</h3>
-                        <p class="text-sm text-gray-600">Real-time agent activity and health monitoring</p>
-                    </div>
-                    <div class="p-6">
-                        <div id="agentPipeline" class="space-y-4">
-                            <!-- Agent pipeline will be populated by JavaScript -->
-                        </div>
-                    </div>
-                </div>
-
-                <!-- System Activity Chart -->
-                <div class="bg-white rounded-lg shadow-sm border border-gray-200">
-                    <div class="px-6 py-4 border-b border-gray-200">
-                        <h3 class="text-lg font-semibold text-gray-800">System Activity</h3>
-                        <p class="text-sm text-gray-600">API responses, database writes, and agent operations</p>
-                    </div>
-                    <div class="p-6">
-                        <canvas id="activityChart" width="400" height="200"></canvas>
+                    <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
+                        <i class="fas fa-heartbeat text-green-600 text-xl"></i>
                     </div>
                 </div>
             </div>
 
-            <!-- Right Sidebar -->
-            <div class="lg:col-span-4 space-y-4">
-                <!-- Discussion Memory Monitor -->
-                <div class="bg-white rounded-lg shadow-sm border border-gray-200">
-                    <div class="px-4 py-3 border-b border-gray-200 bg-gray-50">
-                        <h4 class="font-semibold text-gray-800 flex items-center">
-                            <i class="fas fa-comments text-blue-600 mr-2"></i>
-                            Discussion Monitor
-                        </h4>
+            <!-- Database Status -->
+            <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm font-medium text-gray-600">Database</p>
+                        <p id="db-status" class="text-2xl font-bold text-blue-600">Connected</p>
+                        <p class="text-xs text-gray-500">Tables: <span id="table-count">Loading...</span></p>
                     </div>
-                    <div class="p-4">
-                        <div class="space-y-3">
-                            <div class="flex justify-between items-center">
-                                <span class="text-sm text-gray-600">Current Session</span>
-                                <span id="sessionId" class="text-xs font-mono text-gray-500">Loading...</span>
-                            </div>
-                            <div class="flex justify-between items-center">
-                                <span class="text-sm text-gray-600">Memory Usage</span>
-                                <span id="memoryPercent" class="text-sm font-semibold text-yellow-600">67%</span>
-                            </div>
-                            <div class="w-full bg-gray-200 rounded-full h-2">
-                                <div id="memoryBar" class="bg-yellow-500 h-2 rounded-full transition-all duration-500" style="width: 67%"></div>
-                            </div>
-                            <div class="flex justify-between items-center text-xs text-gray-500">
-                                <span id="tokenCount">847 tokens</span>
-                                <span id="tokenLimit">/ 1000 limit</span>
-                            </div>
-                            <div id="memoryAlert" class="hidden bg-red-50 border border-red-200 rounded-lg p-3">
-                                <div class="flex items-center">
-                                    <i class="fas fa-exclamation-triangle text-red-500 mr-2"></i>
-                                    <div>
-                                        <p class="text-sm font-medium text-red-800">Memory Alert</p>
-                                        <p class="text-xs text-red-600">Consider starting a new discussion</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                    <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                        <i class="fas fa-database text-blue-600 text-xl"></i>
                     </div>
                 </div>
+            </div>
 
-                <!-- Recent Activity Log -->
-                <div class="bg-white rounded-lg shadow-sm border border-gray-200">
-                    <div class="px-4 py-3 border-b border-gray-200 bg-gray-50">
-                        <h4 class="font-semibold text-gray-800 flex items-center">
-                            <i class="fas fa-stream text-green-600 mr-2"></i>
-                            Activity Log
-                        </h4>
+            <!-- Active Agents -->
+            <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm font-medium text-gray-600">Active Agents</p>
+                        <p id="active-agents" class="text-2xl font-bold text-purple-600">3/20</p>
+                        <p class="text-xs text-gray-500">Pipeline: <span id="pipeline-status">Running</span></p>
                     </div>
-                    <div class="p-4">
-                        <div id="activityLog" class="space-y-3 max-h-64 overflow-y-auto">
-                            <!-- Activity items will be populated by JavaScript -->
-                        </div>
+                    <div class="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center">
+                        <i class="fas fa-robot text-purple-600 text-xl ai-pulse"></i>
                     </div>
                 </div>
+            </div>
 
-                <!-- Quick Actions -->
-                <div class="bg-white rounded-lg shadow-sm border border-gray-200">
-                    <div class="px-4 py-3 border-b border-gray-200 bg-gray-50">
-                        <h4 class="font-semibold text-gray-800 flex items-center">
-                            <i class="fas fa-bolt text-yellow-600 mr-2"></i>
-                            Quick Actions
-                        </h4>
+            <!-- Memory Usage -->
+            <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm font-medium text-gray-600">Discussion Memory</p>
+                        <p id="memory-usage" class="text-2xl font-bold text-orange-600">Loading...</p>
+                        <p class="text-xs text-gray-500">Tokens: <span id="token-count">Calculating...</span></p>
                     </div>
-                    <div class="p-4 space-y-2">
-                        <button onclick="newDiscussion()" class="w-full px-3 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors text-sm">
-                            <i class="fas fa-plus mr-2"></i>New Discussion
-                        </button>
-                        <button onclick="exportData()" class="w-full px-3 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700 transition-colors text-sm">
-                            <i class="fas fa-download mr-2"></i>Export Data
-                        </button>
-                        <button onclick="runHealthCheck()" class="w-full px-3 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors text-sm">
-                            <i class="fas fa-heartbeat mr-2"></i>Health Check
-                        </button>
+                    <div class="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center">
+                        <i class="fas fa-memory text-orange-600 text-xl"></i>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
+
+        <!-- Agent Pipeline -->
+        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-8">
+            <h3 class="text-lg font-semibold text-gray-800 mb-4">Agent Pipeline Status</h3>
+            <div id="agent-pipeline" class="space-y-4">
+                <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
+                            <i class="fas fa-comments text-white text-sm"></i>
+                        </div>
+                        <div>
+                            <div class="font-medium text-gray-800">AI Assistant Agent</div>
+                            <div class="text-sm text-gray-500">Conversational Interface</div>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <span class="px-2 py-1 text-xs font-medium bg-green-100 text-green-800 rounded">ACTIVE</span>
+                        <div class="w-3 h-3 bg-green-500 rounded-full ai-pulse"></div>
+                    </div>
+                </div>
+                <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
+                            <i class="fas fa-server text-white text-sm"></i>
+                        </div>
+                        <div>
+                            <div class="font-medium text-gray-800">DevOps Agent</div>
+                            <div class="text-sm text-gray-500">Infrastructure Monitoring</div>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <span class="px-2 py-1 text-xs font-medium bg-green-100 text-green-800 rounded">MONITORING</span>
+                        <div class="w-3 h-3 bg-green-500 rounded-full"></div>
+                    </div>
+                </div>
+                <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
+                            <i class="fas fa-database text-white text-sm"></i>
+                        </div>
+                        <div>
+                            <div class="font-medium text-gray-800">Database Agent</div>
+                            <div class="text-sm text-gray-500">Data Management</div>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <span class="px-2 py-1 text-xs font-medium bg-yellow-100 text-yellow-800 rounded">HIGH LOAD</span>
+                        <div class="w-3 h-3 bg-yellow-500 rounded-full"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Charts and Logs -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+            <!-- Performance Chart -->
+            <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                <h3 class="text-lg font-semibold text-gray-800 mb-4">System Performance</h3>
+                <div class="h-64">
+                    <canvas id="performance-chart"></canvas>
+                </div>
+            </div>
+
+            <!-- Activity Log -->
+            <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                <h3 class="text-lg font-semibold text-gray-800 mb-4">Recent Activity</h3>
+                <div id="activity-log" class="space-y-3 h-64 overflow-y-auto">
+                    <!-- Activity items will be populated by JavaScript -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Memory Alert Panel -->
+        <div id="memory-alert" class="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-8 hidden">
+            <div class="flex items-center">
+                <div class="flex-shrink-0">
+                    <i class="fas fa-exclamation-triangle text-yellow-400 text-xl"></i>
+                </div>
+                <div class="ml-3">
+                    <h3 class="text-sm font-medium text-yellow-800">Memory Warning</h3>
+                    <div class="mt-2 text-sm text-yellow-700">
+                        <p>Discussion memory is approaching capacity. Consider starting a new discussion soon.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
 
     <!-- Settings Modal -->
-    <div id="settingsModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
-        <div class="bg-white rounded-lg shadow-xl max-w-md w-full m-4">
-            <div class="px-6 py-4 border-b border-gray-200">
-                <h3 class="text-lg font-semibold text-gray-800">Dashboard Settings</h3>
-            </div>
-            <div class="p-6 space-y-4">
-                <div class="flex items-center justify-between">
-                    <label class="text-sm font-medium text-gray-700">Email Alerts</label>
-                    <input type="checkbox" id="emailAlerts" class="toggle-switch" checked>
+    <div id="settings-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50">
+        <div class="flex items-center justify-center min-h-screen px-4">
+            <div class="bg-white rounded-lg shadow-xl max-w-md w-full p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-lg font-semibold text-gray-800">Dashboard Settings</h3>
+                    <button id="close-settings" class="text-gray-400 hover:text-gray-600">
+                        <i class="fas fa-times"></i>
+                    </button>
                 </div>
-                <div class="flex items-center justify-between">
-                    <label class="text-sm font-medium text-gray-700">Dashboard Alerts</label>
-                    <input type="checkbox" id="dashboardAlerts" class="toggle-switch" checked>
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Auto-refresh interval</label>
+                        <select id="refresh-interval" class="w-full px-3 py-2 border border-gray-300 rounded-md">
+                            <option value="30">30 seconds</option>
+                            <option value="60">1 minute</option>
+                            <option value="300">5 minutes</option>
+                            <option value="600">10 minutes</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Memory alert threshold</label>
+                        <input type="range" id="memory-threshold" min="70" max="95" value="85" class="w-full">
+                        <div class="flex justify-between text-sm text-gray-500">
+                            <span>70%</span>
+                            <span id="threshold-value">85%</span>
+                            <span>95%</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center">
+                        <input id="email-alerts" type="checkbox" class="mr-2">
+                        <label for="email-alerts" class="text-sm text-gray-700">Enable email alerts</label>
+                    </div>
                 </div>
-                <div class="flex items-center justify-between">
-                    <label class="text-sm font-medium text-gray-700">Auto Refresh</label>
-                    <select id="refreshInterval" class="px-3 py-1 border border-gray-300 rounded-md text-sm">
-                        <option value="15000">15 seconds</option>
-                        <option value="30000" selected>30 seconds</option>
-                        <option value="60000">1 minute</option>
-                        <option value="300000">5 minutes</option>
-                    </select>
+                <div class="mt-6 flex justify-end space-x-3">
+                    <button id="cancel-settings" class="px-4 py-2 text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300">
+                        Cancel
+                    </button>
+                    <button id="save-settings" class="px-4 py-2 text-white bg-blue-600 rounded-md hover:bg-blue-700">
+                        Save Preferences
+                    </button>
                 </div>
-                <div class="flex items-center justify-between">
-                    <label class="text-sm font-medium text-gray-700">Memory Alert Threshold</label>
-                    <select id="memoryThreshold" class="px-3 py-1 border border-gray-300 rounded-md text-sm">
-                        <option value="70">70%</option>
-                        <option value="80" selected>80%</option>
-                        <option value="90">90%</option>
-                    </select>
-                </div>
-            </div>
-            <div class="px-6 py-4 border-t border-gray-200 flex justify-end space-x-3">
-                <button onclick="closeSettings()" class="px-4 py-2 text-gray-600 hover:text-gray-800 transition-colors">Cancel</button>
-                <button onclick="saveSettings()" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors">Save</button>
             </div>
         </div>
     </div>
 
-    <!-- Status Footer -->
-    <footer class="bg-white border-t border-gray-200 px-6 py-2">
-        <div class="flex justify-between items-center text-xs text-gray-500">
+    <!-- Footer -->
+    <footer class="bg-white border-t border-gray-200 px-6 py-4 mt-8">
+        <div class="flex justify-between items-center text-sm text-gray-500">
             <div class="flex space-x-4">
-                <span>&copy; 2024 AWIP Mission Control</span>
-                <span>|</span>
-                <span id="lastUpdate">Last Update: --:--</span>
+                <span>&copy; 2025 AWIP Platform</span>
+                <span>Mission Control Dashboard</span>
             </div>
             <div class="flex space-x-4">
-                <span>Version 1.0.0</span>
-                <span>|</span>
-                <span id="systemUptime">Uptime: --</span>
+                <span>Last Update: <span id="last-update">Loading...</span></span>
+                <span>Version 2.0.0</span>
             </div>
         </div>
     </footer>
 
-    <!-- JavaScript -->
-    <script src="config.js"></script>
     <script src="dashboard.js"></script>
 </body>
 </html>

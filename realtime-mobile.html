@@ -429,7 +429,7 @@
         </div>
         <div class="realtime-status">
             <span class="pulse-indicator"></span>
-            <span id="realtimeStatus">LIVE • Auto-refresh: <span id="countdown">8</span>s</span>
+            <span id="realtimeStatus">LIVE â¢ Auto-refresh: <span id="countdown">8</span>s</span>
         </div>
     </div>
 
@@ -553,7 +553,7 @@
 
         // Initialize AWIP Dashboard
         document.addEventListener('DOMContentLoaded', function() {
-            console.log('🚀 AWIP Real-Time Mobile Dashboard Initialized');
+            console.log('ð AWIP Real-Time Mobile Dashboard Initialized');
             initializeAwipDashboard();
             startRefreshCountdown();
             startRealTimeUpdates();
@@ -588,7 +588,7 @@
             isRefreshing = true;
 
             try {
-                console.log('🔄 AWIP: Refreshing real-time data...');
+                console.log('ð AWIP: Refreshing real-time data...');
 
                 // Animate refresh icon
                 const refreshIcon = document.getElementById('refreshIcon');
@@ -608,10 +608,10 @@
                 ]);
 
                 updateLastUpdateTime();
-                console.log('✅ AWIP: Real-time data refresh complete');
+                console.log('â AWIP: Real-time data refresh complete');
 
             } catch (error) {
-                console.error('❌ AWIP: Error in real-time refresh:', error);
+                console.error('â AWIP: Error in real-time refresh:', error);
             } finally {
                 isRefreshing = false;
             }
@@ -771,8 +771,8 @@
                         const date = new Date(commit.commit.author.date);
                         const timeAgo = getTimeAgo(date);
                         const message = commit.commit.message.substring(0, 35) + '...';
-                        const iconColor = commit.commit.message.includes('🚀') ? '#10b981' : 
-                                         commit.commit.message.includes('🐛') ? '#f59e0b' : '#667eea';
+                        const iconColor = commit.commit.message.includes('ð') ? '#10b981' : 
+                                         commit.commit.message.includes('ð') ? '#f59e0b' : '#667eea';
 
                         return `
                             <div class="activity-item">
@@ -862,21 +862,21 @@
         // Handle visibility changes for battery optimization
         document.addEventListener('visibilitychange', function() {
             if (document.hidden) {
-                console.log('📱 AWIP: Dashboard hidden - continuing background updates');
+                console.log('ð± AWIP: Dashboard hidden - continuing background updates');
             } else {
-                console.log('📱 AWIP: Dashboard visible - forcing refresh');
+                console.log('ð± AWIP: Dashboard visible - forcing refresh');
                 refreshAllRealTimeData();
             }
         });
 
         // Handle connection issues gracefully
         window.addEventListener('online', function() {
-            console.log('🌐 AWIP: Connection restored - refreshing data');
+            console.log('ð AWIP: Connection restored - refreshing data');
             refreshAllRealTimeData();
         });
 
         window.addEventListener('offline', function() {
-            console.log('📵 AWIP: Connection lost - continuing with cached data');
+            console.log('ðµ AWIP: Connection lost - continuing with cached data');
         });
 
         // Update progress bar CSS for real-time updates

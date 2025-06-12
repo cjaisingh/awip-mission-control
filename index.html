@@ -3,953 +3,737 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AWIP Mission Control - Professional Dashboard</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <title>AWIP Mission Control - Live Dashboard</title>
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
     <style>
-        .cognitive-gradient {
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
         }
-        .ai-pulse {
-            animation: pulse 2s infinite;
-        }
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.7; }
-        }
-        .panel-transition {
-            transition: width 0.3s ease, opacity 0.3s ease;
-        }
-        .resize-handle {
-            width: 4px;
-            background: #e5e7eb;
-            cursor: col-resize;
-            position: relative;
-            transition: background-color 0.2s;
-        }
-        .resize-handle:hover {
-            background: #3b82f6;
-        }
-        .memory-bar {
-            height: 8px;
-            border-radius: 4px;
-            background: #e5e7eb;
+
+        .dashboard-container {
+            display: flex;
+            height: 100vh;
+            max-width: 1800px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
             overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
         }
-        .memory-fill {
-            height: 100%;
-            transition: width 0.5s ease;
+
+        .left-panel {
+            width: 25%;
+            background: linear-gradient(180deg, #2c3e50 0%, #34495e 100%);
+            color: white;
+            padding: 20px;
+            overflow-y: auto;
         }
-        .memory-safe { background: #10b981; }
-        .memory-warning { background: #f59e0b; }
-        .memory-critical { background: #ef4444; }
-        .accordion-content {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.3s ease;
+
+        .center-panel {
+            width: 50%;
+            padding: 20px;
+            background: #f8f9fa;
+            overflow-y: auto;
         }
-        .accordion-expanded {
-            max-height: 500px;
+
+        .right-panel {
+            width: 25%;
+            background: linear-gradient(180deg, #34495e 0%, #2c3e50 100%);
+            color: white;
+            padding: 20px;
+            overflow-y: auto;
         }
-        .status-indicator {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
+
+        .panel-header {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .metric-card {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .metric-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #3498db;
+        }
+
+        .metric-label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            margin-top: 5px;
+        }
+
+        .agent-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .agent-item {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            border-left: 4px solid #3498db;
+        }
+
+        .agent-name {
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        .agent-status {
+            font-size: 0.8rem;
+            opacity: 0.8;
+        }
+
+        .status-active {
+            color: #2ecc71;
+        }
+
+        .status-inactive {
+            color: #e74c3c;
+        }
+
+        .search-box {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.9);
+            margin-bottom: 20px;
+        }
+
+        .center-content {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .performance-chart {
+            height: 200px;
+            background: linear-gradient(45deg, #f0f0f0, #e0e0e0);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 15px 0;
+        }
+
+        .communications-log {
+            max-height: 300px;
+            overflow-y: auto;
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+        }
+
+        .communication-item {
+            padding: 10px;
+            border-left: 3px solid #3498db;
+            margin-bottom: 10px;
+            background: white;
+            border-radius: 5px;
+        }
+
+        .system-health {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .health-item {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .health-status {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .health-healthy {
+            color: #2ecc71;
+        }
+
+        .health-warning {
+            color: #f39c12;
+        }
+
+        .health-error {
+            color: #e74c3c;
+        }
+
+        .loading {
             display: inline-block;
-            margin-right: 8px;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #3498db;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
         }
-        .status-online { background: #10b981; }
-        .status-warning { background: #f59e0b; }
-        .status-offline { background: #ef4444; }
-        .agent-card {
-            transition: all 0.2s ease;
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
-        .agent-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+
+        .error-message {
+            color: #e74c3c;
+            background: rgba(231, 76, 60, 0.1);
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
         }
-        .chart-container {
-            position: relative;
-            height: 300px;
+
+        .discussion-memory {
+            background: rgba(52, 152, 219, 0.1);
+            border: 2px solid #3498db;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .memory-progress {
+            background: #ecf0f1;
+            height: 10px;
+            border-radius: 5px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+
+        .memory-fill {
+            background: linear-gradient(90deg, #3498db, #2ecc71);
+            height: 100%;
+            transition: width 0.3s ease;
+        }
+
+        .refresh-btn {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px 0;
+        }
+
+        .refresh-btn:hover {
+            background: #2980b9;
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-container {
+                flex-direction: column;
+                height: auto;
+            }
+
+            .left-panel, .center-panel, .right-panel {
+                width: 100%;
+            }
         }
     </style>
 </head>
-<body class="bg-gray-50 h-screen flex flex-col">
-    <!-- Top Navigation Bar -->
-    <div class="bg-white border-b border-gray-200 px-6 py-3 flex justify-between items-center shadow-sm">
-        <div class="flex items-center space-x-3">
-            <div class="w-8 h-8 cognitive-gradient rounded-lg flex items-center justify-center">
-                <i class="fas fa-brain text-white text-sm"></i>
-            </div>
-            <h1 class="text-xl font-bold text-gray-800">AWIP Mission Control</h1>
-            <span class="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full">Professional AI Governance Platform</span>
-        </div>
-        <div class="flex items-center space-x-4">
-            <!-- Memory Status -->
-            <div class="flex items-center space-x-2">
-                <span class="text-sm text-gray-600">Memory:</span>
-                <div class="memory-bar w-24">
-                    <div id="memoryFill" class="memory-fill memory-warning" style="width: 78%"></div>
-                </div>
-                <span id="memoryText" class="text-sm font-medium text-yellow-600">78%</span>
-            </div>
-            
-            <button class="p-2 text-gray-500 hover:text-blue-600 transition-colors">
-                <i class="fas fa-search"></i>
-            </button>
-            <button class="p-2 text-gray-500 hover:text-yellow-600 transition-colors relative">
-                <i class="fas fa-bell"></i>
-                <span class="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full ai-pulse"></span>
-            </button>
-            <button id="themeToggle" class="p-2 text-gray-500 hover:text-gray-800 transition-colors">
-                <i class="fas fa-moon"></i>
-            </button>
-            <div class="w-8 h-8 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full cursor-pointer"></div>
-        </div>
-    </div>
+<body>
+    <div class="dashboard-container">
+        <!-- Left Panel -->
+        <div class="left-panel">
+            <div class="panel-header">ð¤ AI Agents</div>
 
-    <!-- Main Content Area -->
-    <div class="flex-1 flex overflow-hidden">
-        <!-- Left Panel: Navigation -->
-        <div id="leftPanel" class="bg-white border-r border-gray-200 panel-transition" style="width: 280px;">
-            <div class="p-4 border-b border-gray-100 flex justify-between items-center cursor-pointer" onclick="toggleLeftPanel()">
-                <span class="font-semibold text-gray-700">Cognitive Domains</span>
-                <i id="leftPanelIcon" class="fas fa-chevron-left text-gray-400"></i>
+            <input type="text" class="search-box" id="agentSearch" placeholder="Search agents...">
+
+            <div class="metric-card">
+                <div class="metric-value" id="totalAgents">-</div>
+                <div class="metric-label">Total Agents</div>
             </div>
-            <div id="leftPanelContent" class="p-2">
-                <nav class="space-y-1">
-                    <!-- AI Governance Section -->
-                    <div class="nav-group">
-                        <div class="px-3 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">AI Governance</div>
-                        <a href="#" onclick="loadContent('agent-policies')" class="nav-item flex items-center px-3 py-2 text-sm font-medium rounded-md text-blue-600 bg-blue-50">
-                            <i class="fas fa-shield-alt mr-3"></i>
-                            <span>Agent Policies</span>
-                            <span class="ml-auto bg-blue-200 text-blue-800 text-xs px-2 py-1 rounded-full">24</span>
-                        </a>
-                        <a href="#" onclick="loadContent('secrets-manager')" class="nav-item flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-600 hover:bg-gray-50">
-                            <i class="fas fa-key mr-3"></i>
-                            <span>Secrets Manager</span>
-                            <span class="status-indicator status-online"></span>
-                        </a>
-                        <a href="#" onclick="loadContent('voice-control')" class="nav-item flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-600 hover:bg-gray-50">
-                            <i class="fas fa-microphone mr-3"></i>
-                            <span>Voice Control</span>
-                            <span class="status-indicator status-warning"></span>
-                        </a>
-                    </div>
 
-                    <!-- Cognitive Products Section -->
-                    <div class="nav-group mt-6">
-                        <div class="px-3 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">Cognitive Products</div>
-                        <a href="#" onclick="loadContent('project-intelligence')" class="nav-item flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-600 hover:bg-gray-50">
-                            <i class="fas fa-project-diagram mr-3"></i>
-                            <span>Project Intelligence</span>
-                        </a>
-                        <a href="#" onclick="loadContent('finance-ai')" class="nav-item flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-600 hover:bg-gray-50">
-                            <i class="fas fa-dollar-sign mr-3"></i>
-                            <span>Finance AI</span>
-                            <span class="status-indicator status-online"></span>
-                        </a>
-                        <a href="#" onclick="loadContent('facilities-tfm')" class="nav-item flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-600 hover:bg-gray-50">
-                            <i class="fas fa-building mr-3"></i>
-                            <span>Facilities TFM</span>
-                        </a>
-                        <a href="#" onclick="loadContent('portfolio-strategy')" class="nav-item flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-600 hover:bg-gray-50">
-                            <i class="fas fa-chart-line mr-3"></i>
-                            <span>Portfolio Strategy</span>
-                        </a>
-                        <a href="#" onclick="loadContent('people-skills')" class="nav-item flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-600 hover:bg-gray-50">
-                            <i class="fas fa-users mr-3"></i>
-                            <span>People & Skills</span>
-                        </a>
-                    </div>
+            <div class="metric-card">
+                <div class="metric-value" id="activeAgents">-</div>
+                <div class="metric-label">Active Agents</div>
+            </div>
 
-                    <!-- AI Operations Section -->
-                    <div class="nav-group mt-6">
-                        <div class="px-3 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">AI Operations</div>
-                        <a href="#" onclick="loadContent('llm-monitor')" class="nav-item flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-600 hover:bg-gray-50">
-                            <i class="fas fa-brain mr-3"></i>
-                            <span>SLM/LLM Monitor</span>
-                            <span class="status-indicator status-online ai-pulse"></span>
-                        </a>
-                        <a href="#" onclick="loadContent('scenario-planner')" class="nav-item flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-600 hover:bg-gray-50">
-                            <i class="fas fa-crystal-ball mr-3"></i>
-                            <span>Scenario Planner</span>
-                        </a>
-                        <a href="#" onclick="loadContent('emergency-override')" class="nav-item flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-600 hover:bg-gray-50">
-                            <i class="fas fa-exclamation-triangle mr-3"></i>
-                            <span>Emergency Override</span>
-                            <span class="status-indicator status-offline"></span>
-                        </a>
-                    </div>
-                </nav>
+            <div class="metric-card">
+                <div class="metric-value" id="avgHealth">-</div>
+                <div class="metric-label">Avg Health Score</div>
+            </div>
+
+            <div class="agent-list" id="agentList">
+                <div class="loading"></div>
             </div>
         </div>
 
-        <!-- Resize Handle -->
-        <div class="resize-handle" id="resizeHandle"></div>
+        <!-- Center Panel -->
+        <div class="center-panel">
+            <div class="panel-header">ð AWIP Mission Control</div>
 
-        <!-- Center Panel: Main Content -->
-        <div id="centerPanel" class="flex-1 flex flex-col bg-white">
-            <!-- Breadcrumbs -->
-            <div class="px-6 py-3 border-b border-gray-200 bg-gray-50">
-                <nav class="flex" aria-label="Breadcrumb">
-                    <ol class="flex items-center space-x-2">
-                        <li><a href="#" class="text-sm text-gray-500 hover:text-gray-700">AI Governance</a></li>
-                        <i class="fas fa-chevron-right text-gray-400 text-xs"></i>
-                        <li><span id="breadcrumbCurrent" class="text-sm font-medium text-gray-900">Agent Policies</span></li>
-                    </ol>
-                </nav>
+            <div class="discussion-memory">
+                <h3>ð­ Discussion Memory</h3>
+                <div class="memory-progress">
+                    <div class="memory-fill" id="memoryFill" style="width: 0%"></div>
+                </div>
+                <p>Memory Usage: <span id="memoryPercentage">0%</span></p>
+                <p>Status: <span id="memoryStatus">Calculating...</span></p>
             </div>
 
-            <!-- Search Accordion -->
-            <div class="border-b border-gray-200">
-                <div class="px-6 py-3 bg-gray-50 flex justify-between items-center cursor-pointer" onclick="toggleSearch()">
-                    <div class="flex items-center space-x-3">
-                        <i class="fas fa-search text-gray-500"></i>
-                        <span class="font-medium text-gray-700">Advanced Search & Filters</span>
-                    </div>
-                    <i id="searchIcon" class="fas fa-chevron-down text-gray-400"></i>
+            <div class="center-content">
+                <h3>ð System Performance</h3>
+                <div class="performance-chart" id="performanceChart">
+                    <div class="loading"></div>
                 </div>
-                <div id="searchAccordion" class="accordion-content px-6 py-4 bg-white">
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Agent Name</label>
-                            <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Search agents...">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Compliance Level</label>
-                            <select class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                                <option>All Levels</option>
-                                <option>Strict</option>
-                                <option>Moderate</option>
-                                <option>Free</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Status</label>
-                            <select class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                                <option>All Status</option>
-                                <option>Active</option>
-                                <option>Learning</option>
-                                <option>Needs Review</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="flex space-x-3">
-                        <button class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors">
-                            <i class="fas fa-search mr-2"></i>Search
-                        </button>
-                        <button class="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400 transition-colors">
-                            <i class="fas fa-undo mr-2"></i>Reset
-                        </button>
-                    </div>
-                </div>
+                <div id="performanceMetrics"></div>
             </div>
 
-            <!-- Main Content Area -->
-            <div class="flex-1 overflow-auto p-6">
-                <div id="mainContent">
-                    <!-- Agent Policies Content (Default) -->
-                    <div class="mb-6">
-                        <div class="flex justify-between items-center mb-4">
-                            <h2 class="text-2xl font-bold text-gray-900">Agent Policy Management</h2>
-                            <button class="px-4 py-2 cognitive-gradient text-white rounded-md hover:opacity-90 transition-all">
-                                <i class="fas fa-plus mr-2"></i>New Policy
-                            </button>
-                        </div>
-                        
-                        <!-- Status Overview Cards -->
-                        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-                            <div class="agent-card bg-green-50 border border-green-200 rounded-lg p-4">
-                                <div class="flex items-center justify-between">
-                                    <div>
-                                        <p class="text-sm font-medium text-green-600">Active Agents</p>
-                                        <p class="text-2xl font-bold text-green-900">24</p>
-                                        <p class="text-xs text-green-600">+2 from yesterday</p>
-                                    </div>
-                                    <div class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
-                                        <i class="fas fa-robot text-green-600"></i>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div class="agent-card bg-blue-50 border border-blue-200 rounded-lg p-4">
-                                <div class="flex items-center justify-between">
-                                    <div>
-                                        <p class="text-sm font-medium text-blue-600">Compliant</p>
-                                        <p class="text-2xl font-bold text-blue-900">22</p>
-                                        <p class="text-xs text-blue-600">92% compliance rate</p>
-                                    </div>
-                                    <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
-                                        <i class="fas fa-check-circle text-blue-600"></i>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div class="agent-card bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-                                <div class="flex items-center justify-between">
-                                    <div>
-                                        <p class="text-sm font-medium text-yellow-600">Needs Review</p>
-                                        <p class="text-2xl font-bold text-yellow-900">2</p>
-                                        <p class="text-xs text-yellow-600">Action required</p>
-                                    </div>
-                                    <div class="w-10 h-10 bg-yellow-100 rounded-full flex items-center justify-center">
-                                        <i class="fas fa-exclamation-triangle text-yellow-600"></i>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div class="agent-card bg-purple-50 border border-purple-200 rounded-lg p-4">
-                                <div class="flex items-center justify-between">
-                                    <div>
-                                        <p class="text-sm font-medium text-purple-600">Learning</p>
-                                        <p class="text-2xl font-bold text-purple-900">3</p>
-                                        <p class="text-xs text-purple-600">Training in progress</p>
-                                    </div>
-                                    <div class="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center">
-                                        <i class="fas fa-brain text-purple-600 ai-pulse"></i>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Performance Chart -->
-                        <div class="bg-white border border-gray-200 rounded-lg p-6 mb-6">
-                            <h3 class="text-lg font-medium text-gray-900 mb-4">Agent Performance Trends</h3>
-                            <div class="chart-container">
-                                <canvas id="performanceChart"></canvas>
-                            </div>
-                        </div>
-
-                        <!-- Agent Policies Table -->
-                        <div class="bg-white border border-gray-200 rounded-lg overflow-hidden">
-                            <div class="px-6 py-4 border-b border-gray-200 bg-gray-50">
-                                <h3 class="text-lg font-medium text-gray-900">Active Agent Policies</h3>
-                            </div>
-                            <div class="overflow-x-auto">
-                                <table class="min-w-full divide-y divide-gray-200">
-                                    <thead class="bg-gray-50">
-                                        <tr>
-                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Agent</th>
-                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Domain</th>
-                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Compliance</th>
-                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Performance</th>
-                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Last Updated</th>
-                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody class="bg-white divide-y divide-gray-200">
-                                        <tr>
-                                            <td class="px-6 py-4 whitespace-nowrap">
-                                                <div class="flex items-center">
-                                                    <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center mr-3">
-                                                        <i class="fas fa-project-diagram text-blue-600 text-sm"></i>
-                                                    </div>
-                                                    <div>
-                                                        <div class="text-sm font-medium text-gray-900">Project-AI-Alpha</div>
-                                                        <div class="text-sm text-gray-500">GPT-4 Enhanced</div>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Project Management</td>
-                                            <td class="px-6 py-4 whitespace-nowrap">
-                                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Strict</span>
-                                            </td>
-                                            <td class="px-6 py-4 whitespace-nowrap">
-                                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Active</span>
-                                            </td>
-                                            <td class="px-6 py-4 whitespace-nowrap">
-                                                <div class="flex items-center">
-                                                    <div class="w-16 bg-gray-200 rounded-full h-2 mr-2">
-                                                        <div class="bg-green-600 h-2 rounded-full" style="width: 95%"></div>
-                                                    </div>
-                                                    <span class="text-sm text-gray-900">95%</span>
-                                                </div>
-                                            </td>
-                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">2 hours ago</td>
-                                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                                <button class="text-blue-600 hover:text-blue-900 mr-3">Edit</button>
-                                                <button class="text-yellow-600 hover:text-yellow-900 mr-3">Pause</button>
-                                                <button class="text-red-600 hover:text-red-900">Delete</button>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td class="px-6 py-4 whitespace-nowrap">
-                                                <div class="flex items-center">
-                                                    <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center mr-3">
-                                                        <i class="fas fa-dollar-sign text-green-600 text-sm"></i>
-                                                    </div>
-                                                    <div>
-                                                        <div class="text-sm font-medium text-gray-900">Finance-Monitor-Beta</div>
-                                                        <div class="text-sm text-gray-500">Claude Enhanced</div>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Finance & Cost</td>
-                                            <td class="px-6 py-4 whitespace-nowrap">
-                                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">Moderate</span>
-                                            </td>
-                                            <td class="px-6 py-4 whitespace-nowrap">
-                                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">Learning</span>
-                                            </td>
-                                            <td class="px-6 py-4 whitespace-nowrap">
-                                                <div class="flex items-center">
-                                                    <div class="w-16 bg-gray-200 rounded-full h-2 mr-2">
-                                                        <div class="bg-yellow-600 h-2 rounded-full" style="width: 78%"></div>
-                                                    </div>
-                                                    <span class="text-sm text-gray-900">78%</span>
-                                                </div>
-                                            </td>
-                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">1 day ago</td>
-                                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                                <button class="text-blue-600 hover:text-blue-900 mr-3">Edit</button>
-                                                <button class="text-yellow-600 hover:text-yellow-900 mr-3">Pause</button>
-                                                <button class="text-red-600 hover:text-red-900">Delete</button>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td class="px-6 py-4 whitespace-nowrap">
-                                                <div class="flex items-center">
-                                                    <div class="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center mr-3">
-                                                        <i class="fas fa-building text-purple-600 text-sm"></i>
-                                                    </div>
-                                                    <div>
-                                                        <div class="text-sm font-medium text-gray-900">Facilities-AI-Gamma</div>
-                                                        <div class="text-sm text-gray-500">Multi-Modal AI</div>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">TFM</td>
-                                            <td class="px-6 py-4 whitespace-nowrap">
-                                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">Free</span>
-                                            </td>
-                                            <td class="px-6 py-4 whitespace-nowrap">
-                                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">Review Needed</span>
-                                            </td>
-                                            <td class="px-6 py-4 whitespace-nowrap">
-                                                <div class="flex items-center">
-                                                    <div class="w-16 bg-gray-200 rounded-full h-2 mr-2">
-                                                        <div class="bg-red-600 h-2 rounded-full" style="width: 45%"></div>
-                                                    </div>
-                                                    <span class="text-sm text-gray-900">45%</span>
-                                                </div>
-                                            </td>
-                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">3 hours ago</td>
-                                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                                <button class="text-blue-600 hover:text-blue-900 mr-3">Edit</button>
-                                                <button class="text-yellow-600 hover:text-yellow-900 mr-3">Pause</button>
-                                                <button class="text-red-600 hover:text-red-900">Delete</button>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
+            <div class="center-content">
+                <h3>ð¬ Agent Communications</h3>
+                <button class="refresh-btn" onclick="loadCommunications()">Refresh</button>
+                <div class="communications-log" id="communicationsLog">
+                    <div class="loading"></div>
                 </div>
             </div>
         </div>
 
-        <!-- Right Panel: Context & Tools -->
-        <div id="rightPanel" class="bg-white border-l border-gray-200 panel-transition" style="width: 320px;">
-            <div class="p-4 border-b border-gray-100 flex justify-between items-center cursor-pointer" onclick="toggleRightPanel()">
-                <span class="font-semibold text-gray-700">Context & Tools</span>
-                <i id="rightPanelIcon" class="fas fa-chevron-right text-gray-400"></i>
-            </div>
-            
-            <!-- Tab Navigation -->
-            <div class="flex border-b border-gray-200">
-                <button class="tab-button flex-1 px-3 py-2 text-xs font-medium text-center border-b-2 border-blue-500 text-blue-600" onclick="switchTab('workflow')">
-                    <i class="fas fa-stream mr-1"></i>Workflow
-                </button>
-                <button class="tab-button flex-1 px-3 py-2 text-xs font-medium text-center border-b-2 border-transparent text-gray-500 hover:text-gray-700" onclick="switchTab('discussions')">
-                    <i class="fas fa-comments mr-1"></i>Chat
-                </button>
-                <button class="tab-button flex-1 px-3 py-2 text-xs font-medium text-center border-b-2 border-transparent text-gray-500 hover:text-gray-700" onclick="switchTab('config')">
-                    <i class="fas fa-cog mr-1"></i>Config
-                </button>
+        <!-- Right Panel -->
+        <div class="right-panel">
+            <div class="panel-header">â¡ System Health</div>
+
+            <button class="refresh-btn" onclick="loadSystemHealth()">Refresh Health</button>
+
+            <div id="systemHealthContainer">
+                <div class="loading"></div>
             </div>
 
-            <!-- Tab Content -->
-            <div id="rightPanelContent" class="flex-1 overflow-y-auto">
-                <!-- Workflow Tab -->
-                <div id="workflowTab" class="tab-content p-4">
-                    <h4 class="font-semibold text-gray-800 mb-3">AI Workflow Timeline</h4>
-                    <div class="space-y-3">
-                        <div class="flex items-start space-x-3">
-                            <div class="w-3 h-3 bg-green-500 rounded-full mt-1 ai-pulse"></div>
-                            <div>
-                                <p class="text-sm font-medium text-gray-800">Policy Updated</p>
-                                <p class="text-xs text-gray-500">Project-AI-Alpha compliance level changed to Strict</p>
-                                <p class="text-xs text-gray-400">2 hours ago</p>
-                            </div>
-                        </div>
-                        <div class="flex items-start space-x-3">
-                            <div class="w-3 h-3 bg-blue-500 rounded-full mt-1"></div>
-                            <div>
-                                <p class="text-sm font-medium text-gray-800">Agent Learning</p>
-                                <p class="text-xs text-gray-500">Finance-Monitor-Beta processed 127 new transactions</p>
-                                <p class="text-xs text-gray-400">4 hours ago</p>
-                            </div>
-                        </div>
-                        <div class="flex items-start space-x-3">
-                            <div class="w-3 h-3 bg-yellow-500 rounded-full mt-1"></div>
-                            <div>
-                                <p class="text-sm font-medium text-gray-800">Review Required</p>
-                                <p class="text-xs text-gray-500">Facilities-AI-Gamma flagged unusual activity</p>
-                                <p class="text-xs text-gray-400">6 hours ago</p>
-                            </div>
-                        </div>
-                        <div class="flex items-start space-x-3">
-                            <div class="w-3 h-3 bg-purple-500 rounded-full mt-1"></div>
-                            <div>
-                                <p class="text-sm font-medium text-gray-800">System Alert</p>
-                                <p class="text-xs text-gray-500">Memory usage approaching 80% threshold</p>
-                                <p class="text-xs text-gray-400">8 hours ago</p>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="mt-4 pt-4 border-t border-gray-200">
-                        <h5 class="font-medium text-gray-800 mb-2">Quick Actions</h5>
-                        <div class="space-y-2">
-                            <button class="w-full px-3 py-2 text-sm bg-blue-50 text-blue-700 rounded-md hover:bg-blue-100 transition-colors">
-                                <i class="fas fa-plus mr-2"></i>Create New Policy
-                            </button>
-                            <button class="w-full px-3 py-2 text-sm bg-green-50 text-green-700 rounded-md hover:bg-green-100 transition-colors">
-                                <i class="fas fa-download mr-2"></i>Export Reports
-                            </button>
-                        </div>
-                    </div>
-                </div>
+            <div class="metric-card">
+                <div class="metric-value" id="dbStatus">-</div>
+                <div class="metric-label">Database Status</div>
+            </div>
 
-                <!-- Discussions Tab -->
-                <div id="discussionsTab" class="tab-content p-4 hidden">
-                    <h4 class="font-semibold text-gray-800 mb-3">AI Agent Discussions</h4>
-                    <div class="space-y-3 text-sm mb-4">
-                        <div class="bg-gray-50 rounded-lg p-3">
-                            <p class="font-medium text-gray-800 text-xs">System Admin</p>
-                            <p class="text-gray-600 text-xs mt-1">Why did the compliance level change for Project-AI-Alpha?</p>
-                            <p class="text-gray-400 text-xs mt-1">10 minutes ago</p>
-                        </div>
-                        <div class="bg-blue-50 rounded-lg p-3">
-                            <p class="font-medium text-blue-800 text-xs">AI Assistant</p>
-                            <p class="text-gray-600 text-xs mt-1">The agent requested stricter compliance due to handling sensitive project data. This aligns with governance policies.</p>
-                            <p class="text-gray-400 text-xs mt-1">8 minutes ago</p>
-                        </div>
-                        <div class="bg-purple-50 rounded-lg p-3">
-                            <p class="font-medium text-purple-800 text-xs">Memory Monitor</p>
-                            <p class="text-gray-600 text-xs mt-1">Current discussion at 78% capacity. Consider starting new session soon.</p>
-                            <p class="text-gray-400 text-xs mt-1">5 minutes ago</p>
-                        </div>
-                    </div>
-                    <div class="flex">
-                        <input type="text" placeholder="Ask about AI decisions..." class="flex-1 px-3 py-2 text-sm border border-gray-300 rounded-l-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                        <button class="px-3 py-2 bg-blue-600 text-white rounded-r-md hover:bg-blue-700">
-                            <i class="fas fa-paper-plane"></i>
-                        </button>
-                    </div>
-                </div>
+            <div class="metric-card">
+                <div class="metric-value" id="lastUpdate">-</div>
+                <div class="metric-label">Last Update</div>
+            </div>
 
-                <!-- Config Tab -->
-                <div id="configTab" class="tab-content p-4 hidden">
-                    <h4 class="font-semibold text-gray-800 mb-3">Agent Configuration</h4>
-                    <div class="space-y-4">
-                        <div>
-                            <label class="block text-xs font-medium text-gray-700 mb-1">Default Compliance Level</label>
-                            <select class="w-full px-2 py-1 text-sm border border-gray-300 rounded-md">
-                                <option>Strict</option>
-                                <option>Moderate</option>
-                                <option>Free</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="block text-xs font-medium text-gray-700 mb-1">Auto-escalation Threshold</label>
-                            <input type="range" class="w-full" min="1" max="10" value="7">
-                            <div class="flex justify-between text-xs text-gray-500">
-                                <span>Low</span>
-                                <span>High</span>
-                            </div>
-                        </div>
-                        <div>
-                            <label class="block text-xs font-medium text-gray-700 mb-1">Memory Alert Threshold</label>
-                            <input type="range" class="w-full" min="50" max="95" value="80">
-                            <div class="flex justify-between text-xs text-gray-500">
-                                <span>50%</span>
-                                <span>95%</span>
-                            </div>
-                        </div>
-                        <div class="space-y-2">
-                            <label class="flex items-center text-sm text-gray-700">
-                                <input type="checkbox" class="mr-2" checked>
-                                Enable autonomous learning
-                            </label>
-                            <label class="flex items-center text-sm text-gray-700">
-                                <input type="checkbox" class="mr-2" checked>
-                                Real-time notifications
-                            </label>
-                            <label class="flex items-center text-sm text-gray-700">
-                                <input type="checkbox" class="mr-2">
-                                Auto-backup policies
-                            </label>
-                        </div>
-                        <button class="w-full px-3 py-2 bg-gray-600 text-white text-sm rounded-md hover:bg-gray-700">
-                            Save Configuration
-                        </button>
-                    </div>
+            <div class="center-content" style="background: rgba(255,255,255,0.1); margin-top: 20px;">
+                <h4>ð Auto-Refresh</h4>
+                <label style="display: block; margin: 10px 0;">
+                    <input type="checkbox" id="autoRefresh" checked> Enable Auto-Refresh (30s)
+                </label>
+                <div id="connectionStatus" style="margin: 10px 0;">
+                    Connection: <span id="connStatus">Connecting...</span>
                 </div>
             </div>
-        </div>
-    </div>
-
-    <!-- Bottom Status Bar -->
-    <div class="bg-white border-t border-gray-200 px-6 py-2 flex justify-between items-center text-xs text-gray-500">
-        <div class="flex space-x-4">
-            <span>&copy; 2025 AWIP Platform</span>
-            <span class="status-indicator status-online"></span>
-            <span>System Online</span>
-            <span>|</span>
-            <span>Last Update: <span id="lastUpdate">Just now</span></span>
-        </div>
-        <div class="flex space-x-4">
-            <span>Version 2.0.0</span>
-            <span>Build 2025.01.11</span>
-            <span>Uptime: <span id="uptime">2h 34m</span></span>
         </div>
     </div>
 
     <script>
-        // Global state
-        let leftPanelExpanded = true;
-        let rightPanelExpanded = true;
-        let searchExpanded = false;
-        let currentTab = 'workflow';
-        let currentContent = 'agent-policies';
+        // Supabase configuration
+        const SUPABASE_URL = 'https://nkjckkaqcdscrtzmmyyt.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5ramNra2FxY2RzY3J0em1teXl0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzE2MDk2MjIsImV4cCI6MjA0NzE4NTYyMn0.VYlzLMqCK-L1CxqsNxZYJVqGzHkOJzxzMXmfyq6ptWY';
 
-        // Memory simulation
-        let memoryUsage = 78;
-        
+        // Initialize Supabase client
+        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        // Global variables
+        let autoRefreshInterval;
+        let discussionMemoryData = {
+            totalCapacity: 1000,
+            currentUsage: 0,
+            messages: 0,
+            lastUpdate: new Date()
+        };
+
         // Initialize dashboard
         document.addEventListener('DOMContentLoaded', function() {
-            initializeCharts();
-            startTimers();
-            updateMemoryDisplay();
+            initializeDashboard();
+            setupAutoRefresh();
         });
 
-        // Panel Controls
-        function toggleLeftPanel() {
-            const panel = document.getElementById('leftPanel');
-            const content = document.getElementById('leftPanelContent');
-            const icon = document.getElementById('leftPanelIcon');
-            
-            leftPanelExpanded = !leftPanelExpanded;
-            
-            if (leftPanelExpanded) {
-                panel.style.width = '280px';
-                content.style.display = 'block';
-                icon.className = 'fas fa-chevron-left text-gray-400';
-            } else {
-                panel.style.width = '60px';
-                content.style.display = 'none';
-                icon.className = 'fas fa-chevron-right text-gray-400';
+        async function initializeDashboard() {
+            try {
+                document.getElementById('connStatus').textContent = 'Connected';
+                document.getElementById('connStatus').style.color = '#2ecc71';
+
+                await Promise.all([
+                    loadAgents(),
+                    loadSystemHealth(),
+                    loadCommunications(),
+                    loadPerformanceMetrics(),
+                    calculateDiscussionMemory()
+                ]);
+
+                updateLastUpdate();
+            } catch (error) {
+                console.error('Dashboard initialization error:', error);
+                document.getElementById('connStatus').textContent = 'Error';
+                document.getElementById('connStatus').style.color = '#e74c3c';
+                showError('Failed to initialize dashboard: ' + error.message);
             }
         }
 
-        function toggleRightPanel() {
-            const panel = document.getElementById('rightPanel');
-            const content = document.getElementById('rightPanelContent');
-            const icon = document.getElementById('rightPanelIcon');
-            
-            rightPanelExpanded = !rightPanelExpanded;
-            
-            if (rightPanelExpanded) {
-                panel.style.width = '320px';
-                content.style.display = 'block';
-                icon.className = 'fas fa-chevron-right text-gray-400';
-            } else {
-                panel.style.width = '60px';
-                content.style.display = 'none';
-                icon.className = 'fas fa-chevron-left text-gray-400';
+        async function loadAgents() {
+            try {
+                const { data: agents, error } = await supabase
+                    .from('agents')
+                    .select('*')
+                    .order('created_at', { ascending: false });
+
+                if (error) throw error;
+
+                const totalAgents = agents.length;
+                const activeAgents = agents.filter(agent => agent.status === 'active').length;
+                const avgHealth = agents.length > 0 
+                    ? (agents.reduce((sum, agent) => sum + (agent.health_score || 0), 0) / agents.length).toFixed(2)
+                    : '0.00';
+
+                document.getElementById('totalAgents').textContent = totalAgents;
+                document.getElementById('activeAgents').textContent = activeAgents;
+                document.getElementById('avgHealth').textContent = avgHealth;
+
+                displayAgents(agents);
+            } catch (error) {
+                console.error('Error loading agents:', error);
+                showError('Failed to load agents: ' + error.message);
             }
         }
 
-        function toggleSearch() {
-            const accordion = document.getElementById('searchAccordion');
-            const icon = document.getElementById('searchIcon');
-            
-            searchExpanded = !searchExpanded;
-            
-            if (searchExpanded) {
-                accordion.classList.add('accordion-expanded');
-                icon.className = 'fas fa-chevron-up text-gray-400';
-            } else {
-                accordion.classList.remove('accordion-expanded');
-                icon.className = 'fas fa-chevron-down text-gray-400';
+        function displayAgents(agents) {
+            const agentList = document.getElementById('agentList');
+
+            if (agents.length === 0) {
+                agentList.innerHTML = '<div class="agent-item">No agents found</div>';
+                return;
+            }
+
+            const agentHTML = agents.map(agent => `
+                <div class="agent-item">
+                    <div class="agent-name">${agent.name || 'Unnamed Agent'}</div>
+                    <div class="agent-status ${agent.status === 'active' ? 'status-active' : 'status-inactive'}">
+                        Status: ${agent.status || 'unknown'} 
+                        ${agent.health_score ? `| Health: ${agent.health_score}` : ''}
+                    </div>
+                    ${agent.description ? `<div style="font-size: 0.8rem; opacity: 0.7; margin-top: 5px;">${agent.description}</div>` : ''}
+                </div>
+            `).join('');
+
+            agentList.innerHTML = agentHTML;
+        }
+
+        async function loadSystemHealth() {
+            try {
+                const { data: healthData, error } = await supabase
+                    .from('system_health')
+                    .select('*')
+                    .order('last_check', { ascending: false });
+
+                if (error) throw error;
+
+                displaySystemHealth(healthData);
+
+                // Update database status
+                document.getElementById('dbStatus').textContent = 'Connected';
+                document.getElementById('dbStatus').style.color = '#2ecc71';
+
+            } catch (error) {
+                console.error('Error loading system health:', error);
+                document.getElementById('dbStatus').textContent = 'Error';
+                document.getElementById('dbStatus').style.color = '#e74c3c';
+                showError('Failed to load system health: ' + error.message);
             }
         }
 
-        // Tab Management
-        function switchTab(tabName) {
-            // Hide all tabs
-            document.querySelectorAll('.tab-content').forEach(tab => {
-                tab.classList.add('hidden');
+        function displaySystemHealth(healthData) {
+            const container = document.getElementById('systemHealthContainer');
+
+            if (healthData.length === 0) {
+                container.innerHTML = '<div class="health-item">No health data available</div>';
+                return;
+            }
+
+            const healthHTML = healthData.map(item => `
+                <div class="health-item">
+                    <div class="health-status health-${item.status || 'unknown'}">${item.component_name}</div>
+                    <div>Status: ${item.status || 'unknown'}</div>
+                    <div style="font-size: 0.8rem; opacity: 0.8;">${item.component_type}</div>
+                    ${item.last_check ? `<div style="font-size: 0.7rem; margin-top: 5px;">Updated: ${new Date(item.last_check).toLocaleTimeString()}</div>` : ''}
+                </div>
+            `).join('');
+
+            container.innerHTML = `<div class="system-health">${healthHTML}</div>`;
+        }
+
+        async function loadCommunications() {
+            try {
+                const { data: communications, error } = await supabase
+                    .from('agent_communications')
+                    .select('*')
+                    .order('sent_at', { ascending: false })
+                    .limit(10);
+
+                if (error) throw error;
+
+                displayCommunications(communications);
+            } catch (error) {
+                console.error('Error loading communications:', error);
+                showError('Failed to load communications: ' + error.message);
+            }
+        }
+
+        function displayCommunications(communications) {
+            const log = document.getElementById('communicationsLog');
+
+            if (communications.length === 0) {
+                log.innerHTML = '<div class="communication-item">No communications logged</div>';
+                return;
+            }
+
+            const commHTML = communications.map(comm => `
+                <div class="communication-item">
+                    <strong>${comm.message_type || 'Unknown Type'}</strong>
+                    <div style="font-size: 0.9rem; margin: 5px 0;">
+                        Status: <span style="color: ${getStatusColor(comm.status)}">${comm.status || 'unknown'}</span>
+                    </div>
+                    ${comm.content ? `<div style="font-size: 0.8rem; opacity: 0.8;">${JSON.stringify(comm.content).substring(0, 100)}...</div>` : ''}
+                    <div style="font-size: 0.7rem; opacity: 0.6; margin-top: 5px;">
+                        ${comm.sent_at ? new Date(comm.sent_at).toLocaleString() : 'No timestamp'}
+                    </div>
+                </div>
+            `).join('');
+
+            log.innerHTML = commHTML;
+        }
+
+        async function loadPerformanceMetrics() {
+            try {
+                const { data: metrics, error } = await supabase
+                    .from('agent_metrics')
+                    .select(`
+                        *,
+                        agents(name)
+                    `)
+                    .order('measurement_time', { ascending: false })
+                    .limit(20);
+
+                if (error) throw error;
+
+                displayPerformanceMetrics(metrics);
+            } catch (error) {
+                console.error('Error loading performance metrics:', error);
+                showError('Failed to load performance metrics: ' + error.message);
+            }
+        }
+
+        function displayPerformanceMetrics(metrics) {
+            const chart = document.getElementById('performanceChart');
+            const metricsContainer = document.getElementById('performanceMetrics');
+
+            if (metrics.length === 0) {
+                chart.innerHTML = '<div>No performance data available</div>';
+                metricsContainer.innerHTML = '';
+                return;
+            }
+
+            // Simple chart representation
+            chart.innerHTML = `
+                <div style="text-align: center;">
+                    <div style="font-size: 1.2rem; margin-bottom: 10px;">Performance Overview</div>
+                    <div style="font-size: 2rem; color: #3498db;">${metrics.length}</div>
+                    <div>Metrics Recorded</div>
+                </div>
+            `;
+
+            // Group metrics by type
+            const metricsByType = {};
+            metrics.forEach(metric => {
+                if (!metricsByType[metric.metric_name]) {
+                    metricsByType[metric.metric_name] = [];
+                }
+                metricsByType[metric.metric_name].push(metric);
             });
-            
-            // Remove active state from all buttons
-            document.querySelectorAll('.tab-button').forEach(button => {
-                button.classList.remove('border-blue-500', 'text-blue-600');
-                button.classList.add('border-transparent', 'text-gray-500');
-            });
-            
-            // Show selected tab
-            document.getElementById(tabName + 'Tab').classList.remove('hidden');
-            
-            // Activate selected button
-            event.target.closest('.tab-button').classList.remove('border-transparent', 'text-gray-500');
-            event.target.closest('.tab-button').classList.add('border-blue-500', 'text-blue-600');
-            
-            currentTab = tabName;
-        }
 
-        // Content Loading
-        function loadContent(contentType) {
-            // Update breadcrumb
-            document.getElementById('breadcrumbCurrent').textContent = getContentTitle(contentType);
-            
-            // Update active nav item
-            document.querySelectorAll('.nav-item').forEach(item => {
-                item.classList.remove('text-blue-600', 'bg-blue-50');
-                item.classList.add('text-gray-600');
-            });
-            event.target.closest('.nav-item').classList.remove('text-gray-600');
-            event.target.closest('.nav-item').classList.add('text-blue-600', 'bg-blue-50');
-            
-            // Load content based on type
-            const mainContent = document.getElementById('mainContent');
-            mainContent.innerHTML = generateContentHTML(contentType);
-            
-            currentContent = contentType;
-            
-            // Re-initialize charts if needed
-            if (contentType === 'llm-monitor') {
-                setTimeout(initializeCharts, 100);
-            }
-        }
+            const metricsHTML = Object.keys(metricsByType).map(metricType => {
+                const typeMetrics = metricsByType[metricType];
+                const avgValue = (typeMetrics.reduce((sum, m) => sum + (m.metric_value || 0), 0) / typeMetrics.length).toFixed(2);
 
-        function getContentTitle(contentType) {
-            const titles = {
-                'agent-policies': 'Agent Policies',
-                'secrets-manager': 'Secrets Manager',
-                'voice-control': 'Voice Control',
-                'project-intelligence': 'Project Intelligence',
-                'finance-ai': 'Finance AI',
-                'facilities-tfm': 'Facilities TFM',
-                'portfolio-strategy': 'Portfolio Strategy',
-                'people-skills': 'People & Skills',
-                'llm-monitor': 'SLM/LLM Monitor',
-                'scenario-planner': 'Scenario Planner',
-                'emergency-override': 'Emergency Override'
-            };
-            return titles[contentType] || 'Dashboard';
-        }
-
-        function generateContentHTML(contentType) {
-            // Return different content based on type
-            if (contentType === 'llm-monitor') {
                 return `
-                    <div class="mb-6">
-                        <h2 class="text-2xl font-bold text-gray-900 mb-4">SLM/LLM Monitoring</h2>
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-                            <div class="bg-green-50 border border-green-200 rounded-lg p-4">
-                                <h3 class="text-sm font-medium text-green-600">Active Models</h3>
-                                <p class="text-2xl font-bold text-green-900">8</p>
-                            </div>
-                            <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                                <h3 class="text-sm font-medium text-blue-600">Avg Response Time</h3>
-                                <p class="text-2xl font-bold text-blue-900">1.2s</p>
-                            </div>
-                            <div class="bg-purple-50 border border-purple-200 rounded-lg p-4">
-                                <h3 class="text-sm font-medium text-purple-600">Token Usage</h3>
-                                <p class="text-2xl font-bold text-purple-900">2.1M</p>
-                            </div>
-                        </div>
-                        <div class="chart-container bg-white border border-gray-200 rounded-lg p-6">
-                            <canvas id="llmChart"></canvas>
-                        </div>
-                    </div>`;
-            } else if (contentType === 'secrets-manager') {
-                return `
-                    <div class="mb-6">
-                        <h2 class="text-2xl font-bold text-gray-900 mb-4">Secrets Manager</h2>
-                        <div class="bg-white border border-gray-200 rounded-lg p-6">
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div>
-                                    <h3 class="text-lg font-medium mb-4">Active Secrets</h3>
-                                    <div class="space-y-3">
-                                        <div class="flex justify-between items-center p-3 bg-gray-50 rounded">
-                                            <span class="font-medium">GitHub Token</span>
-                                            <span class="text-green-600">Valid</span>
-                                        </div>
-                                        <div class="flex justify-between items-center p-3 bg-gray-50 rounded">
-                                            <span class="font-medium">Supabase Key</span>
-                                            <span class="text-green-600">Valid</span>
-                                        </div>
-                                        <div class="flex justify-between items-center p-3 bg-gray-50 rounded">
-                                            <span class="font-medium">API Keys</span>
-                                            <span class="text-yellow-600">Expiring Soon</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div>
-                                    <h3 class="text-lg font-medium mb-4">Security Status</h3>
-                                    <div class="space-y-3">
-                                        <div class="flex items-center">
-                                            <i class="fas fa-shield-alt text-green-600 mr-2"></i>
-                                            <span>Encryption: AES-256</span>
-                                        </div>
-                                        <div class="flex items-center">
-                                            <i class="fas fa-lock text-green-600 mr-2"></i>
-                                            <span>Access Control: Active</span>
-                                        </div>
-                                        <div class="flex items-center">
-                                            <i class="fas fa-eye text-green-600 mr-2"></i>
-                                            <span>Audit Logging: Enabled</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>`;
-            }
-            
-            // Default agent policies content (already in HTML)
-            return document.getElementById('mainContent').innerHTML;
+                    <div style="display: inline-block; margin: 10px; padding: 10px; background: #f0f0f0; border-radius: 5px;">
+                        <strong>${metricType}</strong><br>
+                        Avg: ${avgValue} ${typeMetrics[0].metric_unit || ''}<br>
+                        <small>${typeMetrics.length} readings</small>
+                    </div>
+                `;
+            }).join('');
+
+            metricsContainer.innerHTML = metricsHTML;
         }
 
-        // Charts
-        function initializeCharts() {
-            const ctx = document.getElementById('performanceChart');
-            if (ctx) {
-                new Chart(ctx, {
-                    type: 'line',
-                    data: {
-                        labels: ['00:00', '04:00', '08:00', '12:00', '16:00', '20:00', '24:00'],
-                        datasets: [{
-                            label: 'Agent Performance',
-                            data: [85, 87, 92, 89, 95, 91, 88],
-                            borderColor: '#667eea',
-                            backgroundColor: 'rgba(102, 126, 234, 0.1)',
-                            tension: 0.4
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        scales: {
-                            y: {
-                                beginAtZero: true,
-                                max: 100
-                            }
-                        }
+        async function calculateDiscussionMemory() {
+            try {
+                // Get total communications as a proxy for memory usage
+                const { data: communications, error } = await supabase
+                    .from('agent_communications')
+                    .select('content')
+                    .not('content', 'is', null);
+
+                if (error) throw error;
+
+                // Calculate memory usage based on communication content
+                let totalContentSize = 0;
+                communications.forEach(comm => {
+                    if (comm.content) {
+                        totalContentSize += JSON.stringify(comm.content).length;
                     }
                 });
+
+                // Estimate memory usage (rough calculation)
+                const maxMemory = 100000; // 100KB as baseline
+                const currentUsage = Math.min(totalContentSize, maxMemory);
+                const percentage = Math.round((currentUsage / maxMemory) * 100);
+
+                discussionMemoryData = {
+                    totalCapacity: maxMemory,
+                    currentUsage: currentUsage,
+                    messages: communications.length,
+                    lastUpdate: new Date(),
+                    percentage: percentage
+                };
+
+                updateDiscussionMemoryDisplay();
+            } catch (error) {
+                console.error('Error calculating discussion memory:', error);
+                discussionMemoryData.percentage = 0;
+                updateDiscussionMemoryDisplay();
             }
         }
 
-        // Memory Management
-        function updateMemoryDisplay() {
+        function updateDiscussionMemoryDisplay() {
+            const percentage = discussionMemoryData.percentage || 0;
             const fill = document.getElementById('memoryFill');
-            const text = document.getElementById('memoryText');
-            
-            if (memoryUsage < 70) {
-                fill.className = 'memory-fill memory-safe';
-            } else if (memoryUsage < 85) {
-                fill.className = 'memory-fill memory-warning';
+            const percentageText = document.getElementById('memoryPercentage');
+            const status = document.getElementById('memoryStatus');
+
+            fill.style.width = percentage + '%';
+            percentageText.textContent = percentage + '%';
+
+            if (percentage < 50) {
+                fill.style.background = 'linear-gradient(90deg, #2ecc71, #27ae60)';
+                status.textContent = 'Optimal';
+            } else if (percentage < 80) {
+                fill.style.background = 'linear-gradient(90deg, #f39c12, #e67e22)';
+                status.textContent = 'Moderate';
             } else {
-                fill.className = 'memory-fill memory-critical';
-            }
-            
-            fill.style.width = memoryUsage + '%';
-            text.textContent = memoryUsage + '%';
-            text.className = memoryUsage >= 85 ? 'text-sm font-medium text-red-600' : 
-                            memoryUsage >= 70 ? 'text-sm font-medium text-yellow-600' : 
-                            'text-sm font-medium text-green-600';
-        }
-
-        // Timers
-        function startTimers() {
-            // Update last update time
-            setInterval(() => {
-                document.getElementById('lastUpdate').textContent = 'Just now';
-            }, 30000);
-            
-            // Update uptime
-            let startTime = Date.now();
-            setInterval(() => {
-                const uptime = Date.now() - startTime;
-                const hours = Math.floor(uptime / 3600000);
-                const minutes = Math.floor((uptime % 3600000) / 60000);
-                document.getElementById('uptime').textContent = `${hours}h ${minutes}m`;
-            }, 60000);
-            
-            // Simulate memory changes
-            setInterval(() => {
-                memoryUsage += Math.random() * 2 - 1; // Random walk
-                memoryUsage = Math.max(60, Math.min(95, memoryUsage)); // Keep in bounds
-                updateMemoryDisplay();
-            }, 10000);
-        }
-
-        // Theme toggle
-        document.getElementById('themeToggle').addEventListener('click', function() {
-            document.body.classList.toggle('dark');
-            const icon = this.querySelector('i');
-            icon.className = document.body.classList.contains('dark') ? 'fas fa-sun' : 'fas fa-moon';
-        });
-
-        // Resize functionality
-        let isResizing = false;
-        const resizeHandle = document.getElementById('resizeHandle');
-
-        resizeHandle.addEventListener('mousedown', (e) => {
-            isResizing = true;
-            document.addEventListener('mousemove', handleResize);
-            document.addEventListener('mouseup', stopResize);
-        });
-
-        function handleResize(e) {
-            if (!isResizing) return;
-            
-            const leftPanel = document.getElementById('leftPanel');
-            const rightPanel = document.getElementById('rightPanel');
-            const containerWidth = leftPanel.parentElement.offsetWidth;
-            const mouseX = e.clientX;
-            
-            const leftWidth = mouseX;
-            const rightWidth = containerWidth - mouseX - 4; // 4px for resize handle
-            
-            if (leftWidth >= 200 && leftWidth <= 400) {
-                leftPanel.style.width = leftWidth + 'px';
+                fill.style.background = 'linear-gradient(90deg, #e74c3c, #c0392b)';
+                status.textContent = 'High Usage';
             }
         }
 
-        function stopResize() {
-            isResizing = false;
-            document.removeEventListener('mousemove', handleResize);
-            document.removeEventListener('mouseup', stopResize);
+        function setupAutoRefresh() {
+            const autoRefreshCheckbox = document.getElementById('autoRefresh');
+
+            function toggleAutoRefresh() {
+                if (autoRefreshCheckbox.checked) {
+                    autoRefreshInterval = setInterval(() => {
+                        loadAgents();
+                        loadSystemHealth();
+                        loadCommunications();
+                        loadPerformanceMetrics();
+                        calculateDiscussionMemory();
+                        updateLastUpdate();
+                    }, 30000); // 30 seconds
+                } else {
+                    clearInterval(autoRefreshInterval);
+                }
+            }
+
+            autoRefreshCheckbox.addEventListener('change', toggleAutoRefresh);
+            toggleAutoRefresh(); // Initialize
+        }
+
+        function updateLastUpdate() {
+            document.getElementById('lastUpdate').textContent = new Date().toLocaleTimeString();
+        }
+
+        function getStatusColor(status) {
+            switch (status) {
+                case 'active':
+                case 'delivered':
+                case 'processed':
+                case 'completed':
+                    return '#2ecc71';
+                case 'pending':
+                case 'running':
+                    return '#f39c12';
+                case 'failed':
+                case 'error':
+                    return '#e74c3c';
+                default:
+                    return '#95a5a6';
+            }
+        }
+
+        function showError(message) {
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'error-message';
+            errorDiv.textContent = message;
+
+            // Add to center panel
+            const centerPanel = document.querySelector('.center-panel');
+            centerPanel.insertBefore(errorDiv, centerPanel.firstChild);
+
+            // Remove after 5 seconds
+            setTimeout(() => {
+                errorDiv.remove();
+            }, 5000);
+        }
+
+        // Search functionality
+        document.getElementById('agentSearch').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const agentItems = document.querySelectorAll('.agent-item');
+
+            agentItems.forEach(item => {
+                const agentName = item.querySelector('.agent-name').textContent.toLowerCase();
+                if (agentName.includes(searchTerm)) {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        });
+
+        // Manual refresh functions (already defined above)
+        // loadCommunications() and loadSystemHealth() are already defined
+
+        // Initialize when page loads
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initializeDashboard);
+        } else {
+            initializeDashboard();
         }
     </script>
 </body>
 </html>
-    <script id="html_badge_script1">
-        window.__genspark_remove_badge_link = "https://www.genspark.ai/api/html_badge/" +
-            "remove_badge?token=To%2FBnjzloZ3UfQdcSaYfDhM598eIIE5Jvpb7vm%2BbmJIOKhY0wbPJnASQ45kGc4WUBKCJ90SuzPOK57sg54WoV0Wpcx%2Fx34a0C9%2BKakPlWeyEY%2F5hETXVsMo6lT8gTXc6P%2FU4tHjOpEmn0K%2FQIJV%2Bz5ni%2FGVF3YoXyruMT3JSTi%2BDK7grhp7Ug2Ey8gN249my06DRn%2F7vTyoRB37JEfztKAmEF2%2FTwOeynoa%2FSUgNjicJyT4DO9Li7BcZt6aHzTnfHB43g%2B8Wj3ZUr43jyYMDXSkTzxoKXPXYBEB7gsAT%2FCFqv3r1R7q4WostrpJHWPyA30GQKa2KgXYy0%2FMRMUWcYmczdqJpDZk8Ug1yU5R9si2M2NTSjGS4rIOh2tBHE1%2B2gv2IaKmalr56xcyIkyitEt%2BwAya7OuMVfGXe1hS80hpycs2n4jM8SqEGlkoboS3Qi5VhNazztN0pkVThVYHsCHSAgF%2BJRhOw2RkUdNeigrxsBth0X9Uk1ZZiDP68SUQUBC%2FJVsWIn3lblNHectJFZyWCYuYPBJt5AXS5%2Fpzi4Y0%3D";
-        window.__genspark_locale = "en-US";
-        window.__genspark_token = "To/BnjzloZ3UfQdcSaYfDhM598eIIE5Jvpb7vm+bmJIOKhY0wbPJnASQ45kGc4WUBKCJ90SuzPOK57sg54WoV0Wpcx/x34a0C9+KakPlWeyEY/5hETXVsMo6lT8gTXc6P/U4tHjOpEmn0K/QIJV+z5ni/GVF3YoXyruMT3JSTi+DK7grhp7Ug2Ey8gN249my06DRn/7vTyoRB37JEfztKAmEF2/TwOeynoa/SUgNjicJyT4DO9Li7BcZt6aHzTnfHB43g+8Wj3ZUr43jyYMDXSkTzxoKXPXYBEB7gsAT/CFqv3r1R7q4WostrpJHWPyA30GQKa2KgXYy0/MRMUWcYmczdqJpDZk8Ug1yU5R9si2M2NTSjGS4rIOh2tBHE1+2gv2IaKmalr56xcyIkyitEt+wAya7OuMVfGXe1hS80hpycs2n4jM8SqEGlkoboS3Qi5VhNazztN0pkVThVYHsCHSAgF+JRhOw2RkUdNeigrxsBth0X9Uk1ZZiDP68SUQUBC/JVsWIn3lblNHectJFZyWCYuYPBJt5AXS5/pzi4Y0=";
-    </script>
-    
-    <script id="html_notice_dialog_script" src="https://www.genspark.ai/notice_dialog.js"></script>
-    

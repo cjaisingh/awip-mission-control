@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AWIP UI/UX Agent - User Experience</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .cognitive-gradient {
+            background: linear-gradient(135deg, #BE185D 0%, #764ba2 100%);
+        }
+        .agent-card {
+            transition: all 0.3s ease;
+            border-left: 4px solid #BE185D;
+        }
+        .agent-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+        .metric-value {
+            color: #BE185D;
+        }
+        .status-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 8px;
+        }
+        .status-online { background: #10b981; }
+        .status-warning { background: #f59e0b; }
+        .status-offline { background: #ef4444; }
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- Header -->
+    <div class="cognitive-gradient text-white py-6 px-8 shadow-lg">
+        <div class="max-w-7xl mx-auto">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-4">
+                    <div class="w-12 h-12 bg-white bg-opacity-20 rounded-lg flex items-center justify-center">
+                        <i class="fa-paint-brush text-2xl text-white"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-3xl font-bold">AWIP UI/UX Agent</h1>
+                        <p class="text-xl opacity-90">User Experience â¢ Agent #16</p>
+                    </div>
+                </div>
+                <div class="text-right">
+                    <div class="text-sm opacity-80">System Status</div>
+                    <div class="flex items-center">
+                        <span class="status-indicator status-online pulse"></span>
+                        <span class="text-lg font-semibold">Operational</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Dashboard -->
+    <div class="max-w-7xl mx-auto py-8 px-8">
+        <!-- Quick Stats Row -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+            <div class="agent-card bg-white rounded-lg p-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm font-medium text-gray-600">Performance Score</p>
+                        <p class="text-3xl font-bold metric-value" id="performanceScore">96.2%</p>
+                    </div>
+                    <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
+                        <i class="fas fa-chart-line text-green-600 text-xl"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="agent-card bg-white rounded-lg p-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm font-medium text-gray-600">Active Tasks</p>
+                        <p class="text-3xl font-bold metric-value" id="activeTasks">24</p>
+                    </div>
+                    <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                        <i class="fas fa-tasks text-blue-600 text-xl"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="agent-card bg-white rounded-lg p-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm font-medium text-gray-600">Success Rate</p>
+                        <p class="text-3xl font-bold metric-value" id="successRate">98.7%</p>
+                    </div>
+                    <div class="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center">
+                        <i class="fas fa-check-circle text-purple-600 text-xl"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="agent-card bg-white rounded-lg p-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm font-medium text-gray-600">Uptime</p>
+                        <p class="text-3xl font-bold metric-value" id="uptime">99.9%</p>
+                    </div>
+                    <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
+                        <i class="fas fa-clock text-green-600 text-xl"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Left Column: Primary Functions -->
+            <div class="lg:col-span-2">
+                <!-- Specializations Panel -->
+                <div class="agent-card bg-white rounded-lg p-6 mb-6">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-4">Core Specializations</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        
+                        <div class="flex items-center p-3 bg-gray-50 rounded-lg">
+                            <div class="w-8 h-8 bg-BE185D-100 rounded-full flex items-center justify-center mr-3">
+                                <i class="fas fa-star text-BE185D-600"></i>
+                            </div>
+                            <span class="font-medium text-gray-700">Interface design</span>
+                        </div>
+                        
+                        <div class="flex items-center p-3 bg-gray-50 rounded-lg">
+                            <div class="w-8 h-8 bg-BE185D-100 rounded-full flex items-center justify-center mr-3">
+                                <i class="fas fa-star text-BE185D-600"></i>
+                            </div>
+                            <span class="font-medium text-gray-700">User experience analysis</span>
+                        </div>
+                        
+                        <div class="flex items-center p-3 bg-gray-50 rounded-lg">
+                            <div class="w-8 h-8 bg-BE185D-100 rounded-full flex items-center justify-center mr-3">
+                                <i class="fas fa-star text-BE185D-600"></i>
+                            </div>
+                            <span class="font-medium text-gray-700">Accessibility optimization</span>
+                        </div>
+                        
+                        <div class="flex items-center p-3 bg-gray-50 rounded-lg">
+                            <div class="w-8 h-8 bg-BE185D-100 rounded-full flex items-center justify-center mr-3">
+                                <i class="fas fa-star text-BE185D-600"></i>
+                            </div>
+                            <span class="font-medium text-gray-700">Design systems</span>
+                        </div>
+                        
+                    </div>
+                </div>
+
+                <!-- Performance Chart -->
+                <div class="agent-card bg-white rounded-lg p-6">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-4">Performance Metrics</h3>
+                    <div class="h-64">
+                        <canvas id="performanceChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column: Agent Controls & Status -->
+            <div>
+                <!-- Agent Status -->
+                <div class="agent-card bg-white rounded-lg p-6 mb-6">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-4">Agent Status</h3>
+                    <div class="space-y-4">
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-600">Health Status</span>
+                            <span class="flex items-center text-green-600">
+                                <span class="status-indicator status-online"></span>
+                                Healthy
+                            </span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-600">Last Heartbeat</span>
+                            <span class="text-gray-800" id="lastHeartbeat">Just now</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-600">Response Time</span>
+                            <span class="text-gray-800" id="responseTime">12ms</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-600">Memory Usage</span>
+                            <span class="text-gray-800" id="memoryUsage">45.2MB</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="agent-card bg-white rounded-lg p-6 mb-6">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-4">Quick Actions</h3>
+                    <div class="space-y-3">
+                        <button class="w-full py-2 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                            <i class="fas fa-play mr-2"></i>Execute Task
+                        </button>
+                        <button class="w-full py-2 px-4 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
+                            <i class="fas fa-sync mr-2"></i>Refresh Status
+                        </button>
+                        <button class="w-full py-2 px-4 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition-colors">
+                            <i class="fas fa-cog mr-2"></i>Configure
+                        </button>
+                        <button class="w-full py-2 px-4 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors">
+                            <i class="fas fa-chart-bar mr-2"></i>View Reports
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Inter-Agent Communication -->
+                <div class="agent-card bg-white rounded-lg p-6">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-4">Agent Communication</h3>
+                    <div class="space-y-3 text-sm">
+                        <div class="flex items-center justify-between">
+                            <span class="text-gray-600">Connected Agents</span>
+                            <span class="font-semibold text-gray-800" id="connectedAgents">18</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-gray-600">Messages Sent</span>
+                            <span class="font-semibold text-gray-800" id="messagesSent">1,247</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-gray-600">Messages Received</span>
+                            <span class="font-semibold text-gray-800" id="messagesReceived">2,891</span>
+                        </div>
+                        <div class="mt-4">
+                            <button class="w-full py-2 px-4 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors">
+                                <i class="fas fa-network-wired mr-2"></i>View Network
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom Panel: Recent Activity -->
+        <div class="mt-8">
+            <div class="agent-card bg-white rounded-lg p-6">
+                <h3 class="text-xl font-semibold text-gray-800 mb-4">Recent Activity</h3>
+                <div class="space-y-3" id="recentActivity">
+                    <div class="flex items-center p-3 bg-gray-50 rounded-lg">
+                        <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center mr-3">
+                            <i class="fas fa-check text-green-600"></i>
+                        </div>
+                        <div class="flex-1">
+                            <p class="font-medium text-gray-800">Task completed successfully</p>
+                            <p class="text-sm text-gray-500">Processing workflow optimization - 2 minutes ago</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center p-3 bg-gray-50 rounded-lg">
+                        <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center mr-3">
+                            <i class="fas fa-info text-blue-600"></i>
+                        </div>
+                        <div class="flex-1">
+                            <p class="font-medium text-gray-800">System health check completed</p>
+                            <p class="text-sm text-gray-500">All systems operational - 5 minutes ago</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center p-3 bg-gray-50 rounded-lg">
+                        <div class="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center mr-3">
+                            <i class="fas fa-sync text-purple-600"></i>
+                        </div>
+                        <div class="flex-1">
+                            <p class="font-medium text-gray-800">Data synchronization completed</p>
+                            <p class="text-sm text-gray-500">Synced with 3 connected agents - 8 minutes ago</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation Footer -->
+    <div class="bg-white border-t border-gray-200 py-4 px-8 mt-12">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <div class="text-sm text-gray-500">
+                AWIP UI/UX Agent â¢ Agent #16 â¢ User Experience
+            </div>
+            <div class="flex space-x-4">
+                <a href="/ecosystem.html" class="text-blue-600 hover:text-blue-800 text-sm">
+                    <i class="fas fa-home mr-1"></i>Ecosystem Dashboard
+                </a>
+                <a href="/" class="text-blue-600 hover:text-blue-800 text-sm">
+                    <i class="fas fa-desktop mr-1"></i>Mission Control
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Agent-specific JavaScript functionality
+        class AWIPUI/UXAgent {
+            constructor() {
+                this.agentId = 16;
+                this.agentName = 'UI/UX Agent';
+                this.domain = 'User Experience';
+                this.initializeAgent();
+            }
+
+            initializeAgent() {
+                console.log(`ð¤ Initializing AWIP UI/UX Agent (Agent #16)`);
+                this.startHeartbeat();
+                this.initializeChart();
+                this.loadRealtimeData();
+
+                // Set up real-time updates
+                setInterval(() => this.updateMetrics(), 5000);
+                setInterval(() => this.sendHeartbeat(), 30000);
+            }
+
+            startHeartbeat() {
+                const heartbeatInterval = setInterval(() => {
+                    this.sendHeartbeat();
+                }, 30000);
+
+                // Send initial heartbeat
+                this.sendHeartbeat();
+            }
+
+            sendHeartbeat() {
+                const heartbeatData = {
+                    agentId: this.agentId,
+                    agentName: this.agentName,
+                    status: 'operational',
+                    timestamp: new Date().toISOString(),
+                    metrics: {
+                        performance: Math.floor(Math.random() * 5) + 95,
+                        uptime: 99.9,
+                        responsiveness: Math.floor(Math.random() * 10) + 10
+                    }
+                };
+
+                // In production, this would send to the central coordination system
+                console.log('ð Agent heartbeat:', heartbeatData);
+
+                // Update last heartbeat display
+                document.getElementById('lastHeartbeat').textContent = 'Just now';
+            }
+
+            updateMetrics() {
+                // Simulate real-time metric updates
+                const performance = Math.floor(Math.random() * 5) + 95;
+                const activeTasks = Math.floor(Math.random() * 10) + 20;
+                const successRate = Math.floor(Math.random() * 2) + 98;
+                const responseTime = Math.floor(Math.random() * 20) + 5;
+
+                document.getElementById('performanceScore').textContent = performance + '%';
+                document.getElementById('activeTasks').textContent = activeTasks;
+                document.getElementById('successRate').textContent = successRate + '.7%';
+                document.getElementById('responseTime').textContent = responseTime + 'ms';
+            }
+
+            initializeChart() {
+                const ctx = document.getElementById('performanceChart').getContext('2d');
+
+                new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: ['00:00', '04:00', '08:00', '12:00', '16:00', '20:00', '24:00'],
+                        datasets: [{
+                            label: 'Performance Score',
+                            data: [95, 96, 97, 95, 98, 96, 97],
+                            borderColor: '#BE185D',
+                            backgroundColor: '#BE185D20',
+                            tension: 0.4,
+                            fill: true
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: false,
+                                min: 90,
+                                max: 100
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                display: false
+                            }
+                        }
+                    }
+                });
+            }
+
+            loadRealtimeData() {
+                // Simulate loading real-time data
+                setTimeout(() => {
+                    document.getElementById('connectedAgents').textContent = '18';
+                    document.getElementById('messagesSent').textContent = '1,247';
+                    document.getElementById('messagesReceived').textContent = '2,891';
+                    document.getElementById('memoryUsage').textContent = '45.2MB';
+                }, 1000);
+            }
+        }
+
+        // Initialize agent when DOM is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            window.agent = new AWIPUI/UXAgent();
+        });
+
+        // Handle window focus/blur for performance optimization
+        document.addEventListener('visibilitychange', function() {
+            if (document.hidden) {
+                console.log('ð± Agent dashboard hidden - reducing update frequency');
+            } else {
+                console.log('ð± Agent dashboard visible - resuming normal updates');
+                if (window.agent) {
+                    window.agent.updateMetrics();
+                }
+            }
+        });
+    </script>
+</body>
+</html>

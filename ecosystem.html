@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AWIP Agent Ecosystem - Master Control</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .cognitive-gradient { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .ai-pulse { animation: pulse 2s infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
+        .agent-card { transition: all 0.2s ease; }
+        .agent-card:hover { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        .status-online { background: #10b981; }
+        .status-warning { background: #f59e0b; }
+        .status-offline { background: #ef4444; }
+        .status-indicator { width: 12px; height: 12px; border-radius: 50%; display: inline-block; margin-right: 8px; }
+        .agent-devops { border-left: 4px solid #3b82f6; }
+        .agent-database { border-left: 4px solid #10b981; }
+        .agent-strategic { border-left: 4px solid #8b5cf6; }
+        .agent-security { border-left: 4px solid #ef4444; }
+        .agent-analytics { border-left: 4px solid #f59e0b; }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- Header -->
+    <div class="cognitive-gradient text-white p-6">
+        <div class="container mx-auto">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-4">
+                    <div class="w-12 h-12 bg-white bg-opacity-20 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-network-wired text-white text-xl"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-3xl font-bold">AWIP Agent Ecosystem</h1>
+                        <p class="text-blue-100">Multi-Agent System Master Control</p>
+                    </div>
+                </div>
+                <div class="text-right">
+                    <div class="text-sm opacity-90">5 Agents Active</div>
+                    <div class="flex items-center">
+                        <span class="status-indicator status-online ai-pulse"></span>
+                        <span class="text-sm">System Operational</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Agent Status Overview -->
+    <div class="container mx-auto p-6">
+        <div class="mb-8">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6">Agent Status Overview</h2>
+            <div class="grid grid-cols-1 lg:grid-cols-5 gap-6">
+                <!-- Agent 1: DevOps -->
+                <div class="agent-card agent-devops bg-white rounded-lg p-6 shadow-lg cursor-pointer" onclick="openAgent(1)">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                            <i class="fas fa-cogs text-blue-600"></i>
+                        </div>
+                        <span class="status-indicator status-online"></span>
+                    </div>
+                    <h3 class="font-semibold text-gray-800 mb-2">DevOps Agent</h3>
+                    <p class="text-sm text-gray-600 mb-3">Infrastructure & Deployment</p>
+                    <div class="text-xs text-gray-500">
+                        <div>Deployments: 127 â</div>
+                        <div>Uptime: 99.9% â</div>
+                        <div>Last Check: 30s ago</div>
+                    </div>
+                </div>
+
+                <!-- Agent 2: Database -->
+                <div class="agent-card agent-database bg-white rounded-lg p-6 shadow-lg cursor-pointer" onclick="openAgent(2)">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
+                            <i class="fas fa-database text-green-600"></i>
+                        </div>
+                        <span class="status-indicator status-online"></span>
+                    </div>
+                    <h3 class="font-semibold text-gray-800 mb-2">Database Agent</h3>
+                    <p class="text-sm text-gray-600 mb-3">Data Management</p>
+                    <div class="text-xs text-gray-500">
+                        <div>Query Time: 1.2ms â</div>
+                        <div>Health: 99.8% â</div>
+                        <div>Last Check: 15s ago</div>
+                    </div>
+                </div>
+
+                <!-- Agent 3: Strategic -->
+                <div class="agent-card agent-strategic bg-white rounded-lg p-6 shadow-lg cursor-pointer" onclick="openAgent(3)">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center">
+                            <i class="fas fa-chess-king text-purple-600"></i>
+                        </div>
+                        <span class="status-indicator status-online"></span>
+                    </div>
+                    <h3 class="font-semibold text-gray-800 mb-2">Strategic Agent</h3>
+                    <p class="text-sm text-gray-600 mb-3">Business Intelligence</p>
+                    <div class="text-xs text-gray-500">
+                        <div>Insights: 23 generated â</div>
+                        <div>Accuracy: 87.5% â</div>
+                        <div>Last Check: 45s ago</div>
+                    </div>
+                </div>
+
+                <!-- Agent 4: Security -->
+                <div class="agent-card agent-security bg-white rounded-lg p-6 shadow-lg cursor-pointer" onclick="openAgent(4)">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center">
+                            <i class="fas fa-shield-alt text-red-600"></i>
+                        </div>
+                        <span class="status-indicator status-online"></span>
+                    </div>
+                    <h3 class="font-semibold text-gray-800 mb-2">Security Agent</h3>
+                    <p class="text-sm text-gray-600 mb-3">Cybersecurity</p>
+                    <div class="text-xs text-gray-500">
+                        <div>Threats: 3 active â ï¸</div>
+                        <div>Score: 94/100 â</div>
+                        <div>Last Check: 20s ago</div>
+                    </div>
+                </div>
+
+                <!-- Agent 5: Analytics -->
+                <div class="agent-card agent-analytics bg-white rounded-lg p-6 shadow-lg cursor-pointer" onclick="openAgent(5)">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="w-10 h-10 bg-orange-100 rounded-full flex items-center justify-center">
+                            <i class="fas fa-chart-line text-orange-600"></i>
+                        </div>
+                        <span class="status-indicator status-online"></span>
+                    </div>
+                    <h3 class="font-semibold text-gray-800 mb-2">Analytics Agent</h3>
+                    <p class="text-sm text-gray-600 mb-3">Performance Analytics</p>
+                    <div class="text-xs text-gray-500">
+                        <div>Metrics: 15.8K collected â</div>
+                        <div>Anomalies: 3 detected â ï¸</div>
+                        <div>Last Check: 10s ago</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- System-wide Metrics -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+            <!-- Inter-Agent Communication -->
+            <div class="bg-white rounded-lg shadow-lg p-6">
+                <h3 class="text-lg font-semibold mb-4 flex items-center">
+                    <i class="fas fa-comments mr-2 text-blue-600"></i>
+                    Inter-Agent Communications
+                </h3>
+                <div class="space-y-3">
+                    <div class="flex items-center justify-between p-3 bg-blue-50 rounded-lg">
+                        <div class="flex items-center">
+                            <i class="fas fa-cogs text-blue-600 mr-2"></i>
+                            <span class="text-sm">DevOps â Security</span>
+                        </div>
+                        <div class="text-xs text-gray-600">Deployment security scan</div>
+                        <span class="text-xs bg-green-200 text-green-800 px-2 py-1 rounded">Success</span>
+                    </div>
+                    <div class="flex items-center justify-between p-3 bg-green-50 rounded-lg">
+                        <div class="flex items-center">
+                            <i class="fas fa-database text-green-600 mr-2"></i>
+                            <span class="text-sm">Database â Analytics</span>
+                        </div>
+                        <div class="text-xs text-gray-600">Performance metrics sync</div>
+                        <span class="text-xs bg-green-200 text-green-800 px-2 py-1 rounded">Success</span>
+                    </div>
+                    <div class="flex items-center justify-between p-3 bg-purple-50 rounded-lg">
+                        <div class="flex items-center">
+                            <i class="fas fa-chess-king text-purple-600 mr-2"></i>
+                            <span class="text-sm">Strategic â All Agents</span>
+                        </div>
+                        <div class="text-xs text-gray-600">KPI updates broadcast</div>
+                        <span class="text-xs bg-blue-200 text-blue-800 px-2 py-1 rounded">In Progress</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- System Health Overview -->
+            <div class="bg-white rounded-lg shadow-lg p-6">
+                <h3 class="text-lg font-semibold mb-4 flex items-center">
+                    <i class="fas fa-heartbeat mr-2 text-red-600"></i>
+                    System Health Overview
+                </h3>
+                <div class="space-y-4">
+                    <div class="flex items-center justify-between">
+                        <span class="text-sm font-medium">Overall System Health</span>
+                        <div class="flex items-center space-x-2">
+                            <div class="w-32 bg-gray-200 rounded-full h-2">
+                                <div class="bg-green-600 h-2 rounded-full" style="width: 98%"></div>
+                            </div>
+                            <span class="text-sm text-gray-600">98%</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="text-sm font-medium">Agent Connectivity</span>
+                        <div class="flex items-center space-x-2">
+                            <div class="w-32 bg-gray-200 rounded-full h-2">
+                                <div class="bg-green-600 h-2 rounded-full" style="width: 100%"></div>
+                            </div>
+                            <span class="text-sm text-gray-600">100%</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="text-sm font-medium">Communication Success Rate</span>
+                        <div class="flex items-center space-x-2">
+                            <div class="w-32 bg-gray-200 rounded-full h-2">
+                                <div class="bg-green-600 h-2 rounded-full" style="width: 97%"></div>
+                            </div>
+                            <span class="text-sm text-gray-600">97%</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="text-sm font-medium">Average Response Time</span>
+                        <div class="flex items-center space-x-2">
+                            <span class="text-sm text-gray-600">127ms</span>
+                            <span class="text-xs bg-green-200 text-green-800 px-2 py-1 rounded">Excellent</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions & Ecosystem Controls -->
+        <div class="bg-white rounded-lg shadow-lg p-6">
+            <h3 class="text-lg font-semibold mb-4 flex items-center">
+                <i class="fas fa-sliders-h mr-2 text-indigo-600"></i>
+                Ecosystem Control Center
+            </h3>
+            <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
+                <button class="flex flex-col items-center p-4 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors" onclick="broadcastMessage()">
+                    <i class="fas fa-broadcast-tower text-blue-600 text-xl mb-2"></i>
+                    <span class="text-sm font-medium">Broadcast</span>
+                </button>
+                <button class="flex flex-col items-center p-4 bg-green-50 hover:bg-green-100 rounded-lg transition-colors" onclick="healthCheck()">
+                    <i class="fas fa-stethoscope text-green-600 text-xl mb-2"></i>
+                    <span class="text-sm font-medium">Health Check</span>
+                </button>
+                <button class="flex flex-col items-center p-4 bg-yellow-50 hover:bg-yellow-100 rounded-lg transition-colors" onclick="syncAgents()">
+                    <i class="fas fa-sync text-yellow-600 text-xl mb-2"></i>
+                    <span class="text-sm font-medium">Sync All</span>
+                </button>
+                <button class="flex flex-col items-center p-4 bg-purple-50 hover:bg-purple-100 rounded-lg transition-colors" onclick="viewLogs()">
+                    <i class="fas fa-file-alt text-purple-600 text-xl mb-2"></i>
+                    <span class="text-sm font-medium">View Logs</span>
+                </button>
+                <button class="flex flex-col items-center p-4 bg-red-50 hover:bg-red-100 rounded-lg transition-colors" onclick="emergencyMode()">
+                    <i class="fas fa-exclamation-triangle text-red-600 text-xl mb-2"></i>
+                    <span class="text-sm font-medium">Emergency</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="bg-white border-t mt-12 py-6">
+        <div class="container mx-auto px-6 text-center text-gray-600">
+            <p>&copy; 2025 AWIP Agent Ecosystem â¢ Multi-Agent System Master Control</p>
+        </div>
+    </div>
+
+    <script>
+        // AWIP Agent Ecosystem Master Controller
+        class AWIPEcosystem {
+            constructor() {
+                this.agents = [
+                    { id: 1, name: 'DevOps Agent', type: 'infrastructure', status: 'online', url: 'agent_01_devops.html' },
+                    { id: 2, name: 'Database Agent', type: 'data', status: 'online', url: 'agent_02_database.html' },
+                    { id: 3, name: 'Strategic Agent', type: 'business', status: 'online', url: 'agent_03_strategic.html' },
+                    { id: 4, name: 'Security Agent', type: 'security', status: 'online', url: 'agent_04_security.html' },
+                    { id: 5, name: 'Analytics Agent', type: 'analytics', status: 'online', url: 'agent_05_analytics.html' }
+                ];
+                this.communications = [];
+                this.systemHealth = 98;
+                this.startHeartbeat();
+            }
+
+            startHeartbeat() {
+                setInterval(() => {
+                    this.checkAgentHealth();
+                    this.updateCommunications();
+                }, 30000); // Every 30 seconds
+            }
+
+            async checkAgentHealth() {
+                console.log('ð Running ecosystem health check...');
+                const healthResults = await Promise.all(
+                    this.agents.map(agent => this.pingAgent(agent.id))
+                );
+
+                const healthyAgents = healthResults.filter(result => result.healthy).length;
+                this.systemHealth = Math.round((healthyAgents / this.agents.length) * 100);
+
+                console.log(`ð System health: ${this.systemHealth}%`);
+                return this.systemHealth;
+            }
+
+            async pingAgent(agentId) {
+                // Simulate agent health check
+                const latency = Math.random() * 200 + 50;
+                const healthy = Math.random() > 0.05; // 95% uptime simulation
+
+                return {
+                    agentId,
+                    healthy,
+                    latency: Math.round(latency),
+                    timestamp: new Date()
+                };
+            }
+
+            async broadcastMessage(message = 'System status check') {
+                console.log('ð¡ Broadcasting message to all agents:', message);
+                const promises = this.agents.map(agent => 
+                    this.sendMessage(0, agent.id, 'broadcast', { message })
+                );
+
+                const results = await Promise.all(promises);
+                console.log('ð¡ Broadcast complete:', results);
+                return results;
+            }
+
+            async sendMessage(senderId, receiverId, messageType, content) {
+                const communication = {
+                    id: Date.now() + Math.random(),
+                    senderId,
+                    receiverId,
+                    messageType,
+                    content,
+                    timestamp: new Date(),
+                    status: 'sent'
+                };
+
+                this.communications.push(communication);
+
+                // Simulate response
+                setTimeout(() => {
+                    communication.status = 'acknowledged';
+                    communication.response = { acknowledged: true, agentId: receiverId };
+                }, Math.random() * 1000 + 500);
+
+                return communication;
+            }
+
+            updateCommunications() {
+                // Simulate ongoing agent communications
+                const randomComms = [
+                    { from: 1, to: 4, type: 'security_scan', message: 'Deployment security validation' },
+                    { from: 2, to: 5, type: 'performance_data', message: 'Database metrics sync' },
+                    { from: 3, to: 0, type: 'kpi_update', message: 'Strategic KPI broadcast' },
+                    { from: 4, to: 1, type: 'threat_alert', message: 'Security threat notification' },
+                    { from: 5, to: 3, type: 'analytics_report', message: 'Performance insights' }
+                ];
+
+                if (Math.random() > 0.7) { // 30% chance of new communication
+                    const comm = randomComms[Math.floor(Math.random() * randomComms.length)];
+                    this.sendMessage(comm.from, comm.to, comm.type, { message: comm.message });
+                }
+            }
+
+            getSystemStatus() {
+                return {
+                    agentCount: this.agents.length,
+                    onlineAgents: this.agents.filter(a => a.status === 'online').length,
+                    systemHealth: this.systemHealth,
+                    totalCommunications: this.communications.length,
+                    activeCommunications: this.communications.filter(c => c.status === 'sent').length
+                };
+            }
+        }
+
+        // Initialize ecosystem
+        const awipEcosystem = new AWIPEcosystem();
+        window.awipEcosystem = awipEcosystem;
+
+        // Interface functions
+        function openAgent(agentId) {
+            const agent = awipEcosystem.agents.find(a => a.id === agentId);
+            if (agent) {
+                window.open(agent.url, '_blank');
+            }
+        }
+
+        async function broadcastMessage() {
+            const message = prompt('Enter message to broadcast to all agents:', 'System status check');
+            if (message) {
+                await awipEcosystem.broadcastMessage(message);
+                alert('Message broadcasted to all agents');
+            }
+        }
+
+        async function healthCheck() {
+            const health = await awipEcosystem.checkAgentHealth();
+            alert(`System Health Check Complete\nOverall Health: ${health}%`);
+        }
+
+        function syncAgents() {
+            awipEcosystem.broadcastMessage('sync_request');
+            alert('Synchronization request sent to all agents');
+        }
+
+        function viewLogs() {
+            const status = awipEcosystem.getSystemStatus();
+            console.log('ð Current System Status:', status);
+            alert(`System Logs\n\nOnline Agents: ${status.onlineAgents}/${status.agentCount}\nSystem Health: ${status.systemHealth}%\nCommunications: ${status.totalCommunications} total, ${status.activeCommunications} active\n\nCheck console for detailed logs.`);
+        }
+
+        function emergencyMode() {
+            if (confirm('Activate Emergency Mode? This will alert all agents.')) {
+                awipEcosystem.broadcastMessage('EMERGENCY_MODE_ACTIVATED');
+                alert('Emergency mode activated. All agents have been notified.');
+            }
+        }
+
+        // Real-time status updates
+        setInterval(() => {
+            const status = awipEcosystem.getSystemStatus();
+            console.log('ð Ecosystem Status Update:', status);
+        }, 60000); // Every minute
+
+        console.log('ð AWIP Agent Ecosystem initialized successfully');
+    </script>
+</body>
+</html>

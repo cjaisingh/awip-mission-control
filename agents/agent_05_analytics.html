@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AWIP Analytics Agent - Performance & Business Intelligence</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .cognitive-gradient { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .ai-pulse { animation: pulse 2s infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
+        .agent-card { transition: all 0.2s ease; }
+        .agent-card:hover { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        .status-online { background: #10b981; }
+        .status-warning { background: #f59e0b; }
+        .status-offline { background: #ef4444; }
+        .status-indicator { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 8px; }
+        .chart-container { position: relative; height: 300px; }
+        .metric-trend-up { color: #10b981; }
+        .metric-trend-down { color: #ef4444; }
+        .metric-trend-stable { color: #6b7280; }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- Header -->
+    <div class="cognitive-gradient text-white p-6">
+        <div class="container mx-auto">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-4">
+                    <div class="w-12 h-12 bg-white bg-opacity-20 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-chart-line text-white text-xl"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-2xl font-bold">AWIP Analytics Agent</h1>
+                        <p class="text-blue-100">Performance Monitoring & Business Intelligence</p>
+                    </div>
+                </div>
+                <div class="text-right">
+                    <div class="text-sm opacity-90">Agent #5</div>
+                    <div class="flex items-center">
+                        <span class="status-indicator status-online"></span>
+                        <span class="text-sm">Analyzing</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Analytics Dashboard -->
+    <div class="container mx-auto p-6">
+        <!-- Real-time Metrics -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+            <div class="agent-card bg-white rounded-lg p-6 shadow-lg">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm font-medium text-gray-600">Page Load Time</p>
+                        <p class="text-3xl font-bold text-green-600">1.2s</p>
+                        <p class="text-xs metric-trend-up flex items-center">
+                            <i class="fas fa-arrow-down mr-1"></i>
+                            -0.3s improvement
+                        </p>
+                    </div>
+                    <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
+                        <i class="fas fa-tachometer-alt text-green-600"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="agent-card bg-white rounded-lg p-6 shadow-lg">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm font-medium text-gray-600">Active Users</p>
+                        <p class="text-3xl font-bold text-blue-600">2,847</p>
+                        <p class="text-xs metric-trend-up flex items-center">
+                            <i class="fas fa-arrow-up mr-1"></i>
+                            +12% today
+                        </p>
+                    </div>
+                    <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                        <i class="fas fa-users text-blue-600"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="agent-card bg-white rounded-lg p-6 shadow-lg">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm font-medium text-gray-600">API Response Time</p>
+                        <p class="text-3xl font-bold text-purple-600">87ms</p>
+                        <p class="text-xs metric-trend-stable flex items-center">
+                            <i class="fas fa-minus mr-1"></i>
+                            No change
+                        </p>
+                    </div>
+                    <div class="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center">
+                        <i class="fas fa-exchange-alt text-purple-600"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="agent-card bg-white rounded-lg p-6 shadow-lg">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm font-medium text-gray-600">Error Rate</p>
+                        <p class="text-3xl font-bold text-red-600">0.02%</p>
+                        <p class="text-xs metric-trend-up flex items-center">
+                            <i class="fas fa-arrow-down mr-1"></i>
+                            -0.01% improvement
+                        </p>
+                    </div>
+                    <div class="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center">
+                        <i class="fas fa-exclamation-circle text-red-600"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Performance Charts -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+            <!-- Performance Trends -->
+            <div class="bg-white rounded-lg shadow-lg p-6">
+                <h3 class="text-lg font-semibold mb-4 flex items-center">
+                    <i class="fas fa-chart-area mr-2 text-blue-600"></i>
+                    Performance Trends (24h)
+                </h3>
+                <div class="chart-container">
+                    <canvas id="performanceChart"></canvas>
+                </div>
+            </div>
+
+            <!-- User Analytics -->
+            <div class="bg-white rounded-lg shadow-lg p-6">
+                <h3 class="text-lg font-semibold mb-4 flex items-center">
+                    <i class="fas fa-user-chart mr-2 text-green-600"></i>
+                    User Engagement Analytics
+                </h3>
+                <div class="chart-container">
+                    <canvas id="userChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Business Intelligence Dashboard -->
+        <div class="bg-white rounded-lg shadow-lg p-6 mb-8">
+            <h3 class="text-lg font-semibold mb-4 flex items-center">
+                <i class="fas fa-business-time mr-2 text-indigo-600"></i>
+                Business Intelligence Dashboard
+            </h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Revenue Analytics -->
+                <div class="bg-gradient-to-br from-green-50 to-emerald-50 p-4 rounded-lg">
+                    <div class="flex items-center justify-between mb-3">
+                        <h4 class="font-medium text-green-900">Cost Optimization</h4>
+                        <i class="fas fa-dollar-sign text-green-600"></i>
+                    </div>
+                    <div class="text-2xl font-bold text-green-600 mb-2">$1,247</div>
+                    <p class="text-sm text-green-700 mb-3">Monthly infrastructure savings</p>
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs text-green-600">ROI: +34%</span>
+                        <span class="text-xs bg-green-200 text-green-800 px-2 py-1 rounded">Optimized</span>
+                    </div>
+                </div>
+
+                <!-- User Growth -->
+                <div class="bg-gradient-to-br from-blue-50 to-cyan-50 p-4 rounded-lg">
+                    <div class="flex items-center justify-between mb-3">
+                        <h4 class="font-medium text-blue-900">User Growth</h4>
+                        <i class="fas fa-chart-line text-blue-600"></i>
+                    </div>
+                    <div class="text-2xl font-bold text-blue-600 mb-2">+47%</div>
+                    <p class="text-sm text-blue-700 mb-3">Monthly active users growth</p>
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs text-blue-600">Target: +40%</span>
+                        <span class="text-xs bg-blue-200 text-blue-800 px-2 py-1 rounded">Exceeded</span>
+                    </div>
+                </div>
+
+                <!-- System Efficiency -->
+                <div class="bg-gradient-to-br from-purple-50 to-violet-50 p-4 rounded-lg">
+                    <div class="flex items-center justify-between mb-3">
+                        <h4 class="font-medium text-purple-900">System Efficiency</h4>
+                        <i class="fas fa-cogs text-purple-600"></i>
+                    </div>
+                    <div class="text-2xl font-bold text-purple-600 mb-2">98.5%</div>
+                    <p class="text-sm text-purple-700 mb-3">Overall system performance</p>
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs text-purple-600">SLA: 99%</span>
+                        <span class="text-xs bg-purple-200 text-purple-800 px-2 py-1 rounded">On Track</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- AI-Powered Insights -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+            <!-- Predictive Analytics -->
+            <div class="bg-white rounded-lg shadow-lg p-6">
+                <h3 class="text-lg font-semibold mb-4 flex items-center">
+                    <i class="fas fa-crystal-ball mr-2 text-purple-600"></i>
+                    AI-Powered Predictions
+                </h3>
+                <div class="space-y-4">
+                    <div class="bg-blue-50 p-4 rounded-lg border-l-4 border-blue-500">
+                        <div class="flex items-center justify-between mb-2">
+                            <h4 class="font-medium text-blue-900">Traffic Forecast</h4>
+                            <span class="text-xs bg-blue-200 text-blue-800 px-2 py-1 rounded-full">87% Confidence</span>
+                        </div>
+                        <p class="text-sm text-blue-700">Expected 23% increase in next 7 days based on historical patterns</p>
+                    </div>
+                    <div class="bg-green-50 p-4 rounded-lg border-l-4 border-green-500">
+                        <div class="flex items-center justify-between mb-2">
+                            <h4 class="font-medium text-green-900">Performance Optimization</h4>
+                            <span class="text-xs bg-green-200 text-green-800 px-2 py-1 rounded-full">92% Confidence</span>
+                        </div>
+                        <p class="text-sm text-green-700">Database indexing will improve query performance by 35%</p>
+                    </div>
+                    <div class="bg-orange-50 p-4 rounded-lg border-l-4 border-orange-500">
+                        <div class="flex items-center justify-between mb-2">
+                            <h4 class="font-medium text-orange-900">Resource Planning</h4>
+                            <span class="text-xs bg-orange-200 text-orange-800 px-2 py-1 rounded-full">78% Confidence</span>
+                        </div>
+                        <p class="text-sm text-orange-700">Server capacity upgrade recommended in 6 weeks</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Real-time Anomaly Detection -->
+            <div class="bg-white rounded-lg shadow-lg p-6">
+                <h3 class="text-lg font-semibold mb-4 flex items-center">
+                    <i class="fas fa-search mr-2 text-red-600"></i>
+                    Anomaly Detection
+                </h3>
+                <div class="space-y-4">
+                    <div class="bg-red-50 p-4 rounded-lg border-l-4 border-red-500">
+                        <div class="flex items-center justify-between mb-2">
+                            <h4 class="font-medium text-red-900">API Response Spike</h4>
+                            <span class="text-xs bg-red-200 text-red-800 px-2 py-1 rounded-full">HIGH</span>
+                        </div>
+                        <p class="text-sm text-red-700">Response time increased 3x above normal baseline</p>
+                        <div class="mt-2">
+                            <span class="text-xs text-red-600">Detected: 5 min ago</span>
+                        </div>
+                    </div>
+                    <div class="bg-yellow-50 p-4 rounded-lg border-l-4 border-yellow-500">
+                        <div class="flex items-center justify-between mb-2">
+                            <h4 class="font-medium text-yellow-900">Unusual Traffic Pattern</h4>
+                            <span class="text-xs bg-yellow-200 text-yellow-800 px-2 py-1 rounded-full">MEDIUM</span>
+                        </div>
+                        <p class="text-sm text-yellow-700">Traffic from new geographic region detected</p>
+                        <div class="mt-2">
+                            <span class="text-xs text-yellow-600">Detected: 12 min ago</span>
+                        </div>
+                    </div>
+                    <div class="bg-green-50 p-4 rounded-lg border-l-4 border-green-500">
+                        <div class="flex items-center justify-between mb-2">
+                            <h4 class="font-medium text-green-900">Performance Improvement</h4>
+                            <span class="text-xs bg-green-200 text-green-800 px-2 py-1 rounded-full">POSITIVE</span>
+                        </div>
+                        <p class="text-sm text-green-700">Database optimization reduced query time by 40%</p>
+                        <div class="mt-2">
+                            <span class="text-xs text-green-600">Detected: 1 hour ago</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Analytics Tools -->
+        <div class="bg-white rounded-lg shadow-lg p-6">
+            <h3 class="text-lg font-semibold mb-4 flex items-center">
+                <i class="fas fa-tools mr-2 text-gray-600"></i>
+                Analytics Tools & Reports
+            </h3>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <button class="flex flex-col items-center p-4 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors">
+                    <i class="fas fa-chart-bar text-blue-600 text-xl mb-2"></i>
+                    <span class="text-sm font-medium">Custom Reports</span>
+                </button>
+                <button class="flex flex-col items-center p-4 bg-green-50 hover:bg-green-100 rounded-lg transition-colors">
+                    <i class="fas fa-filter text-green-600 text-xl mb-2"></i>
+                    <span class="text-sm font-medium">Data Explorer</span>
+                </button>
+                <button class="flex flex-col items-center p-4 bg-purple-50 hover:bg-purple-100 rounded-lg transition-colors">
+                    <i class="fas fa-flask text-purple-600 text-xl mb-2"></i>
+                    <span class="text-sm font-medium">A/B Testing</span>
+                </button>
+                <button class="flex flex-col items-center p-4 bg-orange-50 hover:bg-orange-100 rounded-lg transition-colors">
+                    <i class="fas fa-download text-orange-600 text-xl mb-2"></i>
+                    <span class="text-sm font-medium">Export Data</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="bg-white border-t mt-12 py-6">
+        <div class="container mx-auto px-6 text-center text-gray-600">
+            <p>&copy; 2025 AWIP Analytics Agent â¢ Advanced Performance & Business Intelligence</p>
+        </div>
+    </div>
+
+    <script>
+        // Analytics Agent Class
+        class AnalyticsAgent {
+            constructor() {
+                this.agentId = 5;
+                this.status = 'active';
+                this.capabilities = [
+                    'performance_monitoring',
+                    'business_intelligence',
+                    'predictive_analytics',
+                    'anomaly_detection',
+                    'user_analytics',
+                    'data_visualization'
+                ];
+                this.metrics = new Map();
+                this.predictions = [];
+                this.anomalies = [];
+            }
+
+            async collectMetrics() {
+                const timestamp = new Date();
+                const metrics = {
+                    pageLoadTime: (Math.random() * 0.5 + 1.0).toFixed(1),
+                    activeUsers: Math.floor(Math.random() * 500 + 2500),
+                    apiResponseTime: Math.floor(Math.random() * 20 + 80),
+                    errorRate: (Math.random() * 0.05).toFixed(3),
+                    timestamp
+                };
+
+                this.metrics.set('current', metrics);
+                return metrics;
+            }
+
+            async generatePredictions() {
+                const predictions = [
+                    {
+                        type: 'traffic_forecast',
+                        prediction: '23% increase in next 7 days',
+                        confidence: 0.87,
+                        basis: 'historical_patterns'
+                    },
+                    {
+                        type: 'performance_optimization',
+                        prediction: '35% query performance improvement',
+                        confidence: 0.92,
+                        basis: 'database_indexing'
+                    },
+                    {
+                        type: 'resource_planning',
+                        prediction: 'Server upgrade needed in 6 weeks',
+                        confidence: 0.78,
+                        basis: 'capacity_trends'
+                    }
+                ];
+
+                this.predictions = predictions;
+                return predictions;
+            }
+
+            async detectAnomalies() {
+                const anomalies = [
+                    {
+                        type: 'api_response_spike',
+                        severity: 'high',
+                        description: 'Response time increased 3x above baseline',
+                        detectedAt: new Date(Date.now() - 5 * 60000),
+                        status: 'investigating'
+                    },
+                    {
+                        type: 'traffic_pattern',
+                        severity: 'medium',
+                        description: 'Unusual traffic from new geographic region',
+                        detectedAt: new Date(Date.now() - 12 * 60000),
+                        status: 'monitoring'
+                    }
+                ];
+
+                this.anomalies = anomalies;
+                return anomalies;
+            }
+
+            async generateBusinessInsights() {
+                return {
+                    costOptimization: {
+                        savings: 1247,
+                        roi: 34,
+                        status: 'optimized'
+                    },
+                    userGrowth: {
+                        percentage: 47,
+                        target: 40,
+                        status: 'exceeded'
+                    },
+                    systemEfficiency: {
+                        score: 98.5,
+                        sla: 99,
+                        status: 'on_track'
+                    }
+                };
+            }
+
+            async runMLModel(modelType, data) {
+                console.log(`Running ML model: ${modelType}`, data);
+                // Simulate ML processing
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                return {
+                    modelType,
+                    predictions: await this.generatePredictions(),
+                    confidence: Math.random() * 0.3 + 0.7,
+                    processedAt: new Date()
+                };
+            }
+
+            async communicateWithAgent(agentId, message) {
+                console.log(`Analytics Agent communicating with Agent ${agentId}:`, message);
+                return { acknowledged: true, agentId: this.agentId };
+            }
+
+            async generateReport(type = 'comprehensive') {
+                return {
+                    reportType: type,
+                    metrics: await this.collectMetrics(),
+                    predictions: await this.generatePredictions(),
+                    anomalies: await this.detectAnomalies(),
+                    businessInsights: await this.generateBusinessInsights(),
+                    generatedAt: new Date()
+                };
+            }
+        }
+
+        // Initialize Analytics Agent
+        const analyticsAgent = new AnalyticsAgent();
+        window.awipAnalyticsAgent = analyticsAgent;
+
+        // Initialize charts
+        function initializeCharts() {
+            // Performance Chart
+            const perfCtx = document.getElementById('performanceChart');
+            if (perfCtx) {
+                new Chart(perfCtx, {
+                    type: 'line',
+                    data: {
+                        labels: ['00:00', '04:00', '08:00', '12:00', '16:00', '20:00', '24:00'],
+                        datasets: [{
+                            label: 'Response Time (ms)',
+                            data: [120, 87, 95, 78, 92, 85, 88],
+                            borderColor: '#667eea',
+                            backgroundColor: 'rgba(102, 126, 234, 0.1)',
+                            tension: 0.4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+            }
+
+            // User Chart
+            const userCtx = document.getElementById('userChart');
+            if (userCtx) {
+                new Chart(userCtx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Desktop', 'Mobile', 'Tablet'],
+                        datasets: [{
+                            data: [45, 40, 15],
+                            backgroundColor: ['#667eea', '#10b981', '#f59e0b']
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false
+                    }
+                });
+            }
+        }
+
+        // Start real-time analytics
+        async function startRealTimeAnalytics() {
+            setInterval(async () => {
+                const metrics = await analyticsAgent.collectMetrics();
+                const anomalies = await analyticsAgent.detectAnomalies();
+                console.log('Analytics update:', { metrics, anomalies });
+            }, 30000); // Every 30 seconds
+        }
+
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeCharts();
+            startRealTimeAnalytics();
+        });
+    </script>
+</body>
+</html>

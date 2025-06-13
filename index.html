@@ -3,737 +3,497 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AWIP Mission Control - Live Dashboard</title>
-    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <title>AWIP Mission Control - Desktop Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/supabase-js/2.38.0/umd/supabase.min.js"></script>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        /* Custom CSS for AWIP Design System */
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --blue-primary: #3b82f6;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --error-color: #ef4444;
+            --info-color: #3b82f6;
         }
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            color: #333;
+        .cognitive-gradient {
+            background: var(--primary-gradient);
         }
 
-        .dashboard-container {
-            display: flex;
-            height: 100vh;
-            max-width: 1800px;
-            margin: 0 auto;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border-radius: 15px;
-            overflow: hidden;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        /* Responsive breakpoints for 4 device types */
+        /* Mobile: < 768px */
+        @media (max-width: 767px) {
+            .mobile-stack {
+                flex-direction: column !important;
+            }
+            .mobile-hidden {
+                display: none !important;
+            }
+            .mobile-full {
+                width: 100% !important;
+            }
+            .mobile-padding {
+                padding: 1rem !important;
+            }
+            .sidebar-mobile {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+            }
+            .sidebar-mobile.open {
+                transform: translateX(0);
+            }
         }
 
-        .left-panel {
-            width: 25%;
-            background: linear-gradient(180deg, #2c3e50 0%, #34495e 100%);
-            color: white;
-            padding: 20px;
-            overflow-y: auto;
+        /* Tablet: 768px - 1024px */
+        @media (min-width: 768px) and (max-width: 1024px) {
+            .tablet-grid {
+                grid-template-columns: 200px 1fr !important;
+            }
+            .tablet-compact {
+                padding: 0.75rem !important;
+            }
         }
 
-        .center-panel {
-            width: 50%;
-            padding: 20px;
-            background: #f8f9fa;
-            overflow-y: auto;
+        /* Desktop: 1025px - 1440px */
+        @media (min-width: 1025px) and (max-width: 1440px) {
+            .desktop-grid {
+                grid-template-columns: 280px 1fr 280px !important;
+            }
         }
 
-        .right-panel {
-            width: 25%;
-            background: linear-gradient(180deg, #34495e 0%, #2c3e50 100%);
-            color: white;
-            padding: 20px;
-            overflow-y: auto;
+        /* Large Desktop: > 1440px */
+        @media (min-width: 1441px) {
+            .large-desktop-grid {
+                grid-template-columns: 320px 1fr 320px !important;
+            }
+            .large-desktop-content {
+                max-width: 1600px;
+                margin: 0 auto;
+            }
         }
 
-        .panel-header {
-            font-size: 1.5rem;
-            font-weight: bold;
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+        .panel-collapsed {
+            width: 60px !important;
         }
+
+        .status-indicator {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 8px;
+        }
+
+        .status-active { background-color: var(--success-color); }
+        .status-warning { background-color: var(--warning-color); }
+        .status-error { background-color: var(--error-color); }
+        .status-info { background-color: var(--info-color); }
 
         .metric-card {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 15px;
-            border-radius: 10px;
-            margin-bottom: 15px;
-            backdrop-filter: blur(5px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
 
-        .metric-value {
-            font-size: 2rem;
-            font-weight: bold;
-            color: #3498db;
+        .metric-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
         }
 
-        .metric-label {
-            font-size: 0.9rem;
-            opacity: 0.8;
-            margin-top: 5px;
-        }
-
-        .agent-list {
-            max-height: 400px;
-            overflow-y: auto;
-        }
-
-        .agent-item {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 10px;
-            border-radius: 8px;
-            margin-bottom: 10px;
-            border-left: 4px solid #3498db;
-        }
-
-        .agent-name {
-            font-weight: bold;
-            font-size: 0.9rem;
-        }
-
-        .agent-status {
-            font-size: 0.8rem;
-            opacity: 0.8;
-        }
-
-        .status-active {
-            color: #2ecc71;
-        }
-
-        .status-inactive {
-            color: #e74c3c;
-        }
-
-        .search-box {
-            width: 100%;
-            padding: 10px;
-            border: none;
-            border-radius: 8px;
-            background: rgba(255, 255, 255, 0.9);
-            margin-bottom: 20px;
-        }
-
-        .center-content {
-            background: white;
-            border-radius: 10px;
-            padding: 20px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-            margin-bottom: 20px;
-        }
-
-        .performance-chart {
-            height: 200px;
-            background: linear-gradient(45deg, #f0f0f0, #e0e0e0);
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 15px 0;
-        }
-
-        .communications-log {
-            max-height: 300px;
-            overflow-y: auto;
-            background: #f8f9fa;
-            padding: 15px;
-            border-radius: 8px;
-        }
-
-        .communication-item {
-            padding: 10px;
-            border-left: 3px solid #3498db;
-            margin-bottom: 10px;
-            background: white;
-            border-radius: 5px;
-        }
-
-        .system-health {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-            margin: 20px 0;
-        }
-
-        .health-item {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 15px;
-            border-radius: 8px;
-            text-align: center;
-        }
-
-        .health-status {
-            font-size: 1.2rem;
-            font-weight: bold;
-            margin-bottom: 5px;
-        }
-
-        .health-healthy {
-            color: #2ecc71;
-        }
-
-        .health-warning {
-            color: #f39c12;
-        }
-
-        .health-error {
-            color: #e74c3c;
-        }
-
-        .loading {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 3px solid #f3f3f3;
-            border-top: 3px solid #3498db;
-            border-radius: 50%;
+        .loading-spinner {
             animation: spin 1s linear infinite;
         }
 
         @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
         }
 
-        .error-message {
-            color: #e74c3c;
-            background: rgba(231, 76, 60, 0.1);
-            padding: 10px;
-            border-radius: 5px;
-            margin: 10px 0;
-        }
-
-        .discussion-memory {
-            background: rgba(52, 152, 219, 0.1);
-            border: 2px solid #3498db;
-            border-radius: 10px;
-            padding: 15px;
-            margin-bottom: 20px;
-        }
-
-        .memory-progress {
-            background: #ecf0f1;
-            height: 10px;
-            border-radius: 5px;
-            overflow: hidden;
-            margin: 10px 0;
-        }
-
-        .memory-fill {
-            background: linear-gradient(90deg, #3498db, #2ecc71);
-            height: 100%;
-            transition: width 0.3s ease;
-        }
-
-        .refresh-btn {
-            background: #3498db;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-            margin: 10px 0;
-        }
-
-        .refresh-btn:hover {
-            background: #2980b9;
-        }
-
-        @media (max-width: 768px) {
-            .dashboard-container {
-                flex-direction: column;
-                height: auto;
-            }
-
-            .left-panel, .center-panel, .right-panel {
-                width: 100%;
-            }
-        }
+        /* Agent category colors */
+        .agent-governance { background-color: #8b5cf6; }
+        .agent-cognitive { background-color: #06b6d4; }
+        .agent-operations { background-color: #10b981; }
+        .agent-project { background-color: #3b82f6; }
+        .agent-finance { background-color: #059669; }
+        .agent-facilities { background-color: #7c3aed; }
+        .agent-strategic { background-color: #dc2626; }
     </style>
 </head>
-<body>
-    <div class="dashboard-container">
-        <!-- Left Panel -->
-        <div class="left-panel">
-            <div class="panel-header">ð¤ AI Agents</div>
+<body class="bg-gray-50 font-sans" x-data="awipDashboard()">
+    <!-- Mobile Header with Menu Toggle -->
+    <div class="lg:hidden bg-white shadow-sm border-b border-gray-200 p-4 flex items-center justify-between">
+        <div class="flex items-center space-x-3">
+            <div class="w-8 h-8 cognitive-gradient rounded-lg flex items-center justify-center">
+                <span class="text-white font-bold text-sm">A</span>
+            </div>
+            <h1 class="text-lg font-bold text-gray-900">AWIP Mission Control</h1>
+        </div>
+        <button @click="toggleMobileSidebar()" class="p-2 text-gray-600 hover:text-gray-900">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+            </svg>
+        </button>
+    </div>
 
-            <input type="text" class="search-box" id="agentSearch" placeholder="Search agents...">
+    <!-- Main Layout Grid -->
+    <div class="min-h-screen grid large-desktop-content" 
+         :class="getLayoutClass()" 
+         style="grid-template-rows: 1fr;">
 
-            <div class="metric-card">
-                <div class="metric-value" id="totalAgents">-</div>
-                <div class="metric-label">Total Agents</div>
+        <!-- Left Sidebar - Navigation -->
+        <div class="bg-white border-r border-gray-200 flex flex-col sidebar-mobile"
+             :class="{'open': mobileMenuOpen}"
+             x-show="leftPanelVisible">
+
+            <!-- Sidebar Header -->
+            <div class="p-6 border-b border-gray-200" x-show="!leftPanelCollapsed">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 cognitive-gradient rounded-xl flex items-center justify-center">
+                        <span class="text-white font-bold text-lg">A</span>
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-bold text-gray-900">AWIP</h1>
+                        <p class="text-sm text-gray-600">Mission Control</p>
+                    </div>
+                </div>
             </div>
 
-            <div class="metric-card">
-                <div class="metric-value" id="activeAgents">-</div>
-                <div class="metric-label">Active Agents</div>
+            <!-- Collapsed Header Icon -->
+            <div class="p-3 border-b border-gray-200 flex justify-center" x-show="leftPanelCollapsed">
+                <div class="w-8 h-8 cognitive-gradient rounded-lg flex items-center justify-center">
+                    <span class="text-white font-bold text-sm">A</span>
+                </div>
             </div>
 
-            <div class="metric-card">
-                <div class="metric-value" id="avgHealth">-</div>
-                <div class="metric-label">Avg Health Score</div>
+            <!-- Navigation Menu -->
+            <nav class="flex-1 p-4 space-y-2">
+                <template x-for="item in navigationItems" :key="item.id">
+                    <button @click="setActiveView(item.id)" 
+                            class="w-full flex items-center space-x-3 px-3 py-2 rounded-lg transition-colors"
+                            :class="activeView === item.id ? 'bg-blue-50 text-blue-700 border border-blue-200' : 'text-gray-700 hover:bg-gray-100'">
+                        <span x-html="item.icon" class="w-5 h-5"></span>
+                        <span x-text="item.label" x-show="!leftPanelCollapsed" class="font-medium"></span>
+                    </button>
+                </template>
+            </nav>
+
+            <!-- System Status -->
+            <div class="p-4 border-t border-gray-200" x-show="!leftPanelCollapsed">
+                <div class="bg-gray-50 rounded-lg p-3">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-sm font-medium text-gray-700">System Status</span>
+                        <span class="status-indicator" :class="systemStatus.class"></span>
+                    </div>
+                    <p class="text-xs text-gray-600" x-text="systemStatus.message"></p>
+                </div>
             </div>
 
-            <div class="agent-list" id="agentList">
-                <div class="loading"></div>
+            <!-- Panel Toggle -->
+            <div class="p-4 border-t border-gray-200">
+                <button @click="toggleLeftPanel()" 
+                        class="w-full flex items-center justify-center p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                              :d="leftPanelCollapsed ? 'M9 5l7 7-7 7' : 'M15 19l-7-7 7-7'"></path>
+                    </svg>
+                </button>
             </div>
         </div>
 
-        <!-- Center Panel -->
-        <div class="center-panel">
-            <div class="panel-header">ð AWIP Mission Control</div>
-
-            <div class="discussion-memory">
-                <h3>ð­ Discussion Memory</h3>
-                <div class="memory-progress">
-                    <div class="memory-fill" id="memoryFill" style="width: 0%"></div>
+        <!-- Main Content Area -->
+        <div class="flex flex-col overflow-hidden">
+            <!-- Content Header -->
+            <div class="bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between">
+                <div>
+                    <h2 class="text-2xl font-bold text-gray-900" x-text="getCurrentViewTitle()"></h2>
+                    <p class="text-sm text-gray-600 mt-1" x-text="getCurrentViewDescription()"></p>
                 </div>
-                <p>Memory Usage: <span id="memoryPercentage">0%</span></p>
-                <p>Status: <span id="memoryStatus">Calculating...</span></p>
+
+                <!-- Real-time Connection Status -->
+                <div class="flex items-center space-x-4">
+                    <div class="flex items-center space-x-2">
+                        <span class="status-indicator" :class="connectionStatus.class"></span>
+                        <span class="text-sm font-medium" x-text="connectionStatus.label"></span>
+                    </div>
+
+                    <!-- Last Updated -->
+                    <div class="text-xs text-gray-500">
+                        Last updated: <span x-text="lastUpdated"></span>
+                    </div>
+
+                    <!-- Refresh Button -->
+                    <button @click="refreshData()" 
+                            class="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg"
+                            :disabled="isLoading">
+                        <svg class="w-5 h-5" :class="{'loading-spinner': isLoading}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                        </svg>
+                    </button>
+                </div>
             </div>
 
-            <div class="center-content">
-                <h3>ð System Performance</h3>
-                <div class="performance-chart" id="performanceChart">
-                    <div class="loading"></div>
-                </div>
-                <div id="performanceMetrics"></div>
-            </div>
+            <!-- Dynamic Content Area -->
+            <div class="flex-1 p-6 overflow-auto">
 
-            <div class="center-content">
-                <h3>ð¬ Agent Communications</h3>
-                <button class="refresh-btn" onclick="loadCommunications()">Refresh</button>
-                <div class="communications-log" id="communicationsLog">
-                    <div class="loading"></div>
+                <!-- Dashboard Overview -->
+                <div x-show="activeView === 'dashboard'" class="space-y-6">
+                    <!-- Key Metrics Grid -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                        <template x-for="metric in dashboardMetrics" :key="metric.id">
+                            <div class="metric-card bg-white rounded-lg p-6 shadow-sm border border-gray-200">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <p class="text-sm font-medium text-gray-600" x-text="metric.label"></p>
+                                        <p class="text-3xl font-bold mt-2" 
+                                           :class="metric.color" 
+                                           x-text="metric.value"></p>
+                                    </div>
+                                    <div class="w-12 h-12 rounded-lg flex items-center justify-center"
+                                         :class="metric.bgColor">
+                                        <span x-html="metric.icon" class="w-6 h-6 text-white"></span>
+                                    </div>
+                                </div>
+                                <div class="mt-4">
+                                    <span class="text-sm" 
+                                          :class="metric.trend.positive ? 'text-green-600' : 'text-red-600'"
+                                          x-text="metric.trend.value"></span>
+                                    <span class="text-sm text-gray-600 ml-1">vs last period</span>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+
+                    <!-- Agent Status Overview -->
+                    <div class="bg-white rounded-lg shadow-sm border border-gray-200">
+                        <div class="p-6 border-b border-gray-200">
+                            <h3 class="text-lg font-semibold text-gray-900">Agent Status Overview</h3>
+                        </div>
+                        <div class="p-6">
+                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                <template x-for="agent in agentStatuses" :key="agent.id">
+                                    <div class="border border-gray-200 rounded-lg p-4">
+                                        <div class="flex items-center justify-between mb-2">
+                                            <h4 class="font-medium text-gray-900" x-text="agent.name"></h4>
+                                            <span class="status-indicator" :class="agent.statusClass"></span>
+                                        </div>
+                                        <p class="text-sm text-gray-600 mb-2" x-text="agent.description"></p>
+                                        <div class="flex items-center justify-between">
+                                            <span class="text-xs px-2 py-1 rounded-full"
+                                                  :class="agent.categoryClass"
+                                                  x-text="agent.category"></span>
+                                            <span class="text-xs text-gray-500" x-text="agent.lastActive"></span>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- System Health Chart -->
+                    <div class="bg-white rounded-lg shadow-sm border border-gray-200">
+                        <div class="p-6 border-b border-gray-200">
+                            <h3 class="text-lg font-semibold text-gray-900">System Performance</h3>
+                        </div>
+                        <div class="p-6">
+                            <canvas id="systemChart" width="400" height="200"></canvas>
+                        </div>
+                    </div>
                 </div>
+
+                <!-- Agent 20 Interface -->
+                <div x-show="activeView === 'agent20'" class="space-y-6">
+                    <div class="bg-white rounded-lg shadow-sm border border-gray-200">
+                        <div class="p-6 border-b border-gray-200">
+                            <h3 class="text-lg font-semibold text-gray-900">Enhanced Agent #20 Interface</h3>
+                            <p class="text-sm text-gray-600 mt-1">Functional implementation with persistent memory</p>
+                        </div>
+                        <div class="p-6">
+                            <!-- Agent 20 Chat Interface -->
+                            <div class="space-y-4">
+                                <div class="border border-gray-200 rounded-lg p-4 bg-gray-50 h-96 overflow-y-auto" 
+                                     id="chatMessages">
+                                    <template x-for="message in chatMessages" :key="message.id">
+                                        <div class="mb-4" :class="message.type === 'user' ? 'text-right' : 'text-left'">
+                                            <div class="inline-block max-w-xs lg:max-w-md px-4 py-2 rounded-lg"
+                                                 :class="message.type === 'user' ? 'bg-blue-500 text-white' : 'bg-white border border-gray-200'">
+                                                <p class="text-sm" x-text="message.content"></p>
+                                                <p class="text-xs mt-1 opacity-75" x-text="message.timestamp"></p>
+                                            </div>
+                                        </div>
+                                    </template>
+                                </div>
+
+                                <div class="flex space-x-3">
+                                    <input type="text" 
+                                           x-model="currentMessage"
+                                           @keydown.enter="sendMessage()"
+                                           placeholder="Type your message to Agent 20..."
+                                           class="flex-1 border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                    <button @click="sendMessage()" 
+                                            :disabled="!currentMessage.trim() || isLoading"
+                                            class="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed">
+                                        <span x-show="!isLoading">Send</span>
+                                        <span x-show="isLoading" class="loading-spinner">⏳</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Session Management -->
+                    <div class="bg-white rounded-lg shadow-sm border border-gray-200">
+                        <div class="p-6 border-b border-gray-200">
+                            <h3 class="text-lg font-semibold text-gray-900">Session Management</h3>
+                        </div>
+                        <div class="p-6">
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <div class="border border-gray-200 rounded-lg p-4">
+                                    <h4 class="font-medium text-gray-900 mb-2">Current Session</h4>
+                                    <p class="text-sm text-gray-600" x-text="currentSession.id"></p>
+                                    <p class="text-xs text-gray-500 mt-1" x-text="currentSession.started"></p>
+                                </div>
+                                <div class="border border-gray-200 rounded-lg p-4">
+                                    <h4 class="font-medium text-gray-900 mb-2">Memory Records</h4>
+                                    <p class="text-2xl font-bold text-blue-600" x-text="sessionStats.memoryCount"></p>
+                                    <p class="text-xs text-gray-500 mt-1">Persistent entries</p>
+                                </div>
+                                <div class="border border-gray-200 rounded-lg p-4">
+                                    <h4 class="font-medium text-gray-900 mb-2">API Connections</h4>
+                                    <p class="text-2xl font-bold text-green-600" x-text="sessionStats.apiStatus"></p>
+                                    <p class="text-xs text-gray-500 mt-1">Active integrations</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- System Monitoring -->
+                <div x-show="activeView === 'monitoring'" class="space-y-6">
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <!-- Database Status -->
+                        <div class="bg-white rounded-lg shadow-sm border border-gray-200">
+                            <div class="p-6 border-b border-gray-200">
+                                <h3 class="text-lg font-semibold text-gray-900">Database Status</h3>
+                            </div>
+                            <div class="p-6 space-y-4">
+                                <template x-for="db in databaseStatus" :key="db.name">
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center space-x-3">
+                                            <span class="status-indicator" :class="db.statusClass"></span>
+                                            <span class="font-medium" x-text="db.name"></span>
+                                        </div>
+                                        <span class="text-sm text-gray-600" x-text="db.value"></span>
+                                    </div>
+                                </template>
+                            </div>
+                        </div>
+
+                        <!-- API Health -->
+                        <div class="bg-white rounded-lg shadow-sm border border-gray-200">
+                            <div class="p-6 border-b border-gray-200">
+                                <h3 class="text-lg font-semibold text-gray-900">API Health</h3>
+                            </div>
+                            <div class="p-6 space-y-4">
+                                <template x-for="api in apiHealth" :key="api.name">
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center space-x-3">
+                                            <span class="status-indicator" :class="api.statusClass"></span>
+                                            <span class="font-medium" x-text="api.name"></span>
+                                        </div>
+                                        <span class="text-sm text-gray-600" x-text="api.responseTime"></span>
+                                    </div>
+                                </template>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Settings -->
+                <div x-show="activeView === 'settings'" class="space-y-6">
+                    <div class="bg-white rounded-lg shadow-sm border border-gray-200">
+                        <div class="p-6 border-b border-gray-200">
+                            <h3 class="text-lg font-semibold text-gray-900">System Configuration</h3>
+                        </div>
+                        <div class="p-6 space-y-6">
+                            <!-- Supabase Configuration -->
+                            <div>
+                                <h4 class="font-medium text-gray-900 mb-3">Supabase Connection</h4>
+                                <div class="space-y-3">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">URL</label>
+                                        <input type="text" x-model="settings.supabaseUrl" 
+                                               class="w-full border border-gray-300 rounded-lg px-3 py-2">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Anon Key</label>
+                                        <input type="password" x-model="settings.supabaseKey" 
+                                               class="w-full border border-gray-300 rounded-lg px-3 py-2">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- API Configuration -->
+                            <div>
+                                <h4 class="font-medium text-gray-900 mb-3">API Keys</h4>
+                                <div class="space-y-3">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">GitHub Token</label>
+                                        <input type="password" x-model="settings.githubToken" 
+                                               class="w-full border border-gray-300 rounded-lg px-3 py-2">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">OpenAI API Key</label>
+                                        <input type="password" x-model="settings.openaiKey" 
+                                               class="w-full border border-gray-300 rounded-lg px-3 py-2">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <button @click="saveSettings()" 
+                                    class="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600">
+                                Save Configuration
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
 
-        <!-- Right Panel -->
-        <div class="right-panel">
-            <div class="panel-header">â¡ System Health</div>
+        <!-- Right Sidebar - Context Panel -->
+        <div class="bg-white border-l border-gray-200 flex flex-col mobile-hidden"
+             x-show="rightPanelVisible && !rightPanelCollapsed">
 
-            <button class="refresh-btn" onclick="loadSystemHealth()">Refresh Health</button>
-
-            <div id="systemHealthContainer">
-                <div class="loading"></div>
+            <!-- Context Header -->
+            <div class="p-6 border-b border-gray-200">
+                <h3 class="text-lg font-semibold text-gray-900">Context</h3>
+                <p class="text-sm text-gray-600 mt-1">System insights & logs</p>
             </div>
 
-            <div class="metric-card">
-                <div class="metric-value" id="dbStatus">-</div>
-                <div class="metric-label">Database Status</div>
-            </div>
-
-            <div class="metric-card">
-                <div class="metric-value" id="lastUpdate">-</div>
-                <div class="metric-label">Last Update</div>
-            </div>
-
-            <div class="center-content" style="background: rgba(255,255,255,0.1); margin-top: 20px;">
-                <h4>ð Auto-Refresh</h4>
-                <label style="display: block; margin: 10px 0;">
-                    <input type="checkbox" id="autoRefresh" checked> Enable Auto-Refresh (30s)
-                </label>
-                <div id="connectionStatus" style="margin: 10px 0;">
-                    Connection: <span id="connStatus">Connecting...</span>
+            <!-- Recent Activity -->
+            <div class="flex-1 p-6 overflow-auto">
+                <div class="space-y-4">
+                    <h4 class="font-medium text-gray-900">Recent Activity</h4>
+                    <template x-for="activity in recentActivity" :key="activity.id">
+                        <div class="border-l-4 border-gray-200 pl-4 py-2">
+                            <p class="text-sm font-medium text-gray-900" x-text="activity.action"></p>
+                            <p class="text-xs text-gray-600" x-text="activity.timestamp"></p>
+                            <p class="text-xs text-gray-500 mt-1" x-text="activity.details"></p>
+                        </div>
+                    </template>
                 </div>
+            </div>
+
+            <!-- Panel Toggle -->
+            <div class="p-4 border-t border-gray-200">
+                <button @click="toggleRightPanel()" 
+                        class="w-full flex items-center justify-center p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                    </svg>
+                </button>
             </div>
         </div>
     </div>
-
-    <script>
-        // Supabase configuration
-        const SUPABASE_URL = 'https://nkjckkaqcdscrtzmmyyt.supabase.co';
-        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5ramNra2FxY2RzY3J0em1teXl0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzE2MDk2MjIsImV4cCI6MjA0NzE4NTYyMn0.VYlzLMqCK-L1CxqsNxZYJVqGzHkOJzxzMXmfyq6ptWY';
-
-        // Initialize Supabase client
-        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-        // Global variables
-        let autoRefreshInterval;
-        let discussionMemoryData = {
-            totalCapacity: 1000,
-            currentUsage: 0,
-            messages: 0,
-            lastUpdate: new Date()
-        };
-
-        // Initialize dashboard
-        document.addEventListener('DOMContentLoaded', function() {
-            initializeDashboard();
-            setupAutoRefresh();
-        });
-
-        async function initializeDashboard() {
-            try {
-                document.getElementById('connStatus').textContent = 'Connected';
-                document.getElementById('connStatus').style.color = '#2ecc71';
-
-                await Promise.all([
-                    loadAgents(),
-                    loadSystemHealth(),
-                    loadCommunications(),
-                    loadPerformanceMetrics(),
-                    calculateDiscussionMemory()
-                ]);
-
-                updateLastUpdate();
-            } catch (error) {
-                console.error('Dashboard initialization error:', error);
-                document.getElementById('connStatus').textContent = 'Error';
-                document.getElementById('connStatus').style.color = '#e74c3c';
-                showError('Failed to initialize dashboard: ' + error.message);
-            }
-        }
-
-        async function loadAgents() {
-            try {
-                const { data: agents, error } = await supabase
-                    .from('agents')
-                    .select('*')
-                    .order('created_at', { ascending: false });
-
-                if (error) throw error;
-
-                const totalAgents = agents.length;
-                const activeAgents = agents.filter(agent => agent.status === 'active').length;
-                const avgHealth = agents.length > 0 
-                    ? (agents.reduce((sum, agent) => sum + (agent.health_score || 0), 0) / agents.length).toFixed(2)
-                    : '0.00';
-
-                document.getElementById('totalAgents').textContent = totalAgents;
-                document.getElementById('activeAgents').textContent = activeAgents;
-                document.getElementById('avgHealth').textContent = avgHealth;
-
-                displayAgents(agents);
-            } catch (error) {
-                console.error('Error loading agents:', error);
-                showError('Failed to load agents: ' + error.message);
-            }
-        }
-
-        function displayAgents(agents) {
-            const agentList = document.getElementById('agentList');
-
-            if (agents.length === 0) {
-                agentList.innerHTML = '<div class="agent-item">No agents found</div>';
-                return;
-            }
-
-            const agentHTML = agents.map(agent => `
-                <div class="agent-item">
-                    <div class="agent-name">${agent.name || 'Unnamed Agent'}</div>
-                    <div class="agent-status ${agent.status === 'active' ? 'status-active' : 'status-inactive'}">
-                        Status: ${agent.status || 'unknown'} 
-                        ${agent.health_score ? `| Health: ${agent.health_score}` : ''}
-                    </div>
-                    ${agent.description ? `<div style="font-size: 0.8rem; opacity: 0.7; margin-top: 5px;">${agent.description}</div>` : ''}
-                </div>
-            `).join('');
-
-            agentList.innerHTML = agentHTML;
-        }
-
-        async function loadSystemHealth() {
-            try {
-                const { data: healthData, error } = await supabase
-                    .from('system_health')
-                    .select('*')
-                    .order('last_check', { ascending: false });
-
-                if (error) throw error;
-
-                displaySystemHealth(healthData);
-
-                // Update database status
-                document.getElementById('dbStatus').textContent = 'Connected';
-                document.getElementById('dbStatus').style.color = '#2ecc71';
-
-            } catch (error) {
-                console.error('Error loading system health:', error);
-                document.getElementById('dbStatus').textContent = 'Error';
-                document.getElementById('dbStatus').style.color = '#e74c3c';
-                showError('Failed to load system health: ' + error.message);
-            }
-        }
-
-        function displaySystemHealth(healthData) {
-            const container = document.getElementById('systemHealthContainer');
-
-            if (healthData.length === 0) {
-                container.innerHTML = '<div class="health-item">No health data available</div>';
-                return;
-            }
-
-            const healthHTML = healthData.map(item => `
-                <div class="health-item">
-                    <div class="health-status health-${item.status || 'unknown'}">${item.component_name}</div>
-                    <div>Status: ${item.status || 'unknown'}</div>
-                    <div style="font-size: 0.8rem; opacity: 0.8;">${item.component_type}</div>
-                    ${item.last_check ? `<div style="font-size: 0.7rem; margin-top: 5px;">Updated: ${new Date(item.last_check).toLocaleTimeString()}</div>` : ''}
-                </div>
-            `).join('');
-
-            container.innerHTML = `<div class="system-health">${healthHTML}</div>`;
-        }
-
-        async function loadCommunications() {
-            try {
-                const { data: communications, error } = await supabase
-                    .from('agent_communications')
-                    .select('*')
-                    .order('sent_at', { ascending: false })
-                    .limit(10);
-
-                if (error) throw error;
-
-                displayCommunications(communications);
-            } catch (error) {
-                console.error('Error loading communications:', error);
-                showError('Failed to load communications: ' + error.message);
-            }
-        }
-
-        function displayCommunications(communications) {
-            const log = document.getElementById('communicationsLog');
-
-            if (communications.length === 0) {
-                log.innerHTML = '<div class="communication-item">No communications logged</div>';
-                return;
-            }
-
-            const commHTML = communications.map(comm => `
-                <div class="communication-item">
-                    <strong>${comm.message_type || 'Unknown Type'}</strong>
-                    <div style="font-size: 0.9rem; margin: 5px 0;">
-                        Status: <span style="color: ${getStatusColor(comm.status)}">${comm.status || 'unknown'}</span>
-                    </div>
-                    ${comm.content ? `<div style="font-size: 0.8rem; opacity: 0.8;">${JSON.stringify(comm.content).substring(0, 100)}...</div>` : ''}
-                    <div style="font-size: 0.7rem; opacity: 0.6; margin-top: 5px;">
-                        ${comm.sent_at ? new Date(comm.sent_at).toLocaleString() : 'No timestamp'}
-                    </div>
-                </div>
-            `).join('');
-
-            log.innerHTML = commHTML;
-        }
-
-        async function loadPerformanceMetrics() {
-            try {
-                const { data: metrics, error } = await supabase
-                    .from('agent_metrics')
-                    .select(`
-                        *,
-                        agents(name)
-                    `)
-                    .order('measurement_time', { ascending: false })
-                    .limit(20);
-
-                if (error) throw error;
-
-                displayPerformanceMetrics(metrics);
-            } catch (error) {
-                console.error('Error loading performance metrics:', error);
-                showError('Failed to load performance metrics: ' + error.message);
-            }
-        }
-
-        function displayPerformanceMetrics(metrics) {
-            const chart = document.getElementById('performanceChart');
-            const metricsContainer = document.getElementById('performanceMetrics');
-
-            if (metrics.length === 0) {
-                chart.innerHTML = '<div>No performance data available</div>';
-                metricsContainer.innerHTML = '';
-                return;
-            }
-
-            // Simple chart representation
-            chart.innerHTML = `
-                <div style="text-align: center;">
-                    <div style="font-size: 1.2rem; margin-bottom: 10px;">Performance Overview</div>
-                    <div style="font-size: 2rem; color: #3498db;">${metrics.length}</div>
-                    <div>Metrics Recorded</div>
-                </div>
-            `;
-
-            // Group metrics by type
-            const metricsByType = {};
-            metrics.forEach(metric => {
-                if (!metricsByType[metric.metric_name]) {
-                    metricsByType[metric.metric_name] = [];
-                }
-                metricsByType[metric.metric_name].push(metric);
-            });
-
-            const metricsHTML = Object.keys(metricsByType).map(metricType => {
-                const typeMetrics = metricsByType[metricType];
-                const avgValue = (typeMetrics.reduce((sum, m) => sum + (m.metric_value || 0), 0) / typeMetrics.length).toFixed(2);
-
-                return `
-                    <div style="display: inline-block; margin: 10px; padding: 10px; background: #f0f0f0; border-radius: 5px;">
-                        <strong>${metricType}</strong><br>
-                        Avg: ${avgValue} ${typeMetrics[0].metric_unit || ''}<br>
-                        <small>${typeMetrics.length} readings</small>
-                    </div>
-                `;
-            }).join('');
-
-            metricsContainer.innerHTML = metricsHTML;
-        }
-
-        async function calculateDiscussionMemory() {
-            try {
-                // Get total communications as a proxy for memory usage
-                const { data: communications, error } = await supabase
-                    .from('agent_communications')
-                    .select('content')
-                    .not('content', 'is', null);
-
-                if (error) throw error;
-
-                // Calculate memory usage based on communication content
-                let totalContentSize = 0;
-                communications.forEach(comm => {
-                    if (comm.content) {
-                        totalContentSize += JSON.stringify(comm.content).length;
-                    }
-                });
-
-                // Estimate memory usage (rough calculation)
-                const maxMemory = 100000; // 100KB as baseline
-                const currentUsage = Math.min(totalContentSize, maxMemory);
-                const percentage = Math.round((currentUsage / maxMemory) * 100);
-
-                discussionMemoryData = {
-                    totalCapacity: maxMemory,
-                    currentUsage: currentUsage,
-                    messages: communications.length,
-                    lastUpdate: new Date(),
-                    percentage: percentage
-                };
-
-                updateDiscussionMemoryDisplay();
-            } catch (error) {
-                console.error('Error calculating discussion memory:', error);
-                discussionMemoryData.percentage = 0;
-                updateDiscussionMemoryDisplay();
-            }
-        }
-
-        function updateDiscussionMemoryDisplay() {
-            const percentage = discussionMemoryData.percentage || 0;
-            const fill = document.getElementById('memoryFill');
-            const percentageText = document.getElementById('memoryPercentage');
-            const status = document.getElementById('memoryStatus');
-
-            fill.style.width = percentage + '%';
-            percentageText.textContent = percentage + '%';
-
-            if (percentage < 50) {
-                fill.style.background = 'linear-gradient(90deg, #2ecc71, #27ae60)';
-                status.textContent = 'Optimal';
-            } else if (percentage < 80) {
-                fill.style.background = 'linear-gradient(90deg, #f39c12, #e67e22)';
-                status.textContent = 'Moderate';
-            } else {
-                fill.style.background = 'linear-gradient(90deg, #e74c3c, #c0392b)';
-                status.textContent = 'High Usage';
-            }
-        }
-
-        function setupAutoRefresh() {
-            const autoRefreshCheckbox = document.getElementById('autoRefresh');
-
-            function toggleAutoRefresh() {
-                if (autoRefreshCheckbox.checked) {
-                    autoRefreshInterval = setInterval(() => {
-                        loadAgents();
-                        loadSystemHealth();
-                        loadCommunications();
-                        loadPerformanceMetrics();
-                        calculateDiscussionMemory();
-                        updateLastUpdate();
-                    }, 30000); // 30 seconds
-                } else {
-                    clearInterval(autoRefreshInterval);
-                }
-            }
-
-            autoRefreshCheckbox.addEventListener('change', toggleAutoRefresh);
-            toggleAutoRefresh(); // Initialize
-        }
-
-        function updateLastUpdate() {
-            document.getElementById('lastUpdate').textContent = new Date().toLocaleTimeString();
-        }
-
-        function getStatusColor(status) {
-            switch (status) {
-                case 'active':
-                case 'delivered':
-                case 'processed':
-                case 'completed':
-                    return '#2ecc71';
-                case 'pending':
-                case 'running':
-                    return '#f39c12';
-                case 'failed':
-                case 'error':
-                    return '#e74c3c';
-                default:
-                    return '#95a5a6';
-            }
-        }
-
-        function showError(message) {
-            const errorDiv = document.createElement('div');
-            errorDiv.className = 'error-message';
-            errorDiv.textContent = message;
-
-            // Add to center panel
-            const centerPanel = document.querySelector('.center-panel');
-            centerPanel.insertBefore(errorDiv, centerPanel.firstChild);
-
-            // Remove after 5 seconds
-            setTimeout(() => {
-                errorDiv.remove();
-            }, 5000);
-        }
-
-        // Search functionality
-        document.getElementById('agentSearch').addEventListener('input', function(e) {
-            const searchTerm = e.target.value.toLowerCase();
-            const agentItems = document.querySelectorAll('.agent-item');
-
-            agentItems.forEach(item => {
-                const agentName = item.querySelector('.agent-name').textContent.toLowerCase();
-                if (agentName.includes(searchTerm)) {
-                    item.style.display = 'block';
-                } else {
-                    item.style.display = 'none';
-                }
-            });
-        });
-
-        // Manual refresh functions (already defined above)
-        // loadCommunications() and loadSystemHealth() are already defined
-
-        // Initialize when page loads
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', initializeDashboard);
-        } else {
-            initializeDashboard();
-        }
-    </script>
 </body>
-</html>

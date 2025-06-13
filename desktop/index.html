@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AWIP Mission Control - Desktop</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">
+                <i class="fas fa-robot"></i>
+                <span>AWIP Mission Control</span>
+            </div>
+            <div class="header-stats">
+                <div class="stat-item">
+                    <span class="stat-label">System Status</span>
+                    <span class="stat-value status-active">ACTIVE</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Agents Online</span>
+                    <span class="stat-value">19/19</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Time</span>
+                    <span class="stat-value" id="current-time">--:--:--</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Left Panel -->
+            <div class="panel left-panel" id="left-panel">
+                <div class="panel-header">
+                    <h3><i class="fas fa-chart-line"></i> System Overview</h3>
+                </div>
+                <div class="panel-content">
+                    <div class="metrics-grid">
+                        <div class="metric-card">
+                            <div class="metric-value">98.5%</div>
+                            <div class="metric-label">System Health</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-value">99.97%</div>
+                            <div class="metric-label">Uptime</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-value">1.2s</div>
+                            <div class="metric-label">Response Time</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-value">Zero</div>
+                            <div class="metric-label">Operational Cost</div>
+                        </div>
+                    </div>
+                    <div class="system-info">
+                        <h4>Infrastructure</h4>
+                        <ul>
+                            <li>Database: 28 tables, 25 indexes</li>
+                            <li>CDN: Global distribution</li>
+                            <li>Security: Multi-layer auth</li>
+                            <li>Backup: Real-time sync</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="resize-handle resize-handle-right" data-panel="left"></div>
+            </div>
+
+            <!-- Center Panel -->
+            <div class="panel center-panel">
+                <div class="panel-header">
+                    <h3><i class="fas fa-users"></i> Agent Dashboard</h3>
+                </div>
+                <div class="panel-content">
+                    <div class="agents-grid" id="agents-grid">
+                        <!-- Agent cards will be populated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Panel -->
+            <div class="panel right-panel" id="right-panel">
+                <div class="panel-header">
+                    <div class="tab-navigation">
+                        <button class="tab-btn active" data-tab="logs">
+                            <i class="fas fa-file-alt"></i> Logs
+                        </button>
+                        <button class="tab-btn" data-tab="config">
+                            <i class="fas fa-cog"></i> Config
+                        </button>
+                        <button class="tab-btn" data-tab="deploy">
+                            <i class="fas fa-rocket"></i> Deploy
+                        </button>
+                        <button class="tab-btn" data-tab="monitor">
+                            <i class="fas fa-chart-bar"></i> Monitor
+                        </button>
+                    </div>
+                </div>
+                <div class="panel-content">
+                    <!-- Logs Tab -->
+                    <div class="tab-content active" id="logs-tab">
+                        <div class="log-container">
+                            <div class="log-entry">
+                                <span class="log-time">14:32:15</span>
+                                <span class="log-level info">INFO</span>
+                                <span class="log-message">Agent 20 context compression completed</span>
+                            </div>
+                            <div class="log-entry">
+                                <span class="log-time">14:31:42</span>
+                                <span class="log-level success">SUCCESS</span>
+                                <span class="log-message">Memory retention at 97.2%</span>
+                            </div>
+                            <div class="log-entry">
+                                <span class="log-time">14:30:18</span>
+                                <span class="log-level info">INFO</span>
+                                <span class="log-message">All 19 agents operational</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Config Tab -->
+                    <div class="tab-content" id="config-tab">
+                        <div class="config-section">
+                            <h4>System Configuration</h4>
+                            <div class="config-item">
+                                <label>Memory Retention:</label>
+                                <span>97.2%</span>
+                            </div>
+                            <div class="config-item">
+                                <label>Context Compression:</label>
+                                <span>Enabled</span>
+                            </div>
+                            <div class="config-item">
+                                <label>Agent Pool Size:</label>
+                                <span>19</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Deploy Tab -->
+                    <div class="tab-content" id="deploy-tab">
+                        <div class="deploy-section">
+                            <h4>Deployment Status</h4>
+                            <div class="deploy-status">
+                                <div class="status-item">
+                                    <i class="fas fa-check-circle"></i>
+                                    <span>Desktop Version: Deployed</span>
+                                </div>
+                                <div class="status-item">
+                                    <i class="fas fa-check-circle"></i>
+                                    <span>Mobile Version: Active</span>
+                                </div>
+                                <div class="status-item">
+                                    <i class="fas fa-spinner fa-spin"></i>
+                                    <span>Real-time Updates: Processing</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Monitor Tab -->
+                    <div class="tab-content" id="monitor-tab">
+                        <div class="monitor-section">
+                            <h4>Performance Metrics</h4>
+                            <div class="metric-row">
+                                <span>CPU Usage:</span>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 35%"></div>
+                                </div>
+                                <span>35%</span>
+                            </div>
+                            <div class="metric-row">
+                                <span>Memory:</span>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 67%"></div>
+                                </div>
+                                <span>67%</span>
+                            </div>
+                            <div class="metric-row">
+                                <span>Network:</span>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 23%"></div>
+                                </div>
+                                <span>23%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="resize-handle resize-handle-left" data-panel="right"></div>
+            </div>
+        </main>
+    </div>
+
+    <script src="config.js"></script>
+    <script src="dashboard.js"></script>
+</body>
+</html>

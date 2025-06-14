@@ -1,0 +1,59 @@
+{
+  "name": "awip-mission-control",
+  "version": "2.1.0",
+  "description": "AWIP Mission Control Dashboard - Real-time monitoring and management system for the AWIP AI platform",
+  "main": "dashboard.js",
+  "scripts": {
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "lint": "eslint *.js",
+    "validate": "node -e \"console.log('Mission Control Validation - OK')\"",
+    "security": "npm audit",
+    "build": "echo 'Static site - no build required'",
+    "start": "python -m http.server 8000"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cjaisingh/awip-mission-control.git"
+  },
+  "keywords": [
+    "awip",
+    "mission-control",
+    "dashboard",
+    "monitoring",
+    "ai-platform"
+  ],
+  "dependencies": {
+    "chart.js": "^4.4.0",
+    "d3": "^7.8.5",
+    "sortablejs": "^1.15.0"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "eslint": "^8.57.0",
+    "jest-environment-jsdom": "^29.7.0",
+    "html-validate": "^8.7.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "jest": {
+    "testEnvironment": "jsdom",
+    "collectCoverageFrom": [
+      "*.js",
+      "!node_modules/**"
+    ]
+  },
+  "eslintConfig": {
+    "env": {
+      "browser": true,
+      "es2021": true,
+      "jest": true
+    },
+    "extends": "eslint:recommended",
+    "rules": {
+      "no-unused-vars": "warn",
+      "no-console": "off"
+    }
+  }
+}

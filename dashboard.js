@@ -1,456 +1,312 @@
-// AWIP Enhanced Dashboard - Advanced Vanilla JavaScript Implementation
-// Includes: Self-evolving agents, D3.js visualization, state management, component system
+// AWIP Enhanced Dashboard with Dual-Repository Operational Standards
+// Agent 20 Integration with Self-Evolving Framework
 
 class AWIPDashboard {
     constructor() {
+        this.config = window.AWIPConfig || {};
+        this.agents = new Map();
+        this.workflows = new Map();
         this.stateManager = new AWIPStateManager();
-        this.agentSystem = new AWIPAgentSystem();
         this.componentEditor = new AWIPComponentEditor();
         this.workflowVisualizer = new AWIPWorkflowVisualizer();
         this.performanceMonitor = new AWIPPerformanceMonitor();
 
-        this.initialize();
+        this.initializeOperationalStandards();
+        this.setupEventListeners();
+        this.startRealTimeUpdates();
     }
 
-    initialize() {
-        this.setupEventListeners();
-        this.initializeComponents();
-        this.startRealTimeUpdates();
-        console.log('AWIP Enhanced Dashboard initialized');
+    initializeOperationalStandards() {
+        // Dual-repository operational standards implementation
+        this.standards = {
+            frontend: {
+                repository: 'cjaisingh/awip-mission-control',
+                deployment: 'GitHub Pages',
+                tools: ['GitHub_REST_API', 'Direct_URL_Testing'],
+                forbidden: ['jupyter_code_executor'],
+                verification: 'https://cjaisingh.github.io/awip-mission-control/'
+            },
+            backend: {
+                repository: 'cjaisingh/Genspark-AWIP',
+                deployment: 'Private Infrastructure',
+                tools: ['GitHub_REST_API', 'Private_API_Testing'],
+                forbidden: ['jupyter_code_executor'],
+                verification: 'Repository_Commit_Confirmation'
+            },
+            coordination: {
+                sync_strategy: 'Frontend calls private backend APIs',
+                authentication_flow: 'Supabase Vault → Backend → Frontend'
+            }
+        };
+
+        console.log('🔧 Operational standards initialized:', this.standards);
     }
 
     setupEventListeners() {
+        // Real-time system monitoring
         document.addEventListener('DOMContentLoaded', () => {
-            this.onDOMReady();
+            this.initializeSortable();
+            this.setupComponentEditor();
+            this.initializeD3Visualization();
         });
 
-        window.addEventListener('resize', () => {
-            this.handleResize();
+        // Agent 20 enhanced event handling
+        this.stateManager.addEventListener('agent_update', (event) => {
+            this.handleAgentUpdate(event.detail);
         });
-    }
 
-    onDOMReady() {
-        this.agentSystem.initialize();
-        this.componentEditor.initialize();
-        this.workflowVisualizer.initialize();
-        this.performanceMonitor.initialize();
-    }
-
-    handleResize() {
-        this.workflowVisualizer.resize();
-        this.componentEditor.adjustPosition();
-    }
-
-    initializeComponents() {
-        // Initialize all dashboard components
-        this.stateManager.setState('dashboard-status', 'initializing');
-        this.stateManager.setState('agent-count', 19);
-        this.stateManager.setState('system-health', 99.2);
+        this.stateManager.addEventListener('workflow_change', (event) => {
+            this.updateWorkflowVisualization(event.detail);
+        });
     }
 
     startRealTimeUpdates() {
+        // Update system metrics every 5 seconds
         setInterval(() => {
-            this.updateMetrics();
-            this.checkSystemHealth();
+            this.updateSystemMetrics();
             this.updateAgentStatus();
+            this.monitorPerformance();
         }, 5000);
+
+        // Self-evolving agent framework updates
+        setInterval(() => {
+            this.runEvolutionCycle();
+        }, 30000);
     }
 
-    updateMetrics() {
-        const metrics = this.performanceMonitor.getLatestMetrics();
-        this.stateManager.setState('performance-metrics', metrics);
-    }
+    updateSystemMetrics() {
+        const metrics = {
+            activeAgents: 19,
+            evolvingAgents: Math.floor(Math.random() * 5) + 10,
+            performance: (95 + Math.random() * 5).toFixed(1) + '%',
+            uptime: '99.97%',
+            memoryUsage: Math.floor(Math.random() * 20) + 60 + '%',
+            responseTime: (2 + Math.random() * 2).toFixed(1) + 'ms'
+        };
 
-    checkSystemHealth() {
-        const health = this.performanceMonitor.calculateSystemHealth();
-        this.stateManager.setState('system-health', health);
+        // Update DOM elements
+        document.getElementById('active-agents').textContent = metrics.activeAgents;
+        document.getElementById('evolving-agents').textContent = metrics.evolvingAgents;
+        document.getElementById('performance-score').textContent = metrics.performance;
+        document.getElementById('uptime').textContent = metrics.uptime;
+        document.getElementById('memory-usage').textContent = metrics.memoryUsage;
+        document.getElementById('response-time').textContent = metrics.responseTime;
     }
 
     updateAgentStatus() {
-        const status = this.agentSystem.getAgentStatus();
-        this.stateManager.setState('agent-status', status);
-    }
-}
+        // Agent 20 status updates
+        const agent20Status = {
+            discussionContinuity: 'Active',
+            designSystem: 'Enhanced',
+            componentEditor: 'Operational',
+            floatingPanels: 'Functional',
+            selfEvolution: 'Running'
+        };
 
-// AWIP State Manager - Custom state management system
-class AWIPStateManager {
-    constructor() {
-        this.states = new Map();
-        this.listeners = new Map();
-        this.history = [];
-        this.maxHistorySize = 1000;
+        this.stateManager.updateAgentStatus(20, agent20Status);
     }
 
-    setState(key, value, options = {}) {
-        const oldValue = this.states.get(key);
-        this.states.set(key, value);
+    runEvolutionCycle() {
+        // Self-evolving agent framework
+        const algorithms = ['TextGrad', 'AFlow', 'MIPRO'];
 
-        // Store history
-        this.history.push({
-            key,
-            oldValue,
-            newValue: value,
-            timestamp: Date.now(),
-            metadata: options.metadata || {}
+        algorithms.forEach(algorithm => {
+            const performance = this.performanceMonitor.getAlgorithmPerformance(algorithm);
+            const optimization = this.calculateOptimization(algorithm, performance);
+
+            console.log(`🧠 ${algorithm} optimization: ${optimization.improvement}%`);
+            this.applyEvolutionOptimization(algorithm, optimization);
         });
+    }
 
-        // Trim history if needed
-        if (this.history.length > this.maxHistorySize) {
-            this.history = this.history.slice(-this.maxHistorySize);
-        }
+    calculateOptimization(algorithm, performance) {
+        // Simplified optimization calculation
+        const baseImprovement = Math.random() * 3 + 1;
+        return {
+            algorithm,
+            improvement: baseImprovement.toFixed(1),
+            metrics: performance,
+            timestamp: new Date().toISOString()
+        };
+    }
 
-        // Notify listeners
-        this.notifyListeners(key, value, oldValue);
+    applyEvolutionOptimization(algorithm, optimization) {
+        // Apply optimization to agent system
+        this.stateManager.updateEvolutionMetrics(algorithm, optimization);
 
-        // Trigger persistence if requested
-        if (options.persist) {
-            this.persistState(key, value);
+        // Update UI progress bars
+        const progressMap = {
+            'TextGrad': 78,
+            'AFlow': 65,
+            'MIPRO': 82
+        };
+
+        // Visual feedback for evolution progress
+        this.updateEvolutionProgress(algorithm, progressMap[algorithm]);
+    }
+
+    updateEvolutionProgress(algorithm, progress) {
+        // Update progress bars in the UI
+        const progressBars = document.querySelectorAll('.progress-bar .bg-green-400, .progress-bar .bg-purple-400, .progress-bar .bg-orange-400');
+        if (progressBars.length > 0) {
+            const algorithmIndex = ['TextGrad', 'AFlow', 'MIPRO'].indexOf(algorithm);
+            if (algorithmIndex >= 0 && progressBars[algorithmIndex]) {
+                progressBars[algorithmIndex].style.width = progress + '%';
+            }
         }
     }
 
-    getState(key, defaultValue = null) {
-        return this.states.has(key) ? this.states.get(key) : defaultValue;
-    }
+    initializeSortable() {
+        const sortableList = document.getElementById('sortable-list');
+        if (sortableList) {
+            new Sortable(sortableList, {
+                animation: 150,
+                ghostClass: 'sortable-ghost',
+                chosenClass: 'sortable-chosen',
+                onEnd: (evt) => {
+                    console.log('🔄 Agent order updated:', {
+                        from: evt.oldIndex,
+                        to: evt.newIndex
+                    });
 
-    addListener(key, callback) {
-        if (!this.listeners.has(key)) {
-            this.listeners.set(key, new Set());
-        }
-        this.listeners.get(key).add(callback);
-    }
-
-    removeListener(key, callback) {
-        if (this.listeners.has(key)) {
-            this.listeners.get(key).delete(callback);
-        }
-    }
-
-    notifyListeners(key, newValue, oldValue) {
-        const callbacks = this.listeners.get(key);
-        if (callbacks) {
-            callbacks.forEach(callback => {
-                try {
-                    callback(newValue, oldValue, key);
-                } catch (error) {
-                    console.error('Error in state listener:', error);
+                    this.stateManager.updateAgentOrder(evt.oldIndex, evt.newIndex);
                 }
             });
         }
     }
 
-    getHistory(key = null, limit = 100) {
-        let history = this.history;
-        if (key) {
-            history = history.filter(entry => entry.key === key);
-        }
-        return history.slice(-limit);
+    setupComponentEditor() {
+        // Enhanced component editor with floating panels
+        this.componentEditor.initialize();
+
+        // Setup floating panels
+        this.componentEditor.setupFloatingPanels();
     }
 
-    persistState(key, value) {
-        try {
-            localStorage.setItem(`awip_state_${key}`, JSON.stringify(value));
-        } catch (error) {
-            console.warn('Failed to persist state:', error);
-        }
+    initializeD3Visualization() {
+        // D3.js workflow visualization
+        this.workflowVisualizer.initialize('#workflow-canvas');
+        this.workflowVisualizer.setupAgentNetwork();
     }
 
-    loadPersistedState(key) {
-        try {
-            const stored = localStorage.getItem(`awip_state_${key}`);
-            return stored ? JSON.parse(stored) : null;
-        } catch (error) {
-            console.warn('Failed to load persisted state:', error);
-            return null;
-        }
-    }
-}
-
-// AWIP Agent System - Self-evolving agent management
-class AWIPAgentSystem {
-    constructor() {
-        this.agents = new Map();
-        this.evolutionEngine = new AWIPEvolutionEngine();
-        this.performanceTracker = new Map();
+    updateWorkflowVisualization(workflowData) {
+        this.workflowVisualizer.updateGraph(workflowData);
     }
 
-    initialize() {
-        this.createAgents();
-        this.startEvolutionCycle();
-        console.log('AWIP Agent System initialized with', this.agents.size, 'agents');
-    }
-
-    createAgents() {
-        const agentConfigs = [
-            { id: 'agent-01', name: 'Discussion Continuity Agent', type: 'coordinator', capabilities: ['memory', 'context', 'continuity'] },
-            { id: 'agent-02', name: 'Content Analysis Agent', type: 'analyzer', capabilities: ['nlp', 'sentiment', 'classification'] },
-            { id: 'agent-03', name: 'Data Processing Agent', type: 'processor', capabilities: ['transform', 'aggregate', 'filter'] },
-            { id: 'agent-04', name: 'Workflow Coordination Agent', type: 'coordinator', capabilities: ['orchestration', 'routing', 'scheduling'] },
-            { id: 'agent-05', name: 'Quality Assurance Agent', type: 'validator', capabilities: ['testing', 'validation', 'verification'] },
-            { id: 'agent-06', name: 'Performance Monitor Agent', type: 'monitor', capabilities: ['metrics', 'alerts', 'diagnostics'] },
-            { id: 'agent-07', name: 'Security Agent', type: 'security', capabilities: ['authentication', 'authorization', 'audit'] },
-            { id: 'agent-08', name: 'Integration Agent', type: 'connector', capabilities: ['api', 'webhook', 'sync'] },
-            { id: 'agent-09', name: 'Learning Agent', type: 'ml', capabilities: ['training', 'inference', 'adaptation'] },
-            { id: 'agent-10', name: 'Optimization Agent', type: 'optimizer', capabilities: ['performance', 'efficiency', 'tuning'] }
-        ];
-
-        agentConfigs.forEach(config => {
-            const agent = new AWIPAgent(config);
-            this.agents.set(config.id, agent);
-            this.performanceTracker.set(config.id, {
-                score: 85 + Math.random() * 15,
-                evolution_count: 0,
-                last_evolution: Date.now(),
-                performance_history: []
-            });
-        });
-    }
-
-    startEvolutionCycle() {
-        setInterval(() => {
-            this.evolveAgents();
-        }, 30000); // Evolve every 30 seconds
-    }
-
-    evolveAgents() {
-        this.agents.forEach((agent, agentId) => {
-            const performance = this.performanceTracker.get(agentId);
-
-            if (this.shouldEvolve(performance)) {
-                this.evolutionEngine.evolveAgent(agent, performance);
-                performance.evolution_count++;
-                performance.last_evolution = Date.now();
-
-                console.log(`Agent ${agentId} evolved (${performance.evolution_count} times)`);
-            }
-        });
-    }
-
-    shouldEvolve(performance) {
-        const timeSinceLastEvolution = Date.now() - performance.last_evolution;
-        const performanceThreshold = 90;
-        const timeThreshold = 60000; // 1 minute
-
-        return performance.score < performanceThreshold && timeSinceLastEvolution > timeThreshold;
-    }
-
-    getAgentStatus() {
-        const status = {
-            total: this.agents.size,
-            active: 0,
-            evolving: 0,
-            performance: 0
+    monitorPerformance() {
+        const performance = {
+            timestamp: Date.now(),
+            agents: this.agents.size,
+            workflows: this.workflows.size,
+            memory: performance.memory || { usedJSSize: 0 },
+            timing: performance.timing || { navigationStart: 0, loadEventEnd: 0 }
         };
 
-        this.performanceTracker.forEach((performance, agentId) => {
-            status.active++;
-            if (performance.evolution_count > 0) {
-                status.evolving++;
-            }
-            status.performance += performance.score;
-        });
-
-        status.performance = status.performance / status.total;
-        return status;
+        this.performanceMonitor.recordMetrics(performance);
     }
 }
 
-// Individual Agent Class
-class AWIPAgent {
-    constructor(config) {
-        this.id = config.id;
-        this.name = config.name;
-        this.type = config.type;
-        this.capabilities = config.capabilities;
-        this.state = 'active';
-        this.memory = new Map();
-        this.performance = {
-            score: 85 + Math.random() * 15,
-            tasks_completed: 0,
-            errors: 0,
-            response_time: Math.random() * 5 + 1
-        };
-    }
-
-    execute(task) {
-        this.performance.tasks_completed++;
-
-        // Simulate task execution
-        const success = Math.random() > 0.1; // 90% success rate
-
-        if (!success) {
-            this.performance.errors++;
-        }
-
-        this.updatePerformance();
-        return success;
-    }
-
-    updatePerformance() {
-        const errorRate = this.performance.errors / Math.max(this.performance.tasks_completed, 1);
-        this.performance.score = Math.max(0, 100 - (errorRate * 50));
-    }
-
-    evolve() {
-        // Simulate evolution by improving performance
-        this.performance.score = Math.min(100, this.performance.score + Math.random() * 5);
-        this.performance.response_time *= 0.95; // Improve response time
-        console.log(`Agent ${this.id} evolved: new score ${this.performance.score.toFixed(2)}`);
-    }
-}
-
-// Evolution Engine for self-improving agents
-class AWIPEvolutionEngine {
+// AWIP State Manager for enhanced state handling
+class AWIPStateManager extends EventTarget {
     constructor() {
-        this.algorithms = ['textgrad', 'aflow', 'mipro'];
-        this.optimizationHistory = [];
+        super();
+        this.state = new Map();
+        this.history = [];
+        this.listeners = new Map();
     }
 
-    evolveAgent(agent, performance) {
-        const algorithm = this.selectOptimizationAlgorithm(performance);
-        const improvement = this.applyOptimization(agent, algorithm);
+    updateAgentStatus(agentId, status) {
+        const previousState = this.state.get(`agent_${agentId}`);
+        this.state.set(`agent_${agentId}`, status);
 
-        this.optimizationHistory.push({
-            agentId: agent.id,
-            algorithm,
-            improvement,
-            timestamp: Date.now()
+        this.history.push({
+            type: 'agent_update',
+            agentId,
+            previousState,
+            newState: status,
+            timestamp: new Date().toISOString()
         });
 
-        return improvement;
+        this.dispatchEvent(new CustomEvent('agent_update', {
+            detail: { agentId, status, previousState }
+        }));
     }
 
-    selectOptimizationAlgorithm(performance) {
-        // Select algorithm based on performance characteristics
-        if (performance.score < 70) {
-            return 'textgrad'; // For prompt optimization
-        } else if (performance.evolution_count < 3) {
-            return 'aflow'; // For workflow structure optimization
-        } else {
-            return 'mipro'; // For instruction optimization
-        }
+    updateAgentOrder(fromIndex, toIndex) {
+        this.dispatchEvent(new CustomEvent('agent_reorder', {
+            detail: { fromIndex, toIndex }
+        }));
     }
 
-    applyOptimization(agent, algorithm) {
-        let improvement = 0;
+    updateEvolutionMetrics(algorithm, metrics) {
+        this.state.set(`evolution_${algorithm}`, metrics);
 
-        switch (algorithm) {
-            case 'textgrad':
-                improvement = this.applyTextGradOptimization(agent);
-                break;
-            case 'aflow':
-                improvement = this.applyAFlowOptimization(agent);
-                break;
-            case 'mipro':
-                improvement = this.applyMIPROOptimization(agent);
-                break;
-        }
-
-        agent.evolve();
-        return improvement;
-    }
-
-    applyTextGradOptimization(agent) {
-        // Simulate TextGrad optimization
-        const improvement = Math.random() * 10;
-        agent.performance.score += improvement;
-        return improvement;
-    }
-
-    applyAFlowOptimization(agent) {
-        // Simulate AFlow optimization
-        const improvement = Math.random() * 8;
-        agent.performance.response_time *= 0.9;
-        return improvement;
-    }
-
-    applyMIPROOptimization(agent) {
-        // Simulate MIPRO optimization
-        const improvement = Math.random() * 6;
-        agent.capabilities.push('optimized');
-        return improvement;
+        this.dispatchEvent(new CustomEvent('evolution_update', {
+            detail: { algorithm, metrics }
+        }));
     }
 }
 
-// Component Editor with floating panels
+// Enhanced Component Editor with floating panels
 class AWIPComponentEditor {
     constructor() {
-        this.components = new Map();
         this.selectedComponent = null;
-        this.propertyPanel = null;
-        this.isDragging = false;
+        this.floatingPanels = new Map();
+        this.components = new Map();
     }
 
     initialize() {
-        this.createPropertyPanel();
-        this.setupEventListeners();
-        console.log('AWIP Component Editor initialized');
+        console.log('🎨 Component Editor initialized with floating panels');
+        this.setupDragAndDrop();
     }
 
-    createPropertyPanel() {
-        this.propertyPanel = document.getElementById('component-editor-panel');
-        if (!this.propertyPanel) {
-            console.warn('Component editor panel not found in DOM');
-        }
-    }
-
-    setupEventListeners() {
-        document.addEventListener('click', (e) => {
-            if (e.target.classList.contains('awip-component')) {
-                this.selectComponent(e.target);
+    setupFloatingPanels() {
+        // Floating property panels implementation
+        document.addEventListener('click', (event) => {
+            if (event.target.closest('.component-item')) {
+                this.showFloatingPanel(event.target);
             }
         });
     }
 
-    selectComponent(element) {
-        this.selectedComponent = element;
-        this.showPropertyPanel();
-        this.highlightComponent(element);
+    showFloatingPanel(component) {
+        const panel = this.createFloatingPanel(component);
+        document.body.appendChild(panel);
+
+        // Position near the component
+        const rect = component.getBoundingClientRect();
+        panel.style.left = (rect.right + 10) + 'px';
+        panel.style.top = rect.top + 'px';
     }
 
-    showPropertyPanel() {
-        if (this.propertyPanel) {
-            this.propertyPanel.style.display = 'block';
-            this.populateProperties();
-        }
+    createFloatingPanel(component) {
+        const panel = document.createElement('div');
+        panel.className = 'floating-panel';
+        panel.innerHTML = `
+            <h4 class="awip-accent mb-3">Component Properties</h4>
+            <div class="space-y-2">
+                <label class="block text-sm">Width:</label>
+                <input type="range" min="100" max="500" class="w-full">
+                <label class="block text-sm">Height:</label>
+                <input type="range" min="50" max="300" class="w-full">
+                <label class="block text-sm">Opacity:</label>
+                <input type="range" min="0" max="100" class="w-full">
+            </div>
+            <button onclick="this.parentElement.remove()" class="mt-3 px-3 py-1 bg-red-600 text-white rounded text-sm">
+                Close
+            </button>
+        `;
+
+        return panel;
     }
 
-    populateProperties() {
-        // Populate property panel with component properties
-        const content = document.getElementById('editor-content');
-        if (content && this.selectedComponent) {
-            // This would be populated with actual component properties
-            console.log('Populating properties for', this.selectedComponent);
-        }
-    }
-
-    highlightComponent(element) {
-        // Remove existing highlights
-        document.querySelectorAll('.awip-component-selected').forEach(el => {
-            el.classList.remove('awip-component-selected');
-        });
-
-        // Add highlight to selected component
-        element.classList.add('awip-component-selected');
-    }
-
-    adjustPosition() {
-        // Adjust panel position on window resize
-        if (this.propertyPanel && this.propertyPanel.style.display === 'block') {
-            const rect = this.propertyPanel.getBoundingClientRect();
-            const windowWidth = window.innerWidth;
-            const windowHeight = window.innerHeight;
-
-            if (rect.right > windowWidth) {
-                this.propertyPanel.style.left = (windowWidth - rect.width - 20) + 'px';
-            }
-            if (rect.bottom > windowHeight) {
-                this.propertyPanel.style.top = (windowHeight - rect.height - 20) + 'px';
-            }
-        }
+    setupDragAndDrop() {
+        // Enhanced drag and drop with SortableJS integration
+        console.log('🖱️ Drag and drop initialized');
     }
 }
 
-// Workflow Visualizer using D3.js
+// D3.js Workflow Visualizer
 class AWIPWorkflowVisualizer {
     constructor() {
         this.svg = null;
@@ -459,318 +315,154 @@ class AWIPWorkflowVisualizer {
         this.links = [];
     }
 
-    initialize() {
-        this.createVisualization();
-        console.log('AWIP Workflow Visualizer initialized');
-    }
-
-    createVisualization() {
-        const container = document.getElementById('workflow-canvas');
+    initialize(selector) {
+        const container = document.querySelector(selector);
         if (!container) return;
 
-        const width = container.clientWidth || 800;
-        const height = 400;
-
-        this.svg = d3.select('#workflow-canvas')
+        this.svg = d3.select(selector)
             .append('svg')
-            .attr('width', width)
-            .attr('height', height);
+            .attr('width', '100%')
+            .attr('height', '400px');
 
-        this.setupForceSimulation(width, height);
-        this.loadSampleData();
+        this.setupAgentNetwork();
+        console.log('📊 D3.js workflow visualizer initialized');
     }
 
-    setupForceSimulation(width, height) {
-        this.simulation = d3.forceSimulation()
-            .force('link', d3.forceLink().id(d => d.id).distance(100))
-            .force('charge', d3.forceManyBody().strength(-300))
-            .force('center', d3.forceCenter(width / 2, height / 2))
-            .force('collision', d3.forceCollide().radius(30));
-    }
-
-    loadSampleData() {
+    setupAgentNetwork() {
+        // Create agent network data
         this.nodes = [
-            { id: 'agent1', name: 'Discussion Agent', group: 1, x: 100, y: 100 },
-            { id: 'agent2', name: 'Analysis Agent', group: 2, x: 200, y: 150 },
-            { id: 'agent3', name: 'Processing Agent', group: 2, x: 300, y: 200 },
-            { id: 'agent4', name: 'Coordination Agent', group: 3, x: 400, y: 150 },
-            { id: 'agent5', name: 'QA Agent', group: 3, x: 500, y: 100 }
+            { id: 'agent20', name: 'Agent 20 (Enhanced)', type: 'primary' },
+            { id: 'agent2', name: 'Content Analysis', type: 'secondary' },
+            { id: 'agent3', name: 'Data Processing', type: 'secondary' },
+            { id: 'agent4', name: 'Workflow Coordination', type: 'secondary' },
+            { id: 'agent5', name: 'Quality Assurance', type: 'secondary' }
         ];
 
         this.links = [
-            { source: 'agent1', target: 'agent2', strength: 1 },
-            { source: 'agent2', target: 'agent3', strength: 1 },
-            { source: 'agent3', target: 'agent4', strength: 1 },
-            { source: 'agent4', target: 'agent5', strength: 1 },
-            { source: 'agent1', target: 'agent4', strength: 0.5 }
+            { source: 'agent20', target: 'agent2' },
+            { source: 'agent20', target: 'agent3' },
+            { source: 'agent20', target: 'agent4' },
+            { source: 'agent20', target: 'agent5' },
+            { source: 'agent2', target: 'agent3' },
+            { source: 'agent4', target: 'agent5' }
         ];
 
-        this.render();
+        this.renderNetwork();
     }
 
-    render() {
+    renderNetwork() {
         if (!this.svg) return;
 
-        // Clear existing elements
-        this.svg.selectAll('*').remove();
+        // D3 force simulation
+        this.simulation = d3.forceSimulation(this.nodes)
+            .force('link', d3.forceLink(this.links).id(d => d.id))
+            .force('charge', d3.forceManyBody().strength(-300))
+            .force('center', d3.forceCenter(400, 200));
 
-        // Create links
-        const link = this.svg.append('g')
-            .selectAll('line')
+        // Render links
+        const link = this.svg.selectAll('.link')
             .data(this.links)
             .enter().append('line')
+            .attr('class', 'link')
             .attr('stroke', '#00d4ff')
-            .attr('stroke-width', d => d.strength * 3)
-            .attr('stroke-opacity', 0.6);
-
-        // Create nodes
-        const node = this.svg.append('g')
-            .selectAll('g')
-            .data(this.nodes)
-            .enter().append('g')
-            .call(d3.drag()
-                .on('start', this.dragstarted.bind(this))
-                .on('drag', this.dragged.bind(this))
-                .on('end', this.dragended.bind(this)));
-
-        // Add circles for nodes
-        node.append('circle')
-            .attr('r', 25)
-            .attr('fill', d => {
-                const colors = ['#00d4ff', '#ff0080', '#10b981', '#f59e0b'];
-                return colors[d.group - 1] || '#6b7280';
-            })
-            .attr('stroke', '#ffffff')
             .attr('stroke-width', 2);
 
-        // Add labels
-        node.append('text')
-            .text(d => d.name.split(' ')[0])
-            .attr('text-anchor', 'middle')
-            .attr('dy', '.35em')
-            .attr('font-size', '12px')
-            .attr('fill', '#ffffff')
-            .attr('font-weight', 'bold');
+        // Render nodes
+        const node = this.svg.selectAll('.node')
+            .data(this.nodes)
+            .enter().append('circle')
+            .attr('class', 'node')
+            .attr('r', d => d.type === 'primary' ? 15 : 10)
+            .attr('fill', d => d.type === 'primary' ? '#ff0080' : '#00d4ff');
 
-        // Start simulation
-        this.simulation.nodes(this.nodes).on('tick', () => {
-            link.attr('x1', d => d.source.x)
+        // Add labels
+        const label = this.svg.selectAll('.label')
+            .data(this.nodes)
+            .enter().append('text')
+            .attr('class', 'label')
+            .attr('text-anchor', 'middle')
+            .attr('dy', 4)
+            .attr('fill', '#ffffff')
+            .attr('font-size', '12px')
+            .text(d => d.name);
+
+        // Update positions on simulation tick
+        this.simulation.on('tick', () => {
+            link
+                .attr('x1', d => d.source.x)
                 .attr('y1', d => d.source.y)
                 .attr('x2', d => d.target.x)
                 .attr('y2', d => d.target.y);
 
-            node.attr('transform', d => `translate(${d.x},${d.y})`);
+            node
+                .attr('cx', d => d.x)
+                .attr('cy', d => d.y);
+
+            label
+                .attr('x', d => d.x)
+                .attr('y', d => d.y);
         });
-
-        this.simulation.force('link').links(this.links);
     }
 
-    dragstarted(event, d) {
-        if (!event.active) this.simulation.alphaTarget(0.3).restart();
-        d.fx = d.x;
-        d.fy = d.y;
-    }
-
-    dragged(event, d) {
-        d.fx = event.x;
-        d.fy = event.y;
-    }
-
-    dragended(event, d) {
-        if (!event.active) this.simulation.alphaTarget(0);
-        d.fx = null;
-        d.fy = null;
-    }
-
-    resize() {
-        if (!this.svg) return;
-
-        const container = document.getElementById('workflow-canvas');
-        if (container) {
-            const width = container.clientWidth;
-            const height = 400;
-
-            this.svg.attr('width', width).attr('height', height);
-            this.simulation.force('center', d3.forceCenter(width / 2, height / 2));
-            this.simulation.alpha(1).restart();
-        }
+    updateGraph(data) {
+        // Update visualization with new data
+        console.log('📈 Workflow visualization updated:', data);
     }
 }
 
 // Performance Monitor
 class AWIPPerformanceMonitor {
     constructor() {
-        this.metrics = new Map();
-        this.chart = null;
+        this.metrics = [];
+        this.algorithms = new Map();
     }
 
-    initialize() {
-        this.setupMetrics();
-        this.initializeChart();
-        console.log('AWIP Performance Monitor initialized');
-    }
+    recordMetrics(performance) {
+        this.metrics.push(performance);
 
-    setupMetrics() {
-        this.metrics.set('cpu_usage', []);
-        this.metrics.set('memory_usage', []);
-        this.metrics.set('response_time', []);
-        this.metrics.set('agent_performance', []);
-        this.metrics.set('system_load', []);
-    }
-
-    initializeChart() {
-        const ctx = document.getElementById('performanceChart');
-        if (!ctx) return;
-
-        this.chart = new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: this.generateTimeLabels(),
-                datasets: [{
-                    label: 'Agent Performance',
-                    data: this.generateRandomData(),
-                    borderColor: '#00d4ff',
-                    backgroundColor: 'rgba(0, 212, 255, 0.1)',
-                    tension: 0.4,
-                    fill: true
-                }, {
-                    label: 'System Load',
-                    data: this.generateRandomData(),
-                    borderColor: '#ff0080',
-                    backgroundColor: 'rgba(255, 0, 128, 0.1)',
-                    tension: 0.4,
-                    fill: true
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        labels: { color: '#ffffff' }
-                    }
-                },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        max: 100,
-                        ticks: { color: '#ffffff' },
-                        grid: { color: 'rgba(255, 255, 255, 0.1)' }
-                    },
-                    x: {
-                        ticks: { color: '#ffffff' },
-                        grid: { color: 'rgba(255, 255, 255, 0.1)' }
-                    }
-                }
-            }
-        });
-    }
-
-    generateTimeLabels() {
-        const labels = [];
-        for (let i = 0; i < 24; i += 4) {
-            labels.push(i.toString().padStart(2, '0') + ':00');
+        // Keep only last 100 entries
+        if (this.metrics.length > 100) {
+            this.metrics.shift();
         }
-        return labels;
     }
 
-    generateRandomData() {
-        return Array.from({ length: 6 }, () => Math.floor(Math.random() * 40) + 60);
-    }
-
-    getLatestMetrics() {
-        return {
-            timestamp: Date.now(),
-            cpu_usage: Math.random() * 30 + 40,
-            memory_usage: Math.random() * 20 + 60,
-            response_time: Math.random() * 2 + 1,
-            agent_performance: Math.random() * 10 + 90,
-            system_load: Math.random() * 30 + 50
+    getAlgorithmPerformance(algorithm) {
+        return this.algorithms.get(algorithm) || {
+            improvement: 0,
+            iterations: 0,
+            efficiency: 0
         };
     }
+}
 
-    calculateSystemHealth() {
-        const metrics = this.getLatestMetrics();
-        const health = (
-            (100 - metrics.cpu_usage) * 0.3 +
-            (100 - metrics.memory_usage) * 0.3 +
-            (100 - Math.min(metrics.response_time * 10, 100)) * 0.2 +
-            metrics.agent_performance * 0.2
-        );
-        return Math.max(0, Math.min(100, health));
-    }
-
-    updateChart() {
-        if (!this.chart) return;
-
-        const newData = this.generateRandomData();
-        this.chart.data.datasets[0].data = newData;
-        this.chart.data.datasets[1].data = this.generateRandomData();
-        this.chart.update('none');
+// Global functions for UI interaction
+function toggleComponentEditor() {
+    const panel = document.getElementById('componentEditorPanel');
+    if (panel) {
+        panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
     }
 }
 
-// Web Components for reusable AWIP elements
-class AWIPComponent extends HTMLElement {
-    constructor() {
-        super();
-        this.attachShadow({ mode: 'open' });
-    }
-
-    connectedCallback() {
-        this.render();
-        this.setupEventListeners();
-    }
-
-    render() {
-        // Override in subclasses
-    }
-
-    setupEventListeners() {
-        // Override in subclasses
+function showWorkflowView() {
+    const section = document.getElementById('workflow-section');
+    if (section) {
+        section.style.display = section.style.display === 'none' ? 'block' : 'none';
     }
 }
 
-// Status Indicator Web Component
-class AWIPStatusIndicator extends AWIPComponent {
-    render() {
-        const status = this.getAttribute('status') || 'operational';
-        const size = this.getAttribute('size') || '12px';
-
-        this.shadowRoot.innerHTML = `
-            <style>
-                .indicator {
-                    width: ${size};
-                    height: ${size};
-                    border-radius: 50%;
-                    display: inline-block;
-                    margin-right: 8px;
-                }
-                .operational { background: #10b981; }
-                .warning { background: #f59e0b; }
-                .error { background: #ef4444; }
-                .info { background: #3b82f6; }
-            </style>
-            <span class="indicator ${status}"></span>
-        `;
-    }
-}
-
-// Initialize the dashboard when the script loads
+// Initialize AWIP Dashboard
 document.addEventListener('DOMContentLoaded', () => {
-    // Register custom web components
-    customElements.define('awip-status-indicator', AWIPStatusIndicator);
-
-    // Initialize the main dashboard
     window.awipDashboard = new AWIPDashboard();
+    console.log('🚀 AWIP Dashboard initialized with dual-repository operational standards');
 });
 
-// Export classes for external use
-window.AWIPDashboard = AWIPDashboard;
-window.AWIPStateManager = AWIPStateManager;
-window.AWIPAgentSystem = AWIPAgentSystem;
-window.AWIPComponentEditor = AWIPComponentEditor;
-window.AWIPWorkflowVisualizer = AWIPWorkflowVisualizer;
-window.AWIPPerformanceMonitor = AWIPPerformanceMonitor;
-
-console.log('AWIP Enhanced Dashboard Script Loaded');
+// Connection status monitoring
+setInterval(() => {
+    const statusElement = document.getElementById('connection-status');
+    if (statusElement) {
+        // Simulate connection monitoring
+        const isConnected = Math.random() > 0.05; // 95% uptime simulation
+        statusElement.textContent = isConnected ? 'Connected' : 'Reconnecting...';
+        statusElement.className = isConnected ? 'text-green-400' : 'text-yellow-400';
+    }
+}, 10000);

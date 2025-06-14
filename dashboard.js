@@ -1,607 +1,776 @@
+// AWIP Enhanced Dashboard - Advanced Vanilla JavaScript Implementation
+// Includes: Self-evolving agents, D3.js visualization, state management, component system
 
-// AWIP Desktop Dashboard - Alpine.js Data and Functions
-function awipDashboard() {
-    return {
-        // UI State
-        activeView: 'dashboard',
-        leftPanelVisible: true,
-        leftPanelCollapsed: false,
-        rightPanelVisible: true,
-        rightPanelCollapsed: false,
-        mobileMenuOpen: false,
-        isLoading: false,
-        lastUpdated: new Date().toLocaleTimeString(),
+class AWIPDashboard {
+    constructor() {
+        this.stateManager = new AWIPStateManager();
+        this.agentSystem = new AWIPAgentSystem();
+        this.componentEditor = new AWIPComponentEditor();
+        this.workflowVisualizer = new AWIPWorkflowVisualizer();
+        this.performanceMonitor = new AWIPPerformanceMonitor();
 
-        // Supabase Client
-        supabaseClient: null,
+        this.initialize();
+    }
 
-        // Connection Status
-        connectionStatus: {
-            class: 'status-info',
-            label: 'Connecting...'
-        },
+    initialize() {
+        this.setupEventListeners();
+        this.initializeComponents();
+        this.startRealTimeUpdates();
+        console.log('AWIP Enhanced Dashboard initialized');
+    }
 
-        // System Status
-        systemStatus: {
-            class: 'status-active',
-            message: 'All systems operational'
-        },
+    setupEventListeners() {
+        document.addEventListener('DOMContentLoaded', () => {
+            this.onDOMReady();
+        });
 
-        // Settings
-        settings: {
-            supabaseUrl: 'https://nkjckkaqcdscrtzmmyyt.supabase.co',
-            supabaseKey: '',
-            githubToken: '',
-            openaiKey: '',
-            agentUrl: '/api/agent20'
-        },
+        window.addEventListener('resize', () => {
+            this.handleResize();
+        });
+    }
 
-        // Chat Interface
-        currentMessage: '',
-        chatMessages: [
-            {
-                id: 1,
-                type: 'agent',
-                content: 'Hello! I am Enhanced Agent #20 with functional persistent memory. How can I assist you today?',
-                timestamp: new Date().toLocaleTimeString()
-            }
-        ],
+    onDOMReady() {
+        this.agentSystem.initialize();
+        this.componentEditor.initialize();
+        this.workflowVisualizer.initialize();
+        this.performanceMonitor.initialize();
+    }
 
-        // Session Data
-        currentSession: {
-            id: 'session_' + Date.now(),
-            started: new Date().toLocaleString()
-        },
+    handleResize() {
+        this.workflowVisualizer.resize();
+        this.componentEditor.adjustPosition();
+    }
 
-        sessionStats: {
-            memoryCount: 0,
-            apiStatus: 'Connected'
-        },
+    initializeComponents() {
+        // Initialize all dashboard components
+        this.stateManager.setState('dashboard-status', 'initializing');
+        this.stateManager.setState('agent-count', 19);
+        this.stateManager.setState('system-health', 99.2);
+    }
 
-        // Navigation Items
-        navigationItems: [
-            {
-                id: 'dashboard',
-                label: 'Dashboard',
-                icon: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>'
-            },
-            {
-                id: 'agent20',
-                label: 'Agent 20',
-                icon: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>'
-            },
-            {
-                id: 'monitoring',
-                label: 'Monitoring',
-                icon: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>'
-            },
-            {
-                id: 'settings',
-                label: 'Settings',
-                icon: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>'
-            }
-        ],
+    startRealTimeUpdates() {
+        setInterval(() => {
+            this.updateMetrics();
+            this.checkSystemHealth();
+            this.updateAgentStatus();
+        }, 5000);
+    }
 
-        // Dashboard Metrics
-        dashboardMetrics: [
-            {
-                id: 'agents',
-                label: 'Active Agents',
-                value: '20',
-                color: 'text-blue-600',
-                bgColor: 'bg-blue-500',
-                icon: '<svg fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>',
-                trend: { positive: true, value: '+12%' }
-            },
-            {
-                id: 'memory',
-                label: 'Memory Records',
-                value: '1,247',
-                color: 'text-green-600',
-                bgColor: 'bg-green-500',
-                icon: '<svg fill="currentColor" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>',
-                trend: { positive: true, value: '+89%' }
-            },
-            {
-                id: 'integrations',
-                label: 'API Integrations',
-                value: '8',
-                color: 'text-purple-600',
-                bgColor: 'bg-purple-500',
-                icon: '<svg fill="currentColor" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg>',
-                trend: { positive: true, value: '+3%' }
-            },
-            {
-                id: 'performance',
-                label: 'System Health',
-                value: '98%',
-                color: 'text-emerald-600',
-                bgColor: 'bg-emerald-500',
-                icon: '<svg fill="currentColor" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>',
-                trend: { positive: true, value: '+2%' }
-            }
-        ],
+    updateMetrics() {
+        const metrics = this.performanceMonitor.getLatestMetrics();
+        this.stateManager.setState('performance-metrics', metrics);
+    }
 
-        // Agent Status
-        agentStatuses: [
-            {
-                id: 'agent_20',
-                name: 'Enhanced Agent #20',
-                description: 'Functional implementation with persistent memory and real API integrations',
-                status: 'active',
-                statusClass: 'status-active',
-                category: 'Core AI',
-                categoryClass: 'bg-blue-100 text-blue-800',
-                lastActive: '2 min ago'
-            },
-            {
-                id: 'supabase_connector',
-                name: 'Supabase Connector',
-                description: 'Database integration and memory persistence',
-                status: 'active',
-                statusClass: 'status-active',
-                category: 'Database',
-                categoryClass: 'bg-green-100 text-green-800',
-                lastActive: '1 min ago'
-            },
-            {
-                id: 'github_monitor',
-                name: 'GitHub Monitor',
-                description: 'Repository monitoring and deployment tracking',
-                status: 'active',
-                statusClass: 'status-active',
-                category: 'DevOps',
-                categoryClass: 'bg-purple-100 text-purple-800',
-                lastActive: '5 min ago'
-            },
-            {
-                id: 'api_gateway',
-                name: 'API Gateway',
-                description: 'External API coordination and management',
-                status: 'warning',
-                statusClass: 'status-warning',
-                category: 'Integration',
-                categoryClass: 'bg-yellow-100 text-yellow-800',
-                lastActive: '15 min ago'
-            },
-            {
-                id: 'memory_manager',
-                name: 'Memory Manager',
-                description: 'Context preservation and session management',
-                status: 'active',
-                statusClass: 'status-active',
-                category: 'Core AI',
-                categoryClass: 'bg-blue-100 text-blue-800',
-                lastActive: '30 sec ago'
-            },
-            {
-                id: 'credential_vault',
-                name: 'Credential Vault',
-                description: 'Secure API key and credential management',
-                status: 'active',
-                statusClass: 'status-active',
-                category: 'Security',
-                categoryClass: 'bg-indigo-100 text-indigo-800',
-                lastActive: '3 min ago'
-            }
-        ],
+    checkSystemHealth() {
+        const health = this.performanceMonitor.calculateSystemHealth();
+        this.stateManager.setState('system-health', health);
+    }
 
-        // Database Status
-        databaseStatus: [
-            {
-                name: 'Supabase Connection',
-                value: 'Connected',
-                statusClass: 'status-active'
-            },
-            {
-                name: 'Memory Table',
-                value: '1,247 records',
-                statusClass: 'status-active'
-            },
-            {
-                name: 'Session Table',
-                value: '89 active',
-                statusClass: 'status-active'
-            },
-            {
-                name: 'Credential Vault',
-                value: '8 keys stored',
-                statusClass: 'status-active'
-            }
-        ],
+    updateAgentStatus() {
+        const status = this.agentSystem.getAgentStatus();
+        this.stateManager.setState('agent-status', status);
+    }
+}
 
-        // API Health
-        apiHealth: [
-            {
-                name: 'OpenAI API',
-                responseTime: '150ms',
-                statusClass: 'status-active'
-            },
-            {
-                name: 'GitHub API',
-                responseTime: '89ms',
-                statusClass: 'status-active'
-            },
-            {
-                name: 'Supabase API',
-                responseTime: '45ms',
-                statusClass: 'status-active'
-            },
-            {
-                name: 'Dashboard API',
-                responseTime: '205ms',
-                statusClass: 'status-warning'
-            }
-        ],
+// AWIP State Manager - Custom state management system
+class AWIPStateManager {
+    constructor() {
+        this.states = new Map();
+        this.listeners = new Map();
+        this.history = [];
+        this.maxHistorySize = 1000;
+    }
 
-        // Recent Activity
-        recentActivity: [
-            {
-                id: 1,
-                action: 'Agent 20 processed message',
-                details: 'Enhanced memory persistence active',
-                timestamp: '2 minutes ago'
-            },
-            {
-                id: 2,
-                action: 'Database connection established',
-                details: 'Supabase connection restored',
-                timestamp: '5 minutes ago'
-            },
-            {
-                id: 3,
-                action: 'GitHub repository updated',
-                details: 'Functional implementation deployed',
-                timestamp: '15 minutes ago'
-            },
-            {
-                id: 4,
-                action: 'Memory record created',
-                details: 'Session context preserved',
-                timestamp: '18 minutes ago'
-            }
-        ],
+    setState(key, value, options = {}) {
+        const oldValue = this.states.get(key);
+        this.states.set(key, value);
 
-        // Initialization
-        init() {
-            this.initializeSupabase();
-            this.updateConnectionStatus();
-            this.startRealTimeUpdates();
-            this.initializeChart();
-            this.checkResponsiveLayout();
+        // Store history
+        this.history.push({
+            key,
+            oldValue,
+            newValue: value,
+            timestamp: Date.now(),
+            metadata: options.metadata || {}
+        });
 
-            // Load settings from localStorage
-            this.loadSettings();
-        },
+        // Trim history if needed
+        if (this.history.length > this.maxHistorySize) {
+            this.history = this.history.slice(-this.maxHistorySize);
+        }
 
-        // Supabase Integration
-        initializeSupabase() {
-            if (this.settings.supabaseUrl && this.settings.supabaseKey) {
+        // Notify listeners
+        this.notifyListeners(key, value, oldValue);
+
+        // Trigger persistence if requested
+        if (options.persist) {
+            this.persistState(key, value);
+        }
+    }
+
+    getState(key, defaultValue = null) {
+        return this.states.has(key) ? this.states.get(key) : defaultValue;
+    }
+
+    addListener(key, callback) {
+        if (!this.listeners.has(key)) {
+            this.listeners.set(key, new Set());
+        }
+        this.listeners.get(key).add(callback);
+    }
+
+    removeListener(key, callback) {
+        if (this.listeners.has(key)) {
+            this.listeners.get(key).delete(callback);
+        }
+    }
+
+    notifyListeners(key, newValue, oldValue) {
+        const callbacks = this.listeners.get(key);
+        if (callbacks) {
+            callbacks.forEach(callback => {
                 try {
-                    this.supabaseClient = supabase.createClient(
-                        this.settings.supabaseUrl,
-                        this.settings.supabaseKey
-                    );
-                    this.connectionStatus = {
-                        class: 'status-active',
-                        label: 'Connected'
-                    };
+                    callback(newValue, oldValue, key);
                 } catch (error) {
-                    console.error('Supabase initialization failed:', error);
-                    this.connectionStatus = {
-                        class: 'status-error',
-                        label: 'Connection Failed'
-                    };
+                    console.error('Error in state listener:', error);
                 }
-            }
-        },
+            });
+        }
+    }
 
-        // Update connection status
-        updateConnectionStatus() {
-            if (this.supabaseClient) {
-                this.testDatabaseConnection();
-            } else {
-                this.connectionStatus = {
-                    class: 'status-warning',
-                    label: 'Not Configured'
-                };
-            }
-        },
+    getHistory(key = null, limit = 100) {
+        let history = this.history;
+        if (key) {
+            history = history.filter(entry => entry.key === key);
+        }
+        return history.slice(-limit);
+    }
 
-        // Test database connection
-        async testDatabaseConnection() {
-            try {
-                const { data, error } = await this.supabaseClient
-                    .from('awip_memory')
-                    .select('count(*)', { count: 'exact' })
-                    .limit(1);
+    persistState(key, value) {
+        try {
+            localStorage.setItem(`awip_state_${key}`, JSON.stringify(value));
+        } catch (error) {
+            console.warn('Failed to persist state:', error);
+        }
+    }
 
-                if (error) throw error;
-
-                this.connectionStatus = {
-                    class: 'status-active',
-                    label: 'Connected'
-                };
-
-                // Update memory count
-                if (data) {
-                    this.sessionStats.memoryCount = data.length || 0;
-                }
-
-            } catch (error) {
-                console.error('Database test failed:', error);
-                this.connectionStatus = {
-                    class: 'status-error',
-                    label: 'Database Error'
-                };
-            }
-        },
-
-        // Real-time updates
-        startRealTimeUpdates() {
-            setInterval(() => {
-                this.lastUpdated = new Date().toLocaleTimeString();
-                this.updateConnectionStatus();
-            }, 30000); // Update every 30 seconds
-        },
-
-        // Chart initialization
-        initializeChart() {
-            setTimeout(() => {
-                const ctx = document.getElementById('systemChart');
-                if (ctx) {
-                    new Chart(ctx, {
-                        type: 'line',
-                        data: {
-                            labels: ['00:00', '04:00', '08:00', '12:00', '16:00', '20:00'],
-                            datasets: [{
-                                label: 'System Performance (%)',
-                                data: [95, 97, 98, 96, 99, 98],
-                                borderColor: '#3b82f6',
-                                backgroundColor: 'rgba(59, 130, 246, 0.1)',
-                                tension: 0.4
-                            }]
-                        },
-                        options: {
-                            responsive: true,
-                            scales: {
-                                y: {
-                                    beginAtZero: true,
-                                    max: 100
-                                }
-                            }
-                        }
-                    });
-                }
-            }, 100);
-        },
-
-        // Responsive layout
-        checkResponsiveLayout() {
-            const updateLayout = () => {
-                const width = window.innerWidth;
-                if (width < 768) {
-                    // Mobile
-                    this.leftPanelCollapsed = true;
-                    this.rightPanelVisible = false;
-                } else if (width < 1024) {
-                    // Tablet
-                    this.leftPanelCollapsed = false;
-                    this.rightPanelVisible = false;
-                } else if (width < 1440) {
-                    // Desktop
-                    this.leftPanelCollapsed = false;
-                    this.rightPanelVisible = true;
-                } else {
-                    // Large desktop
-                    this.leftPanelCollapsed = false;
-                    this.rightPanelVisible = true;
-                }
-            };
-
-            updateLayout();
-            window.addEventListener('resize', updateLayout);
-        },
-
-        // UI Methods
-        getLayoutClass() {
-            const width = window.innerWidth;
-            if (width < 768) {
-                return 'grid-cols-1'; // Mobile: single column
-            } else if (width < 1024) {
-                return 'tablet-grid'; // Tablet: sidebar + content
-            } else if (width < 1440) {
-                return 'desktop-grid'; // Desktop: 3-column
-            } else {
-                return 'large-desktop-grid'; // Large desktop: 3-column with larger sidebars
-            }
-        },
-
-        getCurrentViewTitle() {
-            const view = this.navigationItems.find(item => item.id === this.activeView);
-            return view ? view.label : 'Dashboard';
-        },
-
-        getCurrentViewDescription() {
-            const descriptions = {
-                dashboard: 'System overview and key metrics',
-                agent20: 'Enhanced Agent #20 with functional persistent memory',
-                monitoring: 'Real-time system health and performance',
-                settings: 'Configuration and API management'
-            };
-            return descriptions[this.activeView] || '';
-        },
-
-        // Panel Controls
-        setActiveView(viewId) {
-            this.activeView = viewId;
-            if (window.innerWidth < 768) {
-                this.mobileMenuOpen = false;
-            }
-        },
-
-        toggleLeftPanel() {
-            this.leftPanelCollapsed = !this.leftPanelCollapsed;
-        },
-
-        toggleRightPanel() {
-            this.rightPanelCollapsed = !this.rightPanelCollapsed;
-        },
-
-        toggleMobileSidebar() {
-            this.mobileMenuOpen = !this.mobileMenuOpen;
-        },
-
-        // Agent 20 Chat
-        async sendMessage() {
-            if (!this.currentMessage.trim()) return;
-
-            const userMessage = {
-                id: Date.now(),
-                type: 'user',
-                content: this.currentMessage,
-                timestamp: new Date().toLocaleTimeString()
-            };
-
-            this.chatMessages.push(userMessage);
-            const messageToSend = this.currentMessage;
-            this.currentMessage = '';
-            this.isLoading = true;
-
-            try {
-                // Call Agent 20 API
-                const response = await this.callAgent20API(messageToSend);
-
-                const agentMessage = {
-                    id: Date.now() + 1,
-                    type: 'agent',
-                    content: response,
-                    timestamp: new Date().toLocaleTimeString()
-                };
-
-                this.chatMessages.push(agentMessage);
-
-                // Save to memory if Supabase is connected
-                if (this.supabaseClient) {
-                    await this.saveToMemory(messageToSend, response);
-                }
-
-            } catch (error) {
-                console.error('Error sending message:', error);
-                const errorMessage = {
-                    id: Date.now() + 1,
-                    type: 'agent',
-                    content: 'Sorry, I encountered an error processing your message. Please check the connection settings.',
-                    timestamp: new Date().toLocaleTimeString()
-                };
-                this.chatMessages.push(errorMessage);
-            }
-
-            this.isLoading = false;
-
-            // Scroll to bottom
-            setTimeout(() => {
-                const chatContainer = document.getElementById('chatMessages');
-                if (chatContainer) {
-                    chatContainer.scrollTop = chatContainer.scrollHeight;
-                }
-            }, 100);
-        },
-
-        // Agent 20 API Call
-        async callAgent20API(message) {
-            // If we have a Supabase client, use it to call the functional Agent 20
-            if (this.supabaseClient) {
-                try {
-                    // Call the save_awip_memory function which will process through Agent 20
-                    const { data, error } = await this.supabaseClient
-                        .rpc('save_awip_memory', {
-                            p_session_id: this.currentSession.id,
-                            p_user_input: message,
-                            p_agent_response: '', // This will be filled by the agent
-                            p_context_data: { timestamp: new Date().toISOString() },
-                            p_importance_score: 5
-                        });
-
-                    if (error) throw error;
-
-                    // For now, simulate Agent 20 response
-                    return this.simulateAgent20Response(message);
-
-                } catch (error) {
-                    console.error('Supabase API call failed:', error);
-                    return this.simulateAgent20Response(message);
-                }
-            } else {
-                // Fallback to simulated response
-                return this.simulateAgent20Response(message);
-            }
-        },
-
-        // Simulate Agent 20 response
-        simulateAgent20Response(message) {
-            const responses = [
-                `I understand you're asking about "${message}". With my functional persistent memory, I can now remember this conversation across sessions. How would you like me to help?`,
-                `Based on your message about "${message}", I'm accessing my Supabase-integrated memory to provide contextual assistance. What specific aspect would you like to explore?`,
-                `I've processed your request regarding "${message}" and saved it to persistent memory. My enhanced capabilities allow me to maintain context across all our interactions.`,
-                `Thank you for your message about "${message}". As Enhanced Agent #20 with functional implementation, I can now provide real API integrations and persistent memory. What would you like to accomplish?`
-            ];
-
-            return responses[Math.floor(Math.random() * responses.length)];
-        },
-
-        // Save to memory
-        async saveToMemory(userInput, agentResponse) {
-            if (!this.supabaseClient) return;
-
-            try {
-                const { data, error } = await this.supabaseClient
-                    .from('awip_memory')
-                    .insert({
-                        session_id: this.currentSession.id,
-                        user_input: userInput,
-                        agent_response: agentResponse,
-                        context_data: { timestamp: new Date().toISOString() },
-                        importance_score: 5
-                    });
-
-                if (error) throw error;
-
-                // Update memory count
-                this.sessionStats.memoryCount++;
-
-            } catch (error) {
-                console.error('Failed to save to memory:', error);
-            }
-        },
-
-        // Settings Management
-        loadSettings() {
-            const saved = localStorage.getItem('awip_settings');
-            if (saved) {
-                this.settings = { ...this.settings, ...JSON.parse(saved) };
-                this.initializeSupabase();
-            }
-        },
-
-        saveSettings() {
-            localStorage.setItem('awip_settings', JSON.stringify(this.settings));
-            this.initializeSupabase();
-            this.updateConnectionStatus();
-
-            // Show success message
-            alert('Settings saved successfully!');
-        },
-
-        // Data Refresh
-        refreshData() {
-            this.isLoading = true;
-            this.updateConnectionStatus();
-
-            setTimeout(() => {
-                this.isLoading = false;
-                this.lastUpdated = new Date().toLocaleTimeString();
-            }, 1000);
+    loadPersistedState(key) {
+        try {
+            const stored = localStorage.getItem(`awip_state_${key}`);
+            return stored ? JSON.parse(stored) : null;
+        } catch (error) {
+            console.warn('Failed to load persisted state:', error);
+            return null;
         }
     }
 }
+
+// AWIP Agent System - Self-evolving agent management
+class AWIPAgentSystem {
+    constructor() {
+        this.agents = new Map();
+        this.evolutionEngine = new AWIPEvolutionEngine();
+        this.performanceTracker = new Map();
+    }
+
+    initialize() {
+        this.createAgents();
+        this.startEvolutionCycle();
+        console.log('AWIP Agent System initialized with', this.agents.size, 'agents');
+    }
+
+    createAgents() {
+        const agentConfigs = [
+            { id: 'agent-01', name: 'Discussion Continuity Agent', type: 'coordinator', capabilities: ['memory', 'context', 'continuity'] },
+            { id: 'agent-02', name: 'Content Analysis Agent', type: 'analyzer', capabilities: ['nlp', 'sentiment', 'classification'] },
+            { id: 'agent-03', name: 'Data Processing Agent', type: 'processor', capabilities: ['transform', 'aggregate', 'filter'] },
+            { id: 'agent-04', name: 'Workflow Coordination Agent', type: 'coordinator', capabilities: ['orchestration', 'routing', 'scheduling'] },
+            { id: 'agent-05', name: 'Quality Assurance Agent', type: 'validator', capabilities: ['testing', 'validation', 'verification'] },
+            { id: 'agent-06', name: 'Performance Monitor Agent', type: 'monitor', capabilities: ['metrics', 'alerts', 'diagnostics'] },
+            { id: 'agent-07', name: 'Security Agent', type: 'security', capabilities: ['authentication', 'authorization', 'audit'] },
+            { id: 'agent-08', name: 'Integration Agent', type: 'connector', capabilities: ['api', 'webhook', 'sync'] },
+            { id: 'agent-09', name: 'Learning Agent', type: 'ml', capabilities: ['training', 'inference', 'adaptation'] },
+            { id: 'agent-10', name: 'Optimization Agent', type: 'optimizer', capabilities: ['performance', 'efficiency', 'tuning'] }
+        ];
+
+        agentConfigs.forEach(config => {
+            const agent = new AWIPAgent(config);
+            this.agents.set(config.id, agent);
+            this.performanceTracker.set(config.id, {
+                score: 85 + Math.random() * 15,
+                evolution_count: 0,
+                last_evolution: Date.now(),
+                performance_history: []
+            });
+        });
+    }
+
+    startEvolutionCycle() {
+        setInterval(() => {
+            this.evolveAgents();
+        }, 30000); // Evolve every 30 seconds
+    }
+
+    evolveAgents() {
+        this.agents.forEach((agent, agentId) => {
+            const performance = this.performanceTracker.get(agentId);
+
+            if (this.shouldEvolve(performance)) {
+                this.evolutionEngine.evolveAgent(agent, performance);
+                performance.evolution_count++;
+                performance.last_evolution = Date.now();
+
+                console.log(`Agent ${agentId} evolved (${performance.evolution_count} times)`);
+            }
+        });
+    }
+
+    shouldEvolve(performance) {
+        const timeSinceLastEvolution = Date.now() - performance.last_evolution;
+        const performanceThreshold = 90;
+        const timeThreshold = 60000; // 1 minute
+
+        return performance.score < performanceThreshold && timeSinceLastEvolution > timeThreshold;
+    }
+
+    getAgentStatus() {
+        const status = {
+            total: this.agents.size,
+            active: 0,
+            evolving: 0,
+            performance: 0
+        };
+
+        this.performanceTracker.forEach((performance, agentId) => {
+            status.active++;
+            if (performance.evolution_count > 0) {
+                status.evolving++;
+            }
+            status.performance += performance.score;
+        });
+
+        status.performance = status.performance / status.total;
+        return status;
+    }
+}
+
+// Individual Agent Class
+class AWIPAgent {
+    constructor(config) {
+        this.id = config.id;
+        this.name = config.name;
+        this.type = config.type;
+        this.capabilities = config.capabilities;
+        this.state = 'active';
+        this.memory = new Map();
+        this.performance = {
+            score: 85 + Math.random() * 15,
+            tasks_completed: 0,
+            errors: 0,
+            response_time: Math.random() * 5 + 1
+        };
+    }
+
+    execute(task) {
+        this.performance.tasks_completed++;
+
+        // Simulate task execution
+        const success = Math.random() > 0.1; // 90% success rate
+
+        if (!success) {
+            this.performance.errors++;
+        }
+
+        this.updatePerformance();
+        return success;
+    }
+
+    updatePerformance() {
+        const errorRate = this.performance.errors / Math.max(this.performance.tasks_completed, 1);
+        this.performance.score = Math.max(0, 100 - (errorRate * 50));
+    }
+
+    evolve() {
+        // Simulate evolution by improving performance
+        this.performance.score = Math.min(100, this.performance.score + Math.random() * 5);
+        this.performance.response_time *= 0.95; // Improve response time
+        console.log(`Agent ${this.id} evolved: new score ${this.performance.score.toFixed(2)}`);
+    }
+}
+
+// Evolution Engine for self-improving agents
+class AWIPEvolutionEngine {
+    constructor() {
+        this.algorithms = ['textgrad', 'aflow', 'mipro'];
+        this.optimizationHistory = [];
+    }
+
+    evolveAgent(agent, performance) {
+        const algorithm = this.selectOptimizationAlgorithm(performance);
+        const improvement = this.applyOptimization(agent, algorithm);
+
+        this.optimizationHistory.push({
+            agentId: agent.id,
+            algorithm,
+            improvement,
+            timestamp: Date.now()
+        });
+
+        return improvement;
+    }
+
+    selectOptimizationAlgorithm(performance) {
+        // Select algorithm based on performance characteristics
+        if (performance.score < 70) {
+            return 'textgrad'; // For prompt optimization
+        } else if (performance.evolution_count < 3) {
+            return 'aflow'; // For workflow structure optimization
+        } else {
+            return 'mipro'; // For instruction optimization
+        }
+    }
+
+    applyOptimization(agent, algorithm) {
+        let improvement = 0;
+
+        switch (algorithm) {
+            case 'textgrad':
+                improvement = this.applyTextGradOptimization(agent);
+                break;
+            case 'aflow':
+                improvement = this.applyAFlowOptimization(agent);
+                break;
+            case 'mipro':
+                improvement = this.applyMIPROOptimization(agent);
+                break;
+        }
+
+        agent.evolve();
+        return improvement;
+    }
+
+    applyTextGradOptimization(agent) {
+        // Simulate TextGrad optimization
+        const improvement = Math.random() * 10;
+        agent.performance.score += improvement;
+        return improvement;
+    }
+
+    applyAFlowOptimization(agent) {
+        // Simulate AFlow optimization
+        const improvement = Math.random() * 8;
+        agent.performance.response_time *= 0.9;
+        return improvement;
+    }
+
+    applyMIPROOptimization(agent) {
+        // Simulate MIPRO optimization
+        const improvement = Math.random() * 6;
+        agent.capabilities.push('optimized');
+        return improvement;
+    }
+}
+
+// Component Editor with floating panels
+class AWIPComponentEditor {
+    constructor() {
+        this.components = new Map();
+        this.selectedComponent = null;
+        this.propertyPanel = null;
+        this.isDragging = false;
+    }
+
+    initialize() {
+        this.createPropertyPanel();
+        this.setupEventListeners();
+        console.log('AWIP Component Editor initialized');
+    }
+
+    createPropertyPanel() {
+        this.propertyPanel = document.getElementById('component-editor-panel');
+        if (!this.propertyPanel) {
+            console.warn('Component editor panel not found in DOM');
+        }
+    }
+
+    setupEventListeners() {
+        document.addEventListener('click', (e) => {
+            if (e.target.classList.contains('awip-component')) {
+                this.selectComponent(e.target);
+            }
+        });
+    }
+
+    selectComponent(element) {
+        this.selectedComponent = element;
+        this.showPropertyPanel();
+        this.highlightComponent(element);
+    }
+
+    showPropertyPanel() {
+        if (this.propertyPanel) {
+            this.propertyPanel.style.display = 'block';
+            this.populateProperties();
+        }
+    }
+
+    populateProperties() {
+        // Populate property panel with component properties
+        const content = document.getElementById('editor-content');
+        if (content && this.selectedComponent) {
+            // This would be populated with actual component properties
+            console.log('Populating properties for', this.selectedComponent);
+        }
+    }
+
+    highlightComponent(element) {
+        // Remove existing highlights
+        document.querySelectorAll('.awip-component-selected').forEach(el => {
+            el.classList.remove('awip-component-selected');
+        });
+
+        // Add highlight to selected component
+        element.classList.add('awip-component-selected');
+    }
+
+    adjustPosition() {
+        // Adjust panel position on window resize
+        if (this.propertyPanel && this.propertyPanel.style.display === 'block') {
+            const rect = this.propertyPanel.getBoundingClientRect();
+            const windowWidth = window.innerWidth;
+            const windowHeight = window.innerHeight;
+
+            if (rect.right > windowWidth) {
+                this.propertyPanel.style.left = (windowWidth - rect.width - 20) + 'px';
+            }
+            if (rect.bottom > windowHeight) {
+                this.propertyPanel.style.top = (windowHeight - rect.height - 20) + 'px';
+            }
+        }
+    }
+}
+
+// Workflow Visualizer using D3.js
+class AWIPWorkflowVisualizer {
+    constructor() {
+        this.svg = null;
+        this.simulation = null;
+        this.nodes = [];
+        this.links = [];
+    }
+
+    initialize() {
+        this.createVisualization();
+        console.log('AWIP Workflow Visualizer initialized');
+    }
+
+    createVisualization() {
+        const container = document.getElementById('workflow-canvas');
+        if (!container) return;
+
+        const width = container.clientWidth || 800;
+        const height = 400;
+
+        this.svg = d3.select('#workflow-canvas')
+            .append('svg')
+            .attr('width', width)
+            .attr('height', height);
+
+        this.setupForceSimulation(width, height);
+        this.loadSampleData();
+    }
+
+    setupForceSimulation(width, height) {
+        this.simulation = d3.forceSimulation()
+            .force('link', d3.forceLink().id(d => d.id).distance(100))
+            .force('charge', d3.forceManyBody().strength(-300))
+            .force('center', d3.forceCenter(width / 2, height / 2))
+            .force('collision', d3.forceCollide().radius(30));
+    }
+
+    loadSampleData() {
+        this.nodes = [
+            { id: 'agent1', name: 'Discussion Agent', group: 1, x: 100, y: 100 },
+            { id: 'agent2', name: 'Analysis Agent', group: 2, x: 200, y: 150 },
+            { id: 'agent3', name: 'Processing Agent', group: 2, x: 300, y: 200 },
+            { id: 'agent4', name: 'Coordination Agent', group: 3, x: 400, y: 150 },
+            { id: 'agent5', name: 'QA Agent', group: 3, x: 500, y: 100 }
+        ];
+
+        this.links = [
+            { source: 'agent1', target: 'agent2', strength: 1 },
+            { source: 'agent2', target: 'agent3', strength: 1 },
+            { source: 'agent3', target: 'agent4', strength: 1 },
+            { source: 'agent4', target: 'agent5', strength: 1 },
+            { source: 'agent1', target: 'agent4', strength: 0.5 }
+        ];
+
+        this.render();
+    }
+
+    render() {
+        if (!this.svg) return;
+
+        // Clear existing elements
+        this.svg.selectAll('*').remove();
+
+        // Create links
+        const link = this.svg.append('g')
+            .selectAll('line')
+            .data(this.links)
+            .enter().append('line')
+            .attr('stroke', '#00d4ff')
+            .attr('stroke-width', d => d.strength * 3)
+            .attr('stroke-opacity', 0.6);
+
+        // Create nodes
+        const node = this.svg.append('g')
+            .selectAll('g')
+            .data(this.nodes)
+            .enter().append('g')
+            .call(d3.drag()
+                .on('start', this.dragstarted.bind(this))
+                .on('drag', this.dragged.bind(this))
+                .on('end', this.dragended.bind(this)));
+
+        // Add circles for nodes
+        node.append('circle')
+            .attr('r', 25)
+            .attr('fill', d => {
+                const colors = ['#00d4ff', '#ff0080', '#10b981', '#f59e0b'];
+                return colors[d.group - 1] || '#6b7280';
+            })
+            .attr('stroke', '#ffffff')
+            .attr('stroke-width', 2);
+
+        // Add labels
+        node.append('text')
+            .text(d => d.name.split(' ')[0])
+            .attr('text-anchor', 'middle')
+            .attr('dy', '.35em')
+            .attr('font-size', '12px')
+            .attr('fill', '#ffffff')
+            .attr('font-weight', 'bold');
+
+        // Start simulation
+        this.simulation.nodes(this.nodes).on('tick', () => {
+            link.attr('x1', d => d.source.x)
+                .attr('y1', d => d.source.y)
+                .attr('x2', d => d.target.x)
+                .attr('y2', d => d.target.y);
+
+            node.attr('transform', d => `translate(${d.x},${d.y})`);
+        });
+
+        this.simulation.force('link').links(this.links);
+    }
+
+    dragstarted(event, d) {
+        if (!event.active) this.simulation.alphaTarget(0.3).restart();
+        d.fx = d.x;
+        d.fy = d.y;
+    }
+
+    dragged(event, d) {
+        d.fx = event.x;
+        d.fy = event.y;
+    }
+
+    dragended(event, d) {
+        if (!event.active) this.simulation.alphaTarget(0);
+        d.fx = null;
+        d.fy = null;
+    }
+
+    resize() {
+        if (!this.svg) return;
+
+        const container = document.getElementById('workflow-canvas');
+        if (container) {
+            const width = container.clientWidth;
+            const height = 400;
+
+            this.svg.attr('width', width).attr('height', height);
+            this.simulation.force('center', d3.forceCenter(width / 2, height / 2));
+            this.simulation.alpha(1).restart();
+        }
+    }
+}
+
+// Performance Monitor
+class AWIPPerformanceMonitor {
+    constructor() {
+        this.metrics = new Map();
+        this.chart = null;
+    }
+
+    initialize() {
+        this.setupMetrics();
+        this.initializeChart();
+        console.log('AWIP Performance Monitor initialized');
+    }
+
+    setupMetrics() {
+        this.metrics.set('cpu_usage', []);
+        this.metrics.set('memory_usage', []);
+        this.metrics.set('response_time', []);
+        this.metrics.set('agent_performance', []);
+        this.metrics.set('system_load', []);
+    }
+
+    initializeChart() {
+        const ctx = document.getElementById('performanceChart');
+        if (!ctx) return;
+
+        this.chart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: this.generateTimeLabels(),
+                datasets: [{
+                    label: 'Agent Performance',
+                    data: this.generateRandomData(),
+                    borderColor: '#00d4ff',
+                    backgroundColor: 'rgba(0, 212, 255, 0.1)',
+                    tension: 0.4,
+                    fill: true
+                }, {
+                    label: 'System Load',
+                    data: this.generateRandomData(),
+                    borderColor: '#ff0080',
+                    backgroundColor: 'rgba(255, 0, 128, 0.1)',
+                    tension: 0.4,
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        labels: { color: '#ffffff' }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 100,
+                        ticks: { color: '#ffffff' },
+                        grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                    },
+                    x: {
+                        ticks: { color: '#ffffff' },
+                        grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                    }
+                }
+            }
+        });
+    }
+
+    generateTimeLabels() {
+        const labels = [];
+        for (let i = 0; i < 24; i += 4) {
+            labels.push(i.toString().padStart(2, '0') + ':00');
+        }
+        return labels;
+    }
+
+    generateRandomData() {
+        return Array.from({ length: 6 }, () => Math.floor(Math.random() * 40) + 60);
+    }
+
+    getLatestMetrics() {
+        return {
+            timestamp: Date.now(),
+            cpu_usage: Math.random() * 30 + 40,
+            memory_usage: Math.random() * 20 + 60,
+            response_time: Math.random() * 2 + 1,
+            agent_performance: Math.random() * 10 + 90,
+            system_load: Math.random() * 30 + 50
+        };
+    }
+
+    calculateSystemHealth() {
+        const metrics = this.getLatestMetrics();
+        const health = (
+            (100 - metrics.cpu_usage) * 0.3 +
+            (100 - metrics.memory_usage) * 0.3 +
+            (100 - Math.min(metrics.response_time * 10, 100)) * 0.2 +
+            metrics.agent_performance * 0.2
+        );
+        return Math.max(0, Math.min(100, health));
+    }
+
+    updateChart() {
+        if (!this.chart) return;
+
+        const newData = this.generateRandomData();
+        this.chart.data.datasets[0].data = newData;
+        this.chart.data.datasets[1].data = this.generateRandomData();
+        this.chart.update('none');
+    }
+}
+
+// Web Components for reusable AWIP elements
+class AWIPComponent extends HTMLElement {
+    constructor() {
+        super();
+        this.attachShadow({ mode: 'open' });
+    }
+
+    connectedCallback() {
+        this.render();
+        this.setupEventListeners();
+    }
+
+    render() {
+        // Override in subclasses
+    }
+
+    setupEventListeners() {
+        // Override in subclasses
+    }
+}
+
+// Status Indicator Web Component
+class AWIPStatusIndicator extends AWIPComponent {
+    render() {
+        const status = this.getAttribute('status') || 'operational';
+        const size = this.getAttribute('size') || '12px';
+
+        this.shadowRoot.innerHTML = `
+            <style>
+                .indicator {
+                    width: ${size};
+                    height: ${size};
+                    border-radius: 50%;
+                    display: inline-block;
+                    margin-right: 8px;
+                }
+                .operational { background: #10b981; }
+                .warning { background: #f59e0b; }
+                .error { background: #ef4444; }
+                .info { background: #3b82f6; }
+            </style>
+            <span class="indicator ${status}"></span>
+        `;
+    }
+}
+
+// Initialize the dashboard when the script loads
+document.addEventListener('DOMContentLoaded', () => {
+    // Register custom web components
+    customElements.define('awip-status-indicator', AWIPStatusIndicator);
+
+    // Initialize the main dashboard
+    window.awipDashboard = new AWIPDashboard();
+});
+
+// Export classes for external use
+window.AWIPDashboard = AWIPDashboard;
+window.AWIPStateManager = AWIPStateManager;
+window.AWIPAgentSystem = AWIPAgentSystem;
+window.AWIPComponentEditor = AWIPComponentEditor;
+window.AWIPWorkflowVisualizer = AWIPWorkflowVisualizer;
+window.AWIPPerformanceMonitor = AWIPPerformanceMonitor;
+
+console.log('AWIP Enhanced Dashboard Script Loaded');

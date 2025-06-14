@@ -3,497 +3,709 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AWIP Mission Control - Desktop Dashboard</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <title>AWIP Mission Control - Enhanced Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/supabase-js/2.38.0/umd/supabase.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0"></script>
     <style>
-        /* Custom CSS for AWIP Design System */
-        :root {
-            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            --blue-primary: #3b82f6;
-            --success-color: #10b981;
-            --warning-color: #f59e0b;
-            --error-color: #ef4444;
-            --info-color: #3b82f6;
+        body {
+            background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 100%);
+            color: #ffffff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
-        .cognitive-gradient {
-            background: var(--primary-gradient);
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        /* Responsive breakpoints for 4 device types */
-        /* Mobile: < 768px */
-        @media (max-width: 767px) {
-            .mobile-stack {
-                flex-direction: column !important;
-            }
-            .mobile-hidden {
-                display: none !important;
-            }
-            .mobile-full {
-                width: 100% !important;
-            }
-            .mobile-padding {
-                padding: 1rem !important;
-            }
-            .sidebar-mobile {
-                transform: translateX(-100%);
-                transition: transform 0.3s ease;
-            }
-            .sidebar-mobile.open {
-                transform: translateX(0);
-            }
+        .gradient-border {
+            border: 2px solid transparent;
+            background: linear-gradient(135deg, #0a0e27, #1a1f3a) padding-box,
+                        linear-gradient(45deg, #00d4ff, #ff0080) border-box;
         }
 
-        /* Tablet: 768px - 1024px */
-        @media (min-width: 768px) and (max-width: 1024px) {
-            .tablet-grid {
-                grid-template-columns: 200px 1fr !important;
-            }
-            .tablet-compact {
-                padding: 0.75rem !important;
-            }
-        }
-
-        /* Desktop: 1025px - 1440px */
-        @media (min-width: 1025px) and (max-width: 1440px) {
-            .desktop-grid {
-                grid-template-columns: 280px 1fr 280px !important;
-            }
-        }
-
-        /* Large Desktop: > 1440px */
-        @media (min-width: 1441px) {
-            .large-desktop-grid {
-                grid-template-columns: 320px 1fr 320px !important;
-            }
-            .large-desktop-content {
-                max-width: 1600px;
-                margin: 0 auto;
-            }
-        }
-
-        .panel-collapsed {
-            width: 60px !important;
-        }
+        .awip-accent { color: #00d4ff; }
+        .awip-secondary { color: #ff0080; }
 
         .status-indicator {
-            width: 8px;
-            height: 8px;
+            width: 12px;
+            height: 12px;
             border-radius: 50%;
             display: inline-block;
             margin-right: 8px;
         }
 
-        .status-active { background-color: var(--success-color); }
-        .status-warning { background-color: var(--warning-color); }
-        .status-error { background-color: var(--error-color); }
-        .status-info { background-color: var(--info-color); }
+        .status-operational { background: #10b981; }
+        .status-warning { background: #f59e0b; }
+        .status-error { background: #ef4444; }
+        .status-info { background: #3b82f6; }
 
-        .metric-card {
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        .integration-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
 
-        .metric-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        .integration-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 212, 255, 0.2);
         }
 
-        .loading-spinner {
-            animation: spin 1s linear infinite;
+        .timeline-item {
+            border-left: 3px solid #00d4ff;
+            position: relative;
         }
 
-        @keyframes spin {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -8px;
+            top: 20px;
+            width: 12px;
+            height: 12px;
+            background: #00d4ff;
+            border-radius: 50%;
         }
 
-        /* Agent category colors */
-        .agent-governance { background-color: #8b5cf6; }
-        .agent-cognitive { background-color: #06b6d4; }
-        .agent-operations { background-color: #10b981; }
-        .agent-project { background-color: #3b82f6; }
-        .agent-finance { background-color: #059669; }
-        .agent-facilities { background-color: #7c3aed; }
-        .agent-strategic { background-color: #dc2626; }
+        .workflow-canvas {
+            min-height: 400px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            position: relative;
+        }
+
+        .sortable-item {
+            padding: 8px;
+            margin: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            cursor: move;
+        }
+
+        .sortable-ghost {
+            opacity: 0.4;
+        }
+
+        .sortable-chosen {
+            transform: rotate(5deg);
+        }
+
+        .component-editor-panel {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 320px;
+            background: rgba(20, 25, 40, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            border-radius: 12px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            display: none;
+        }
+
+        .property-panel-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            cursor: move;
+        }
+
+        .floating-panel {
+            position: absolute;
+            z-index: 100;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 16px;
+            min-width: 200px;
+        }
     </style>
 </head>
-<body class="bg-gray-50 font-sans" x-data="awipDashboard()">
-    <!-- Mobile Header with Menu Toggle -->
-    <div class="lg:hidden bg-white shadow-sm border-b border-gray-200 p-4 flex items-center justify-between">
-        <div class="flex items-center space-x-3">
-            <div class="w-8 h-8 cognitive-gradient rounded-lg flex items-center justify-center">
-                <span class="text-white font-bold text-sm">A</span>
-            </div>
-            <h1 class="text-lg font-bold text-gray-900">AWIP Mission Control</h1>
-        </div>
-        <button @click="toggleMobileSidebar()" class="p-2 text-gray-600 hover:text-gray-900">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-            </svg>
-        </button>
-    </div>
-
-    <!-- Main Layout Grid -->
-    <div class="min-h-screen grid large-desktop-content" 
-         :class="getLayoutClass()" 
-         style="grid-template-rows: 1fr;">
-
-        <!-- Left Sidebar - Navigation -->
-        <div class="bg-white border-r border-gray-200 flex flex-col sidebar-mobile"
-             :class="{'open': mobileMenuOpen}"
-             x-show="leftPanelVisible">
-
-            <!-- Sidebar Header -->
-            <div class="p-6 border-b border-gray-200" x-show="!leftPanelCollapsed">
-                <div class="flex items-center space-x-3">
-                    <div class="w-10 h-10 cognitive-gradient rounded-xl flex items-center justify-center">
-                        <span class="text-white font-bold text-lg">A</span>
+<body class="min-h-screen">
+    <!-- Enhanced Header with Status Indicators -->
+    <header class="glass-effect border-b border-gray-700">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center">
+                    <div class="text-2xl font-bold awip-accent">
+                        <i class="fas fa-rocket mr-2"></i>
+                        AWIP Mission Control
                     </div>
-                    <div>
-                        <h1 class="text-xl font-bold text-gray-900">AWIP</h1>
-                        <p class="text-sm text-gray-600">Mission Control</p>
-                    </div>
+                    <div class="ml-4 text-sm text-gray-300">Enhanced Vanilla Implementation</div>
                 </div>
-            </div>
-
-            <!-- Collapsed Header Icon -->
-            <div class="p-3 border-b border-gray-200 flex justify-center" x-show="leftPanelCollapsed">
-                <div class="w-8 h-8 cognitive-gradient rounded-lg flex items-center justify-center">
-                    <span class="text-white font-bold text-sm">A</span>
-                </div>
-            </div>
-
-            <!-- Navigation Menu -->
-            <nav class="flex-1 p-4 space-y-2">
-                <template x-for="item in navigationItems" :key="item.id">
-                    <button @click="setActiveView(item.id)" 
-                            class="w-full flex items-center space-x-3 px-3 py-2 rounded-lg transition-colors"
-                            :class="activeView === item.id ? 'bg-blue-50 text-blue-700 border border-blue-200' : 'text-gray-700 hover:bg-gray-100'">
-                        <span x-html="item.icon" class="w-5 h-5"></span>
-                        <span x-text="item.label" x-show="!leftPanelCollapsed" class="font-medium"></span>
-                    </button>
-                </template>
-            </nav>
-
-            <!-- System Status -->
-            <div class="p-4 border-t border-gray-200" x-show="!leftPanelCollapsed">
-                <div class="bg-gray-50 rounded-lg p-3">
-                    <div class="flex items-center justify-between mb-2">
-                        <span class="text-sm font-medium text-gray-700">System Status</span>
-                        <span class="status-indicator" :class="systemStatus.class"></span>
-                    </div>
-                    <p class="text-xs text-gray-600" x-text="systemStatus.message"></p>
-                </div>
-            </div>
-
-            <!-- Panel Toggle -->
-            <div class="p-4 border-t border-gray-200">
-                <button @click="toggleLeftPanel()" 
-                        class="w-full flex items-center justify-center p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                              :d="leftPanelCollapsed ? 'M9 5l7 7-7 7' : 'M15 19l-7-7 7-7'"></path>
-                    </svg>
-                </button>
-            </div>
-        </div>
-
-        <!-- Main Content Area -->
-        <div class="flex flex-col overflow-hidden">
-            <!-- Content Header -->
-            <div class="bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between">
-                <div>
-                    <h2 class="text-2xl font-bold text-gray-900" x-text="getCurrentViewTitle()"></h2>
-                    <p class="text-sm text-gray-600 mt-1" x-text="getCurrentViewDescription()"></p>
-                </div>
-
-                <!-- Real-time Connection Status -->
                 <div class="flex items-center space-x-4">
-                    <div class="flex items-center space-x-2">
-                        <span class="status-indicator" :class="connectionStatus.class"></span>
-                        <span class="text-sm font-medium" x-text="connectionStatus.label"></span>
-                    </div>
-
-                    <!-- Last Updated -->
-                    <div class="text-xs text-gray-500">
-                        Last updated: <span x-text="lastUpdated"></span>
-                    </div>
-
-                    <!-- Refresh Button -->
-                    <button @click="refreshData()" 
-                            class="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg"
-                            :disabled="isLoading">
-                        <svg class="w-5 h-5" :class="{'loading-spinner': isLoading}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
-                        </svg>
-                    </button>
-                </div>
-            </div>
-
-            <!-- Dynamic Content Area -->
-            <div class="flex-1 p-6 overflow-auto">
-
-                <!-- Dashboard Overview -->
-                <div x-show="activeView === 'dashboard'" class="space-y-6">
-                    <!-- Key Metrics Grid -->
-                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                        <template x-for="metric in dashboardMetrics" :key="metric.id">
-                            <div class="metric-card bg-white rounded-lg p-6 shadow-sm border border-gray-200">
-                                <div class="flex items-center justify-between">
-                                    <div>
-                                        <p class="text-sm font-medium text-gray-600" x-text="metric.label"></p>
-                                        <p class="text-3xl font-bold mt-2" 
-                                           :class="metric.color" 
-                                           x-text="metric.value"></p>
-                                    </div>
-                                    <div class="w-12 h-12 rounded-lg flex items-center justify-center"
-                                         :class="metric.bgColor">
-                                        <span x-html="metric.icon" class="w-6 h-6 text-white"></span>
-                                    </div>
-                                </div>
-                                <div class="mt-4">
-                                    <span class="text-sm" 
-                                          :class="metric.trend.positive ? 'text-green-600' : 'text-red-600'"
-                                          x-text="metric.trend.value"></span>
-                                    <span class="text-sm text-gray-600 ml-1">vs last period</span>
-                                </div>
-                            </div>
-                        </template>
-                    </div>
-
-                    <!-- Agent Status Overview -->
-                    <div class="bg-white rounded-lg shadow-sm border border-gray-200">
-                        <div class="p-6 border-b border-gray-200">
-                            <h3 class="text-lg font-semibold text-gray-900">Agent Status Overview</h3>
-                        </div>
-                        <div class="p-6">
-                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                                <template x-for="agent in agentStatuses" :key="agent.id">
-                                    <div class="border border-gray-200 rounded-lg p-4">
-                                        <div class="flex items-center justify-between mb-2">
-                                            <h4 class="font-medium text-gray-900" x-text="agent.name"></h4>
-                                            <span class="status-indicator" :class="agent.statusClass"></span>
-                                        </div>
-                                        <p class="text-sm text-gray-600 mb-2" x-text="agent.description"></p>
-                                        <div class="flex items-center justify-between">
-                                            <span class="text-xs px-2 py-1 rounded-full"
-                                                  :class="agent.categoryClass"
-                                                  x-text="agent.category"></span>
-                                            <span class="text-xs text-gray-500" x-text="agent.lastActive"></span>
-                                        </div>
-                                    </div>
-                                </template>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- System Health Chart -->
-                    <div class="bg-white rounded-lg shadow-sm border border-gray-200">
-                        <div class="p-6 border-b border-gray-200">
-                            <h3 class="text-lg font-semibold text-gray-900">System Performance</h3>
-                        </div>
-                        <div class="p-6">
-                            <canvas id="systemChart" width="400" height="200"></canvas>
-                        </div>
+                    <span class="status-indicator status-operational"></span>
+                    <span class="text-sm">99.2% Complete</span>
+                    <div class="text-sm text-gray-400">
+                        <i class="fab fa-github mr-1"></i>
+                        <span id="connection-status">Connected</span>
                     </div>
                 </div>
-
-                <!-- Agent 20 Interface -->
-                <div x-show="activeView === 'agent20'" class="space-y-6">
-                    <div class="bg-white rounded-lg shadow-sm border border-gray-200">
-                        <div class="p-6 border-b border-gray-200">
-                            <h3 class="text-lg font-semibold text-gray-900">Enhanced Agent #20 Interface</h3>
-                            <p class="text-sm text-gray-600 mt-1">Functional implementation with persistent memory</p>
-                        </div>
-                        <div class="p-6">
-                            <!-- Agent 20 Chat Interface -->
-                            <div class="space-y-4">
-                                <div class="border border-gray-200 rounded-lg p-4 bg-gray-50 h-96 overflow-y-auto" 
-                                     id="chatMessages">
-                                    <template x-for="message in chatMessages" :key="message.id">
-                                        <div class="mb-4" :class="message.type === 'user' ? 'text-right' : 'text-left'">
-                                            <div class="inline-block max-w-xs lg:max-w-md px-4 py-2 rounded-lg"
-                                                 :class="message.type === 'user' ? 'bg-blue-500 text-white' : 'bg-white border border-gray-200'">
-                                                <p class="text-sm" x-text="message.content"></p>
-                                                <p class="text-xs mt-1 opacity-75" x-text="message.timestamp"></p>
-                                            </div>
-                                        </div>
-                                    </template>
-                                </div>
-
-                                <div class="flex space-x-3">
-                                    <input type="text" 
-                                           x-model="currentMessage"
-                                           @keydown.enter="sendMessage()"
-                                           placeholder="Type your message to Agent 20..."
-                                           class="flex-1 border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                                    <button @click="sendMessage()" 
-                                            :disabled="!currentMessage.trim() || isLoading"
-                                            class="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed">
-                                        <span x-show="!isLoading">Send</span>
-                                        <span x-show="isLoading" class="loading-spinner">⏳</span>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Session Management -->
-                    <div class="bg-white rounded-lg shadow-sm border border-gray-200">
-                        <div class="p-6 border-b border-gray-200">
-                            <h3 class="text-lg font-semibold text-gray-900">Session Management</h3>
-                        </div>
-                        <div class="p-6">
-                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                <div class="border border-gray-200 rounded-lg p-4">
-                                    <h4 class="font-medium text-gray-900 mb-2">Current Session</h4>
-                                    <p class="text-sm text-gray-600" x-text="currentSession.id"></p>
-                                    <p class="text-xs text-gray-500 mt-1" x-text="currentSession.started"></p>
-                                </div>
-                                <div class="border border-gray-200 rounded-lg p-4">
-                                    <h4 class="font-medium text-gray-900 mb-2">Memory Records</h4>
-                                    <p class="text-2xl font-bold text-blue-600" x-text="sessionStats.memoryCount"></p>
-                                    <p class="text-xs text-gray-500 mt-1">Persistent entries</p>
-                                </div>
-                                <div class="border border-gray-200 rounded-lg p-4">
-                                    <h4 class="font-medium text-gray-900 mb-2">API Connections</h4>
-                                    <p class="text-2xl font-bold text-green-600" x-text="sessionStats.apiStatus"></p>
-                                    <p class="text-xs text-gray-500 mt-1">Active integrations</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- System Monitoring -->
-                <div x-show="activeView === 'monitoring'" class="space-y-6">
-                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                        <!-- Database Status -->
-                        <div class="bg-white rounded-lg shadow-sm border border-gray-200">
-                            <div class="p-6 border-b border-gray-200">
-                                <h3 class="text-lg font-semibold text-gray-900">Database Status</h3>
-                            </div>
-                            <div class="p-6 space-y-4">
-                                <template x-for="db in databaseStatus" :key="db.name">
-                                    <div class="flex items-center justify-between">
-                                        <div class="flex items-center space-x-3">
-                                            <span class="status-indicator" :class="db.statusClass"></span>
-                                            <span class="font-medium" x-text="db.name"></span>
-                                        </div>
-                                        <span class="text-sm text-gray-600" x-text="db.value"></span>
-                                    </div>
-                                </template>
-                            </div>
-                        </div>
-
-                        <!-- API Health -->
-                        <div class="bg-white rounded-lg shadow-sm border border-gray-200">
-                            <div class="p-6 border-b border-gray-200">
-                                <h3 class="text-lg font-semibold text-gray-900">API Health</h3>
-                            </div>
-                            <div class="p-6 space-y-4">
-                                <template x-for="api in apiHealth" :key="api.name">
-                                    <div class="flex items-center justify-between">
-                                        <div class="flex items-center space-x-3">
-                                            <span class="status-indicator" :class="api.statusClass"></span>
-                                            <span class="font-medium" x-text="api.name"></span>
-                                        </div>
-                                        <span class="text-sm text-gray-600" x-text="api.responseTime"></span>
-                                    </div>
-                                </template>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Settings -->
-                <div x-show="activeView === 'settings'" class="space-y-6">
-                    <div class="bg-white rounded-lg shadow-sm border border-gray-200">
-                        <div class="p-6 border-b border-gray-200">
-                            <h3 class="text-lg font-semibold text-gray-900">System Configuration</h3>
-                        </div>
-                        <div class="p-6 space-y-6">
-                            <!-- Supabase Configuration -->
-                            <div>
-                                <h4 class="font-medium text-gray-900 mb-3">Supabase Connection</h4>
-                                <div class="space-y-3">
-                                    <div>
-                                        <label class="block text-sm font-medium text-gray-700 mb-1">URL</label>
-                                        <input type="text" x-model="settings.supabaseUrl" 
-                                               class="w-full border border-gray-300 rounded-lg px-3 py-2">
-                                    </div>
-                                    <div>
-                                        <label class="block text-sm font-medium text-gray-700 mb-1">Anon Key</label>
-                                        <input type="password" x-model="settings.supabaseKey" 
-                                               class="w-full border border-gray-300 rounded-lg px-3 py-2">
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- API Configuration -->
-                            <div>
-                                <h4 class="font-medium text-gray-900 mb-3">API Keys</h4>
-                                <div class="space-y-3">
-                                    <div>
-                                        <label class="block text-sm font-medium text-gray-700 mb-1">GitHub Token</label>
-                                        <input type="password" x-model="settings.githubToken" 
-                                               class="w-full border border-gray-300 rounded-lg px-3 py-2">
-                                    </div>
-                                    <div>
-                                        <label class="block text-sm font-medium text-gray-700 mb-1">OpenAI API Key</label>
-                                        <input type="password" x-model="settings.openaiKey" 
-                                               class="w-full border border-gray-300 rounded-lg px-3 py-2">
-                                    </div>
-                                </div>
-                            </div>
-
-                            <button @click="saveSettings()" 
-                                    class="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600">
-                                Save Configuration
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
             </div>
         </div>
+    </header>
 
-        <!-- Right Sidebar - Context Panel -->
-        <div class="bg-white border-l border-gray-200 flex flex-col mobile-hidden"
-             x-show="rightPanelVisible && !rightPanelCollapsed">
+    <!-- Main Dashboard Layout -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
 
-            <!-- Context Header -->
-            <div class="p-6 border-b border-gray-200">
-                <h3 class="text-lg font-semibold text-gray-900">Context</h3>
-                <p class="text-sm text-gray-600 mt-1">System insights & logs</p>
-            </div>
-
-            <!-- Recent Activity -->
-            <div class="flex-1 p-6 overflow-auto">
-                <div class="space-y-4">
-                    <h4 class="font-medium text-gray-900">Recent Activity</h4>
-                    <template x-for="activity in recentActivity" :key="activity.id">
-                        <div class="border-l-4 border-gray-200 pl-4 py-2">
-                            <p class="text-sm font-medium text-gray-900" x-text="activity.action"></p>
-                            <p class="text-xs text-gray-600" x-text="activity.timestamp"></p>
-                            <p class="text-xs text-gray-500 mt-1" x-text="activity.details"></p>
+        <!-- System Overview Cards -->
+        <section class="mb-12">
+            <h1 class="text-4xl font-bold awip-accent mb-6">
+                <i class="fas fa-tachometer-alt mr-3"></i>
+                Enhanced AWIP Dashboard
+            </h1>
+            <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+                <!-- Agent Status -->
+                <div class="integration-card glass-effect rounded-lg p-6">
+                    <h3 class="text-xl font-semibold mb-4 awip-accent">
+                        <i class="fas fa-users mr-2"></i>
+                        Agent Status
+                    </h3>
+                    <div class="space-y-3">
+                        <div class="flex justify-between">
+                            <span>Active Agents</span>
+                            <span class="text-green-400" id="active-agents">19</span>
                         </div>
-                    </template>
+                        <div class="flex justify-between">
+                            <span>Self-Evolving</span>
+                            <span class="text-blue-400" id="evolving-agents">12</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>Performance</span>
+                            <span class="text-purple-400" id="performance-score">96.3%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- System Health -->
+                <div class="integration-card glass-effect rounded-lg p-6">
+                    <h3 class="text-xl font-semibold mb-4 awip-accent">
+                        <i class="fas fa-heartbeat mr-2"></i>
+                        System Health
+                    </h3>
+                    <div class="space-y-3">
+                        <div class="flex justify-between">
+                            <span>Uptime</span>
+                            <span class="text-green-400" id="uptime">99.97%</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>Memory Usage</span>
+                            <span class="text-yellow-400" id="memory-usage">68%</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>Response Time</span>
+                            <span class="text-blue-400" id="response-time">2.3ms</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Component Editor -->
+                <div class="integration-card glass-effect rounded-lg p-6">
+                    <h3 class="text-xl font-semibold mb-4 awip-accent">
+                        <i class="fas fa-puzzle-piece mr-2"></i>
+                        Component Editor
+                    </h3>
+                    <div class="space-y-3">
+                        <button class="w-full py-2 px-4 bg-blue-600 hover:bg-blue-700 rounded" onclick="toggleComponentEditor()">
+                            <i class="fas fa-edit mr-2"></i>
+                            Open Editor
+                        </button>
+                        <div class="text-sm text-gray-400">
+                            Floating panels, real-time editing
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Workflow Visualization -->
+                <div class="integration-card glass-effect rounded-lg p-6">
+                    <h3 class="text-xl font-semibold mb-4 awip-accent">
+                        <i class="fas fa-sitemap mr-2"></i>
+                        Workflows
+                    </h3>
+                    <div class="space-y-3">
+                        <button class="w-full py-2 px-4 bg-purple-600 hover:bg-purple-700 rounded" onclick="showWorkflowView()">
+                            <i class="fas fa-eye mr-2"></i>
+                            View D3 Graph
+                        </button>
+                        <div class="text-sm text-gray-400">
+                            Interactive agent relationships
+                        </div>
+                    </div>
                 </div>
             </div>
+        </section>
 
-            <!-- Panel Toggle -->
-            <div class="p-4 border-t border-gray-200">
-                <button @click="toggleRightPanel()" 
-                        class="w-full flex items-center justify-center p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
-                    </svg>
+        <!-- Workflow Visualization Canvas -->
+        <section class="mb-12" id="workflow-section" style="display: none;">
+            <h2 class="text-3xl font-bold awip-accent mb-6">
+                <i class="fas fa-project-diagram mr-3"></i>
+                Agent Workflow Visualization
+            </h2>
+            <div class="glass-effect rounded-lg p-8">
+                <div id="workflow-canvas" class="workflow-canvas"></div>
+            </div>
+        </section>
+
+        <!-- Sortable Component List -->
+        <section class="mb-12">
+            <h2 class="text-3xl font-bold awip-accent mb-6">
+                <i class="fas fa-list mr-3"></i>
+                Sortable Agent List
+            </h2>
+            <div class="glass-effect rounded-lg p-8">
+                <div id="sortable-list" class="space-y-2">
+                    <div class="sortable-item">Agent 1: Discussion Continuity Agent</div>
+                    <div class="sortable-item">Agent 2: Content Analysis Agent</div>
+                    <div class="sortable-item">Agent 3: Data Processing Agent</div>
+                    <div class="sortable-item">Agent 4: Workflow Coordination Agent</div>
+                    <div class="sortable-item">Agent 5: Quality Assurance Agent</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Self-Evolving Agent Status -->
+        <section class="mb-12">
+            <h2 class="text-3xl font-bold awip-accent mb-6">
+                <i class="fas fa-brain mr-3"></i>
+                Self-Evolving Agent Framework
+            </h2>
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+                <!-- TextGrad Optimization -->
+                <div class="integration-card glass-effect rounded-lg p-6">
+                    <div class="flex items-center mb-4">
+                        <i class="fas fa-graduation-cap text-green-400 text-2xl mr-3"></i>
+                        <h3 class="text-xl font-semibold">TextGrad</h3>
+                    </div>
+                    <div class="mb-4">
+                        <div class="text-sm text-gray-300 mb-2">Optimization Status:</div>
+                        <div class="w-full bg-gray-700 rounded-full h-2">
+                            <div class="bg-green-400 h-2 rounded-full" style="width: 85%"></div>
+                        </div>
+                        <div class="text-xs text-gray-400 mt-1">85% Optimized</div>
+                    </div>
+                    <div class="text-sm">
+                        <div>F1 Score: <span class="text-green-400">71.02%</span></div>
+                        <div>Improvement: <span class="text-blue-400">+7.44%</span></div>
+                    </div>
+                </div>
+
+                <!-- AFlow Workflow Evolution -->
+                <div class="integration-card glass-effect rounded-lg p-6">
+                    <div class="flex items-center mb-4">
+                        <i class="fas fa-flow-chart text-blue-400 text-2xl mr-3"></i>
+                        <h3 class="text-xl font-semibold">AFlow</h3>
+                    </div>
+                    <div class="mb-4">
+                        <div class="text-sm text-gray-300 mb-2">Workflow Status:</div>
+                        <div class="w-full bg-gray-700 rounded-full h-2">
+                            <div class="bg-blue-400 h-2 rounded-full" style="width: 79%"></div>
+                        </div>
+                        <div class="text-xs text-gray-400 mt-1">79% Evolved</div>
+                    </div>
+                    <div class="text-sm">
+                        <div>MBPP Score: <span class="text-blue-400">79.00%</span></div>
+                        <div>Structure: <span class="text-green-400">Optimized</span></div>
+                    </div>
+                </div>
+
+                <!-- MIPRO Optimization -->
+                <div class="integration-card glass-effect rounded-lg p-6">
+                    <div class="flex items-center mb-4">
+                        <i class="fas fa-cog text-purple-400 text-2xl mr-3"></i>
+                        <h3 class="text-xl font-semibold">MIPRO</h3>
+                    </div>
+                    <div class="mb-4">
+                        <div class="text-sm text-gray-300 mb-2">Instruction Status:</div>
+                        <div class="w-full bg-gray-700 rounded-full h-2">
+                            <div class="bg-purple-400 h-2 rounded-full" style="width: 72%"></div>
+                        </div>
+                        <div class="text-xs text-gray-400 mt-1">72% Optimized</div>
+                    </div>
+                    <div class="text-sm">
+                        <div>MATH Score: <span class="text-purple-400">72.30%</span></div>
+                        <div>Prompts: <span class="text-green-400">Enhanced</span></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Real-time Metrics Chart -->
+        <section class="mb-12">
+            <h2 class="text-3xl font-bold awip-accent mb-6">
+                <i class="fas fa-chart-line mr-3"></i>
+                Real-time Performance Metrics
+            </h2>
+            <div class="glass-effect rounded-lg p-8">
+                <div style="height: 400px;">
+                    <canvas id="performanceChart"></canvas>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Floating Component Editor Panel -->
+    <div id="component-editor-panel" class="component-editor-panel">
+        <div class="property-panel-header" id="editor-header">
+            <div class="text-lg font-semibold awip-accent">Component Editor</div>
+            <div class="flex space-x-2">
+                <button class="text-gray-400 hover:text-white" onclick="minimizeEditor()">
+                    <i class="fas fa-minus"></i>
+                </button>
+                <button class="text-gray-400 hover:text-white" onclick="closeEditor()">
+                    <i class="fas fa-times"></i>
                 </button>
             </div>
         </div>
+        <div id="editor-content" class="p-6">
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-300 mb-2">Component Type</label>
+                    <select class="w-full p-2 bg-gray-700 border border-gray-600 rounded text-white">
+                        <option>Header Component</option>
+                        <option>Navigation Component</option>
+                        <option>Data Panel</option>
+                        <option>Chart Component</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-300 mb-2">Background Color</label>
+                    <input type="color" value="#1a1f3a" class="w-full h-10 rounded border border-gray-600">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-300 mb-2">Opacity</label>
+                    <input type="range" min="0" max="100" value="95" class="w-full">
+                </div>
+                <div>
+                    <button class="w-full py-2 px-4 bg-blue-600 hover:bg-blue-700 rounded">
+                        Apply Changes
+                    </button>
+                </div>
+            </div>
+        </div>
     </div>
+
+    <script>
+        // AWIP State Manager (Custom state management)
+        class AWIPStateManager {
+            constructor() {
+                this.states = new Map();
+                this.listeners = new Map();
+                this.history = [];
+            }
+
+            setState(key, value) {
+                const oldValue = this.states.get(key);
+                this.states.set(key, value);
+                this.history.push({ key, oldValue, newValue: value, timestamp: Date.now() });
+                this.notifyListeners(key, value, oldValue);
+            }
+
+            getState(key) {
+                return this.states.get(key);
+            }
+
+            addListener(key, callback) {
+                if (!this.listeners.has(key)) {
+                    this.listeners.set(key, []);
+                }
+                this.listeners.get(key).push(callback);
+            }
+
+            notifyListeners(key, newValue, oldValue) {
+                const callbacks = this.listeners.get(key);
+                if (callbacks) {
+                    callbacks.forEach(callback => callback(newValue, oldValue));
+                }
+            }
+        }
+
+        // Initialize AWIP State Manager
+        const awipState = new AWIPStateManager();
+
+        // Initialize sortable functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const sortableList = document.getElementById('sortable-list');
+            Sortable.create(sortableList, {
+                animation: 150,
+                ghostClass: 'sortable-ghost',
+                chosenClass: 'sortable-chosen',
+                onEnd: function(evt) {
+                    awipState.setState('agent-order-changed', {
+                        from: evt.oldIndex,
+                        to: evt.newIndex,
+                        timestamp: Date.now()
+                    });
+                }
+            });
+
+            initializePerformanceChart();
+            initializeWorkflowVisualization();
+            setupRealTimeUpdates();
+        });
+
+        // D3.js Workflow Visualization
+        function initializeWorkflowVisualization() {
+            const width = 800;
+            const height = 400;
+
+            // Sample agent data
+            const nodes = [
+                { id: 'agent1', name: 'Discussion Agent', group: 1 },
+                { id: 'agent2', name: 'Analysis Agent', group: 2 },
+                { id: 'agent3', name: 'Processing Agent', group: 2 },
+                { id: 'agent4', name: 'Coordination Agent', group: 3 },
+                { id: 'agent5', name: 'QA Agent', group: 3 }
+            ];
+
+            const links = [
+                { source: 'agent1', target: 'agent2' },
+                { source: 'agent2', target: 'agent3' },
+                { source: 'agent3', target: 'agent4' },
+                { source: 'agent4', target: 'agent5' },
+                { source: 'agent1', target: 'agent4' }
+            ];
+
+            awipState.setState('workflow-data', { nodes, links });
+        }
+
+        function showWorkflowView() {
+            const section = document.getElementById('workflow-section');
+            section.style.display = section.style.display === 'none' ? 'block' : 'none';
+
+            if (section.style.display === 'block') {
+                renderWorkflow();
+            }
+        }
+
+        function renderWorkflow() {
+            const canvas = document.getElementById('workflow-canvas');
+            canvas.innerHTML = '';
+
+            const width = canvas.clientWidth;
+            const height = 400;
+
+            const svg = d3.select('#workflow-canvas')
+                .append('svg')
+                .attr('width', width)
+                .attr('height', height);
+
+            const data = awipState.getState('workflow-data');
+
+            const simulation = d3.forceSimulation(data.nodes)
+                .force('link', d3.forceLink(data.links).id(d => d.id))
+                .force('charge', d3.forceManyBody().strength(-300))
+                .force('center', d3.forceCenter(width / 2, height / 2));
+
+            const link = svg.append('g')
+                .selectAll('line')
+                .data(data.links)
+                .enter().append('line')
+                .attr('stroke', '#00d4ff')
+                .attr('stroke-width', 2);
+
+            const node = svg.append('g')
+                .selectAll('circle')
+                .data(data.nodes)
+                .enter().append('circle')
+                .attr('r', 20)
+                .attr('fill', d => {
+                    const colors = ['#00d4ff', '#ff0080', '#10b981'];
+                    return colors[d.group - 1];
+                })
+                .call(d3.drag()
+                    .on('start', dragstarted)
+                    .on('drag', dragged)
+                    .on('end', dragended));
+
+            const label = svg.append('g')
+                .selectAll('text')
+                .data(data.nodes)
+                .enter().append('text')
+                .text(d => d.name)
+                .attr('font-size', 12)
+                .attr('fill', 'white')
+                .attr('text-anchor', 'middle');
+
+            simulation.on('tick', () => {
+                link.attr('x1', d => d.source.x)
+                    .attr('y1', d => d.source.y)
+                    .attr('x2', d => d.target.x)
+                    .attr('y2', d => d.target.y);
+
+                node.attr('cx', d => d.x)
+                    .attr('cy', d => d.y);
+
+                label.attr('x', d => d.x)
+                     .attr('y', d => d.y + 5);
+            });
+
+            function dragstarted(event, d) {
+                if (!event.active) simulation.alphaTarget(0.3).restart();
+                d.fx = d.x;
+                d.fy = d.y;
+            }
+
+            function dragged(event, d) {
+                d.fx = event.x;
+                d.fy = event.y;
+            }
+
+            function dragended(event, d) {
+                if (!event.active) simulation.alphaTarget(0);
+                d.fx = null;
+                d.fy = null;
+            }
+        }
+
+        // Performance Chart with Chart.js
+        function initializePerformanceChart() {
+            const ctx = document.getElementById('performanceChart').getContext('2d');
+
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['00:00', '04:00', '08:00', '12:00', '16:00', '20:00'],
+                    datasets: [{
+                        label: 'Agent Performance',
+                        data: [85, 89, 92, 88, 96, 94],
+                        borderColor: '#00d4ff',
+                        backgroundColor: 'rgba(0, 212, 255, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }, {
+                        label: 'System Load',
+                        data: [45, 52, 48, 61, 58, 55],
+                        borderColor: '#ff0080',
+                        backgroundColor: 'rgba(255, 0, 128, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            labels: { color: '#ffffff' }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            ticks: { color: '#ffffff' },
+                            grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                        },
+                        x: {
+                            ticks: { color: '#ffffff' },
+                            grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Component Editor Functions
+        function toggleComponentEditor() {
+            const panel = document.getElementById('component-editor-panel');
+            panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+
+            if (panel.style.display === 'block') {
+                makePanelDraggable();
+            }
+        }
+
+        function makePanelDraggable() {
+            const panel = document.getElementById('component-editor-panel');
+            const header = document.getElementById('editor-header');
+
+            let isDragging = false;
+            let currentX;
+            let currentY;
+            let initialX;
+            let initialY;
+            let xOffset = 0;
+            let yOffset = 0;
+
+            header.addEventListener('mousedown', dragStart);
+            document.addEventListener('mouseup', dragEnd);
+            document.addEventListener('mousemove', drag);
+
+            function dragStart(e) {
+                initialX = e.clientX - xOffset;
+                initialY = e.clientY - yOffset;
+
+                if (e.target === header || header.contains(e.target)) {
+                    isDragging = true;
+                }
+            }
+
+            function dragEnd(e) {
+                initialX = currentX;
+                initialY = currentY;
+                isDragging = false;
+            }
+
+            function drag(e) {
+                if (isDragging) {
+                    e.preventDefault();
+                    currentX = e.clientX - initialX;
+                    currentY = e.clientY - initialY;
+                    xOffset = currentX;
+                    yOffset = currentY;
+
+                    panel.style.transform = `translate(${currentX}px, ${currentY}px)`;
+                }
+            }
+        }
+
+        function closeEditor() {
+            document.getElementById('component-editor-panel').style.display = 'none';
+        }
+
+        function minimizeEditor() {
+            const content = document.getElementById('editor-content');
+            content.style.display = content.style.display === 'none' ? 'block' : 'none';
+        }
+
+        // Real-time updates
+        function setupRealTimeUpdates() {
+            setInterval(() => {
+                // Update random metrics to simulate real-time data
+                const agents = Math.floor(Math.random() * 3) + 17; // 17-19
+                const performance = (Math.random() * 4 + 94).toFixed(1); // 94-98%
+                const responseTime = (Math.random() * 2 + 1).toFixed(1); // 1-3ms
+
+                document.getElementById('active-agents').textContent = agents;
+                document.getElementById('performance-score').textContent = performance + '%';
+                document.getElementById('response-time').textContent = responseTime + 'ms';
+
+                // Update status indicators
+                const indicators = document.querySelectorAll('.status-indicator');
+                indicators.forEach(indicator => {
+                    if (Math.random() > 0.95) {
+                        indicator.style.opacity = '0.5';
+                        setTimeout(() => indicator.style.opacity = '1', 300);
+                    }
+                });
+
+                awipState.setState('metrics-updated', Date.now());
+            }, 3000);
+        }
+
+        // State change listeners
+        awipState.addListener('agent-order-changed', (newValue) => {
+            console.log('Agent order changed:', newValue);
+        });
+
+        awipState.addListener('metrics-updated', (timestamp) => {
+            console.log('Metrics updated at:', new Date(timestamp));
+        });
+    </script>
 </body>
+</html>

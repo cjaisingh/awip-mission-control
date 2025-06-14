@@ -1,54 +1,50 @@
-# AWIP Mission Control - Git Ignore
-
-# Environment variables (if any)
+# Security - Never commit these files
+*.key
+*.pem
+*.p12
+*.pfx
 .env
 .env.local
 .env.production
+config/secrets.json
+secrets/
+credentials/
 
-# Editor directories and files
+# API Keys and Tokens
+**/api-keys.json
+**/tokens.json
+**/*secret*
+**/*password*
+**/*credential*
+
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.npm
+.yarn-integrity
+
+# Build outputs
+dist/
+build/
+*.tgz
+*.tar.gz
+
+# IDE
 .vscode/
 .idea/
 *.swp
 *.swo
-*~
 
-# OS generated files
+# OS
 .DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
 Thumbs.db
 
 # Logs
-logs
+logs/
 *.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
 
-# Runtime data
-pids
-*.pid
-*.seed
-*.pid.lock
-
-# Optional npm cache directory
-.npm
-
-# Optional eslint cache
-.eslintcache
-
-# Temporary folders
-tmp/
-temp/
-
-# Local development
-local/
-dev/
-
-# Backup files
-*.backup
-*.bak
-*.orig
+# Coverage reports
+coverage/
+.nyc_output

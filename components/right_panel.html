@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AWIP Right Panel Component</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+</head>
+<body class="bg-gray-50 p-4">
+    <div class="bg-white border-l border-gray-200 w-80 h-screen">
+        <div class="p-4 bg-gradient-to-r from-blue-500 to-purple-600 text-white">
+            <h3 class="font-semibold">System Logs</h3>
+        </div>
+        <div class="flex border-b border-gray-200">
+            <button class="flex-1 py-3 px-4 text-sm font-medium text-blue-600 border-b-2 border-blue-600">Logs</button>
+            <button class="flex-1 py-3 px-4 text-sm font-medium text-gray-600">Config</button>
+            <button class="flex-1 py-3 px-4 text-sm font-medium text-gray-600">Deploy</button>
+        </div>
+        <div class="p-4">
+            <div class="space-y-2 text-sm">
+                <div class="flex items-center space-x-2">
+                    <span class="text-gray-500">[23:15:42]</span>
+                    <span class="text-green-600">System initialized</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

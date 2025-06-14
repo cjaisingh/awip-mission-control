@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AWIP Desktop Control Panel - Professional</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+</head>
+<body class="bg-gray-50 h-screen flex flex-col">
+    <!-- Header -->
+    <header class="bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between">
+        <div class="flex items-center space-x-4">
+            <div class="flex flex-col">
+                <h1 class="text-xl font-semibold text-gray-900">AWIP Control Panel</h1>
+                <p class="text-sm text-gray-500">Cognitive Domains</p>
+            </div>
+        </div>
+        <div class="flex items-center space-x-4">
+            <button class="p-2 rounded-lg hover:bg-gray-100"><i class="fas fa-search text-gray-600"></i></button>
+            <button class="p-2 rounded-lg hover:bg-gray-100"><i class="fas fa-bell text-gray-600"></i></button>
+            <div class="w-8 h-8 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center text-white text-sm">
+                <i class="fas fa-user"></i>
+            </div>
+        </div>
+    </header>
+
+    <!-- Breadcrumb -->
+    <nav class="bg-white border-b border-gray-200 px-6 py-3">
+        <ol class="flex items-center space-x-2 text-sm">
+            <li><a href="#" class="text-blue-600 hover:text-blue-800"><i class="fas fa-home mr-2"></i>AWIP</a></li>
+            <li class="text-gray-500"><i class="fas fa-chevron-right text-xs"></i></li>
+            <li><a href="#" class="text-blue-600 hover:text-blue-800">Control Panel</a></li>
+            <li class="text-gray-500"><i class="fas fa-chevron-right text-xs"></i></li>
+            <li class="text-gray-500">Desktop</li>
+        </ol>
+    </nav>
+
+    <!-- Main Layout -->
+    <div class="flex-1 flex overflow-hidden">
+        <!-- Left Panel -->
+        <div class="bg-white border-r border-gray-200 w-80">
+            <div class="p-4 border-b border-gray-200">
+                <h3 class="font-semibold text-gray-800">System Controls</h3>
+            </div>
+            <div class="p-4 space-y-2">
+                <div class="flex items-center p-3 rounded-lg bg-blue-50 border border-blue-200">
+                    <i class="fas fa-sitemap text-blue-600 mr-3"></i>
+                    <div>
+                        <div class="font-medium text-gray-800">System Architecture</div>
+                        <div class="text-sm text-gray-600">Infrastructure monitoring</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Center Content -->
+        <div class="flex-1 bg-gray-50 p-6 overflow-y-auto">
+            <div class="bg-white rounded-lg shadow p-6">
+                <h2 class="text-2xl font-bold text-gray-900 mb-6">AWIP Desktop Control Panel</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-blue-50 p-6 rounded-lg border border-blue-200">
+                        <h3 class="text-lg font-semibold text-blue-900 mb-2">System Status</h3>
+                        <p class="text-blue-700">All systems operational</p>
+                    </div>
+                    <div class="bg-green-50 p-6 rounded-lg border border-green-200">
+                        <h3 class="text-lg font-semibold text-green-900 mb-2">Agent Count</h3>
+                        <p class="text-green-700">19 of 20 agents active</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Panel -->
+        <div class="bg-white border-l border-gray-200 w-80">
+            <div class="p-4 bg-gradient-to-r from-blue-500 to-purple-600 text-white">
+                <h3 class="font-semibold">System Logs</h3>
+            </div>
+            <div class="p-4">
+                <div class="space-y-2 text-sm">
+                    <div class="flex items-center space-x-2">
+                        <span class="text-gray-500">[23:15:42]</span>
+                        <span class="text-green-600">Desktop interface deployed</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-gray-200 px-6 py-3">
+        <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-4 text-sm text-gray-500">
+                <span>© 2025 AWIP Control Panel</span>
+            </div>
+            <div class="flex items-center space-x-4 text-sm">
+                <span class="flex items-center text-green-600">
+                    <div class="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
+                    Operational
+                </span>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

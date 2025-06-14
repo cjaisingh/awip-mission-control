@@ -1,24 +1,40 @@
-// AWIP Enhanced Configuration - Comprehensive system configuration
-// Includes: Database connections, API endpoints, agent configurations, optimization settings
+// AWIP Enhanced Configuration with Dual-Repository Operational Standards
+// Comprehensive system configuration for frontend and backend coordination
 
 const AWIPConfig = {
     // System Information
-    system: {
-        name: "AWIP Mission Control",
-        version: "2.1.0-enhanced",
-        description: "AI-powered Web Intelligence Platform with Enhanced Vanilla Implementation",
-        completion: 99.2,
-        lastUpdated: new Date().toISOString()
-    },
+    version: "2.0.0",
+    buildDate: new Date().toISOString(),
+    environment: "production",
 
-    // Environment Configuration
-    environment: {
-        mode: "production", // development, staging, production
-        debug: false,
-        logging: {
-            level: "info", // debug, info, warn, error
-            console: true,
-            remote: false
+    // Dual-Repository Architecture Configuration
+    repositories: {
+        frontend: {
+            name: "awip-mission-control",
+            owner: "cjaisingh",
+            url: "https://github.com/cjaisingh/awip-mission-control",
+            deployment: "https://cjaisingh.github.io/awip-mission-control/",
+            type: "public",
+            technologies: ["HTML5", "CSS3", "JavaScript ES6+", "Tailwind CSS", "D3.js", "SortableJS"],
+            operational_standards: {
+                tools: ["GitHub_REST_API", "Direct_URL_Testing"],
+                forbidden: ["jupyter_code_executor"],
+                verification_method: "Live GitHub Pages URL testing",
+                deployment_method: "GitHub Pages (automatic)"
+            }
+        },
+        backend: {
+            name: "Genspark-AWIP",
+            owner: "cjaisingh", 
+            url: "https://github.com/cjaisingh/Genspark-AWIP",
+            type: "private",
+            technologies: ["Node.js", "Supabase", "Agent Framework", "Self-Evolving Systems"],
+            operational_standards: {
+                tools: ["GitHub_REST_API", "Private_API_Testing"],
+                forbidden: ["jupyter_code_executor"],
+                verification_method: "Repository commit confirmation",
+                deployment_method: "Private infrastructure deployment"
+            }
         }
     },
 
@@ -26,112 +42,71 @@ const AWIPConfig = {
     database: {
         supabase: {
             url: "https://nkjckkaqcdscrtzmmyyt.supabase.co",
-            publicKey: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9...", // Masked for security
-            serviceRoleKey: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9...", // Retrieved from vault
-            vault: {
-                enabled: true,
-                credentialFunction: "get_awip_credential",
-                credentials: {
-                    github_token: "github_token",
-                    openai_api_key: "openai_api_key",
-                    supabase_service_key: "supabase_service_key"
-                }
+            project_ref: "nkjckkaqcdscrtzmmyyt",
+            vault_enabled: true,
+            vault_functions: {
+                get_credential: "get_awip_credential",
+                available_keys: ["github_token", "openai_api_key", "supabase_service_key"]
             }
-        },
-        tables: {
-            agents: "awip_agents",
-            metrics: "awip_metrics",
-            workflows: "awip_workflows",
-            components: "awip_components",
-            evolution_history: "awip_evolution_history"
         }
     },
 
-    // GitHub Integration
-    github: {
-        repositories: {
-            public: {
-                owner: "cjaisingh",
-                name: "awip-mission-control",
-                url: "https://github.com/cjaisingh/awip-mission-control",
-                branch: "main"
-            },
-            private: {
-                owner: "cjaisingh", 
-                name: "Genspark-AWIP",
-                url: "https://github.com/cjaisingh/Genspark-AWIP",
-                branch: "main"
+    // API Configuration
+    api: {
+        github: {
+            base_url: "https://api.github.com",
+            endpoints: {
+                repos: "/repos/{owner}/{repo}",
+                contents: "/repos/{owner}/{repo}/contents/{path}",
+                commits: "/repos/{owner}/{repo}/commits"
             }
         },
-        api: {
-            baseUrl: "https://api.github.com",
-            timeout: 30000,
-            retries: 3
+        supabase: {
+            functions_url: "https://nkjckkaqcdscrtzmmyyt.supabase.co/functions/v1",
+            rest_url: "https://nkjckkaqcdscrtzmmyyt.supabase.co/rest/v1"
         }
     },
 
     // Agent System Configuration
     agents: {
-        count: 19,
-        evolutionEnabled: true,
-        evolutionInterval: 30000, // 30 seconds
-        performanceThreshold: 90,
-
-        // Agent types and configurations
-        types: {
-            coordinator: {
-                capabilities: ["memory", "context", "continuity", "orchestration"],
-                maxConcurrency: 5,
-                timeout: 10000
-            },
-            analyzer: {
-                capabilities: ["nlp", "sentiment", "classification", "pattern_recognition"],
-                maxConcurrency: 3,
-                timeout: 15000
-            },
-            processor: {
-                capabilities: ["transform", "aggregate", "filter", "compute"],
-                maxConcurrency: 10,
-                timeout: 5000
-            },
-            validator: {
-                capabilities: ["testing", "validation", "verification", "quality_check"],
-                maxConcurrency: 2,
-                timeout: 20000
-            },
-            monitor: {
-                capabilities: ["metrics", "alerts", "diagnostics", "health_check"],
-                maxConcurrency: 1,
-                timeout: 5000
-            }
+        total_count: 19,
+        enhanced_agents: [20],
+        agent_20: {
+            name: "Discussion Continuity Agent",
+            enhancements: [
+                "Design System Integration",
+                "Component Editor Capabilities", 
+                "Floating Property Panels",
+                "Self-Evolving Framework",
+                "Cross-Repository Coordination"
+            ],
+            status: "enhanced",
+            capabilities: [
+                "discussion_continuity",
+                "design_system_management",
+                "component_editing",
+                "workflow_visualization",
+                "operational_standards_enforcement"
+            ]
         },
-
-        // Self-evolution configuration
-        evolution: {
-            algorithms: {
-                textgrad: {
-                    enabled: true,
-                    threshold: 70,
-                    improvement_rate: 0.1,
-                    max_iterations: 10
-                },
-                aflow: {
-                    enabled: true,
-                    threshold: 75,
-                    structure_optimization: true,
-                    workflow_analysis: true
-                },
-                mipro: {
-                    enabled: true,
-                    threshold: 80,
-                    instruction_optimization: true,
-                    prompt_engineering: true
-                }
+        evolution_algorithms: {
+            textgrad: {
+                enabled: true,
+                optimization_rate: 0.12,
+                active_agents: 7,
+                performance_improvement: "+12.4%"
             },
-            metrics: {
-                f1_score: { weight: 0.4, target: 85 },
-                response_time: { weight: 0.3, target: 2.0 },
-                accuracy: { weight: 0.3, target: 95 }
+            aflow: {
+                enabled: true,
+                workflow_efficiency: 0.087,
+                optimized_flows: 23,
+                performance_improvement: "+8.7%"
+            },
+            mipro: {
+                enabled: true,
+                prompt_quality: 0.152,
+                iterations: 156,
+                performance_improvement: "+15.2%"
             }
         }
     },
@@ -139,422 +114,282 @@ const AWIPConfig = {
     // Component Editor Configuration
     componentEditor: {
         enabled: true,
-        floatingPanels: {
-            enabled: true,
-            draggable: true,
-            resizable: true,
-            defaultPosition: { x: 20, y: 20 },
-            maxPanels: 5
+        features: {
+            floating_panels: true,
+            real_time_editing: true,
+            drag_and_drop: true,
+            property_editing: true,
+            live_preview: true
+        },
+        panel_settings: {
+            default_width: 320,
+            default_height: "auto",
+            backdrop_blur: "20px",
+            border_color: "rgba(0, 212, 255, 0.3)",
+            z_index: 1000
         },
         components: {
-            header: {
-                template: "awip-header-component",
-                properties: {
-                    title: { type: "text", default: "AWIP Header" },
-                    backgroundColor: { type: "color", default: "#1a1f3a" },
-                    textColor: { type: "color", default: "#ffffff" },
-                    padding: { type: "range", min: 0, max: 50, default: 20 }
-                }
-            },
-            navigation: {
-                template: "awip-nav-component", 
-                properties: {
-                    title: { type: "text", default: "Cognitive Domains" },
-                    backgroundColor: { type: "color", default: "#2a2f4a" },
-                    itemSpacing: { type: "range", min: 0, max: 20, default: 8 }
-                }
-            },
-            dataPanel: {
-                template: "awip-data-panel",
-                properties: {
-                    title: { type: "text", default: "System Architecture" },
-                    borderColor: { type: "color", default: "#00d4ff" },
-                    padding: { type: "range", min: 10, max: 40, default: 20 }
-                }
-            }
-        },
-        realTimeEditing: {
-            enabled: true,
-            debounceTime: 300,
-            autoSave: true,
-            saveInterval: 5000
+            header: { enabled: true, template: "awip-header-component" },
+            navigation: { enabled: true, template: "awip-nav-component" },
+            search: { enabled: true, template: "awip-search-component" },
+            data_panel: { enabled: true, template: "awip-data-panel" }
         }
     },
 
     // Workflow Visualization Configuration
-    workflowVisualization: {
+    visualization: {
         d3: {
             enabled: true,
-            canvas: {
-                width: 800,
-                height: 400,
-                background: "rgba(0, 0, 0, 0.2)"
+            canvas_size: {
+                width: "100%",
+                height: "400px"
             },
-            forces: {
-                link: { distance: 100 },
-                charge: { strength: -300 },
-                collision: { radius: 30 }
+            force_simulation: {
+                charge_strength: -300,
+                link_distance: 50,
+                collision_radius: 30
             },
-            nodes: {
-                radius: 25,
-                colors: ["#00d4ff", "#ff0080", "#10b981", "#f59e0b"],
-                strokeWidth: 2,
-                strokeColor: "#ffffff"
-            },
-            links: {
-                color: "#00d4ff",
-                opacity: 0.6,
-                strengthMultiplier: 3
+            styling: {
+                primary_node_color: "#ff0080",
+                secondary_node_color: "#00d4ff",
+                link_color: "#00d4ff",
+                text_color: "#ffffff"
             }
         },
-        realTime: {
+        sortable: {
             enabled: true,
-            updateInterval: 5000,
-            animationDuration: 1000
+            animation_duration: 150,
+            ghost_class: "sortable-ghost",
+            chosen_class: "sortable-chosen"
         }
     },
 
-    // Drag and Drop Configuration (SortableJS)
+    // Drag and Drop Configuration
     dragDrop: {
-        enabled: true,
-        sortable: {
-            animation: 150,
-            ghostClass: "sortable-ghost",
-            chosenClass: "sortable-chosen",
-            dragClass: "sortable-drag",
-            fallbackClass: "sortable-fallback",
-            fallbackOnBody: true,
-            swapThreshold: 0.65,
-            invertSwap: false,
-            invertedSwapThreshold: 0.1,
-            direction: "vertical"
-        },
-        containers: {
-            agentList: {
-                selector: "#sortable-list",
-                onEnd: "handleAgentReorder"
-            },
-            componentLibrary: {
-                selector: "#component-library",
-                onEnd: "handleComponentReorder"
+        sortablejs: {
+            enabled: true,
+            version: "1.15.0",
+            cdn_url: "https://cdn.jsdelivr.net/npm/sortablejs@1.15.0",
+            default_options: {
+                animation: 150,
+                ghostClass: "sortable-ghost",
+                chosenClass: "sortable-chosen",
+                dragClass: "sortable-drag"
             }
         }
     },
 
     // State Management Configuration
     stateManagement: {
+        enabled: true,
         persistence: {
-            enabled: true,
-            storage: "localStorage",
-            prefix: "awip_state_",
-            maxHistorySize: 1000,
-            persistedStates: [
-                "dashboard-config",
-                "agent-preferences", 
-                "component-layouts",
-                "user-settings"
-            ]
+            local_storage: true,
+            session_storage: false,
+            history_limit: 100
         },
-        realTime: {
-            enabled: true,
-            broadcastChannel: "awip_state_sync",
-            syncInterval: 1000
+        events: {
+            agent_update: true,
+            workflow_change: true,
+            component_edit: true,
+            evolution_cycle: true
         }
     },
 
     // Performance Monitoring
     performance: {
-        metrics: {
+        monitoring: {
             enabled: true,
-            collectInterval: 5000,
-            retentionPeriod: 24 * 60 * 60 * 1000, // 24 hours
-            aggregationInterval: 60000 // 1 minute
+            update_interval: 5000,
+            metrics_retention: 100
         },
-        alerts: {
-            enabled: true,
-            thresholds: {
-                cpu_usage: 80,
-                memory_usage: 85,
-                response_time: 5000,
-                error_rate: 5
-            }
+        evolution_cycle: {
+            interval: 30000,
+            algorithms: ["textgrad", "aflow", "mipro"]
         },
-        charts: {
-            updateInterval: 3000,
-            maxDataPoints: 50,
-            colors: {
-                performance: "#00d4ff",
-                load: "#ff0080",
-                memory: "#10b981",
-                cpu: "#f59e0b"
-            }
+        real_time_updates: {
+            system_metrics: 5000,
+            agent_status: 5000,
+            connection_status: 10000
         }
     },
 
-    // UI/UX Configuration
-    ui: {
-        theme: {
-            name: "awip-dark",
-            colors: {
-                primary: "#00d4ff",
-                secondary: "#ff0080", 
-                background: "linear-gradient(135deg, #0a0e27 0%, #1a1f3a 100%)",
-                surface: "rgba(255, 255, 255, 0.05)",
-                text: "#ffffff",
-                textSecondary: "#a0a0a0"
-            },
-            effects: {
-                glassEffect: {
-                    background: "rgba(255, 255, 255, 0.05)",
-                    backdropFilter: "blur(10px)",
-                    border: "1px solid rgba(255, 255, 255, 0.1)"
-                },
-                gradientBorder: {
-                    border: "2px solid transparent",
-                    backgroundClip: "padding-box, border-box",
-                    backgroundImage: "linear-gradient(135deg, #0a0e27, #1a1f3a), linear-gradient(45deg, #00d4ff, #ff0080)"
-                }
-            }
+    // UI Theme Configuration
+    theme: {
+        colors: {
+            primary: "#00d4ff",
+            secondary: "#ff0080", 
+            background: "linear-gradient(135deg, #0a0e27 0%, #1a1f3a 100%)",
+            text: "#ffffff",
+            success: "#10b981",
+            warning: "#f59e0b",
+            error: "#ef4444",
+            info: "#3b82f6"
+        },
+        effects: {
+            glass_effect: "rgba(255, 255, 255, 0.05)",
+            backdrop_blur: "blur(10px)",
+            border: "1px solid rgba(255, 255, 255, 0.1)"
         },
         animations: {
-            enabled: true,
-            duration: {
-                fast: 150,
-                normal: 300,
-                slow: 500
-            },
-            easing: "cubic-bezier(0.4, 0.0, 0.2, 1)"
-        },
-        responsive: {
-            breakpoints: {
-                mobile: 768,
-                tablet: 1024,
-                desktop: 1280
-            },
-            adaptiveLayout: true
+            transition_duration: "0.3s",
+            hover_transform: "translateY(-5px)",
+            card_shadow: "0 20px 40px rgba(0, 212, 255, 0.2)"
         }
     },
 
     // Security Configuration
     security: {
-        authentication: {
-            enabled: true,
-            tokenValidation: true,
-            sessionTimeout: 3600000, // 1 hour
-            refreshThreshold: 300000 // 5 minutes
-        },
-        api: {
-            rateLimiting: {
-                enabled: true,
-                requests: 100,
-                window: 60000 // 1 minute
-            },
-            cors: {
-                enabled: true,
-                origins: ["https://cjaisingh.github.io", "https://localhost:3000"]
-            }
-        },
-        dataProtection: {
-            encryptSensitiveData: true,
-            maskTokensInLogs: true,
-            auditLogging: true
-        }
-    },
-
-    // Development Tools
-    development: {
-        hotReload: {
-            enabled: false, // Only in development
-            watchFiles: ["*.html", "*.js", "*.css"],
-            port: 3001
-        },
-        debugging: {
-            performance: true,
-            stateChanges: false,
-            agentActions: false,
-            componentUpdates: false
-        },
-        testing: {
-            enabled: false,
-            coverage: false,
-            e2e: false
+        csrf_protection: true,
+        content_security_policy: true,
+        api_token_rotation: true,
+        vault_encryption: true,
+        operational_standards: {
+            token_validation: "required_before_all_operations",
+            verification_protocol: "live_url_and_commit_confirmation",
+            error_handling: "graceful_fallback_with_user_notification"
         }
     },
 
     // Feature Flags
     features: {
-        selfEvolvingAgents: true,
-        componentEditor: true,
-        workflowVisualization: true,
-        realTimeMetrics: true,
-        dragAndDrop: true,
-        floatingPanels: true,
-        aiAssistance: false, // Future feature
-        multiDevicePreview: false, // Future feature
-        collaborativeEditing: false, // Future feature
-        advancedAnalytics: false // Future feature
-    },
-
-    // API Endpoints
-    api: {
-        base: "https://api.awip.platform", // Placeholder
-        endpoints: {
-            agents: "/api/v1/agents",
-            metrics: "/api/v1/metrics", 
-            workflows: "/api/v1/workflows",
-            components: "/api/v1/components",
-            evolution: "/api/v1/evolution",
-            health: "/api/v1/health"
-        },
-        timeout: 30000,
-        retries: 3,
-        retryDelay: 1000
+        dual_repository_mode: true,
+        agent_20_enhancements: true,
+        self_evolving_framework: true,
+        component_editor: true,
+        workflow_visualization: true,
+        floating_panels: true,
+        operational_standards: true,
+        cross_repository_coordination: true
     },
 
     // Deployment Configuration
     deployment: {
-        environment: "github-pages",
-        cdn: {
-            tailwind: "https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css",
-            fontawesome: "https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css",
-            chartjs: "https://cdn.jsdelivr.net/npm/chart.js",
-            d3: "https://cdn.jsdelivr.net/npm/d3@7",
-            sortable: "https://cdn.jsdelivr.net/npm/sortablejs@1.15.0"
+        frontend: {
+            platform: "GitHub Pages",
+            auto_deploy: true,
+            url: "https://cjaisingh.github.io/awip-mission-control/",
+            verification_endpoints: [
+                "/",
+                "/mobile.html",
+                "/realtime-mobile.html",
+                "/mobile-fixed.html"
+            ]
         },
-        caching: {
-            enabled: true,
-            staticAssets: 86400, // 24 hours
-            apiResponses: 300 // 5 minutes
+        backend: {
+            platform: "Private Infrastructure",
+            auto_deploy: false,
+            verification_method: "commit_confirmation"
+        }
+    },
+
+    // Environment-specific overrides
+    environments: {
+        development: {
+            debug: true,
+            verbose_logging: true,
+            mock_data: true
+        },
+        staging: {
+            debug: false,
+            verbose_logging: true,
+            mock_data: false
+        },
+        production: {
+            debug: false,
+            verbose_logging: false,
+            mock_data: false
+        }
+    },
+
+    // Integration Endpoints
+    integrations: {
+        supabase_vault: {
+            endpoint: "rpc/get_awip_credential",
+            method: "POST",
+            auth_required: true
+        },
+        github_api: {
+            base_url: "https://api.github.com",
+            auth_method: "token",
+            rate_limit: 5000
+        }
+    },
+
+    // Operational Standards Enforcement
+    operationalStandards: {
+        repository_coordination: {
+            frontend_backend_sync: "api_calls",
+            authentication_flow: "supabase_vault_backend_frontend",
+            deployment_sequence: [
+                "update_backend_apis",
+                "update_frontend_consumers", 
+                "verify_integration",
+                "document_changes"
+            ]
+        },
+        tool_selection: {
+            approved: ["GitHub_REST_API", "Direct_URL_Testing", "Private_API_Testing"],
+            forbidden: ["jupyter_code_executor"],
+            fallback_procedures: "manual_verification_with_user_guidance"
+        },
+        verification_requirements: {
+            frontend: "live_github_pages_testing",
+            backend: "commit_sha_verification",
+            integration: "end_to_end_functionality_testing"
         }
     }
 };
 
-// Configuration Validation
-const ConfigValidator = {
-    validate() {
-        const errors = [];
+// Configuration validation
+AWIPConfig.validate = function() {
+    const required = ['version', 'repositories', 'agents', 'operationalStandards'];
+    const missing = required.filter(key => !this[key]);
 
-        // Validate required fields
-        if (!AWIPConfig.database.supabase.url) {
-            errors.push("Supabase URL is required");
-        }
+    if (missing.length > 0) {
+        console.error('❌ Missing required configuration:', missing);
+        return false;
+    }
 
-        if (!AWIPConfig.agents.count || AWIPConfig.agents.count < 1) {
-            errors.push("Agent count must be greater than 0");
-        }
+    console.log('✅ AWIP Configuration validated successfully');
+    return true;
+};
 
-        // Validate ranges
-        if (AWIPConfig.agents.evolutionInterval < 1000) {
-            errors.push("Evolution interval must be at least 1000ms");
-        }
-
-        if (AWIPConfig.performance.metrics.collectInterval < 1000) {
-            errors.push("Metrics collection interval must be at least 1000ms");
-        }
-
-        return {
-            valid: errors.length === 0,
-            errors
-        };
+// Environment-specific configuration loader
+AWIPConfig.loadEnvironment = function(env = 'production') {
+    const envConfig = this.environments[env];
+    if (envConfig) {
+        Object.assign(this, envConfig);
+        console.log(`🔧 Environment configuration loaded: ${env}`);
     }
 };
 
-// Configuration Helper Functions
-const ConfigHelper = {
-    // Get nested configuration value with default fallback
-    get(path, defaultValue = null) {
-        return path.split('.').reduce((obj, key) => {
-            return obj && obj[key] !== undefined ? obj[key] : defaultValue;
-        }, AWIPConfig);
-    },
-
-    // Set nested configuration value
-    set(path, value) {
-        const keys = path.split('.');
-        const lastKey = keys.pop();
-        const target = keys.reduce((obj, key) => {
-            if (!obj[key]) obj[key] = {};
-            return obj[key];
-        }, AWIPConfig);
-        target[lastKey] = value;
-    },
-
-    // Check if feature is enabled
-    isFeatureEnabled(feature) {
-        return this.get(`features.${feature}`, false);
-    },
-
-    // Get database table name
-    getTableName(table) {
-        return this.get(`database.tables.${table}`, table);
-    },
-
-    // Get API endpoint
-    getApiEndpoint(endpoint) {
-        const base = this.get('api.base', '');
-        const path = this.get(`api.endpoints.${endpoint}`, '');
-        return base + path;
-    },
-
-    // Get theme color
-    getThemeColor(color) {
-        return this.get(`ui.theme.colors.${color}`, '#ffffff');
-    },
-
-    // Merge user configuration
-    merge(userConfig) {
-        function deepMerge(target, source) {
-            for (const key in source) {
-                if (source[key] && typeof source[key] === 'object' && !Array.isArray(source[key])) {
-                    if (!target[key]) target[key] = {};
-                    deepMerge(target[key], source[key]);
-                } else {
-                    target[key] = source[key];
-                }
-            }
-        }
-        deepMerge(AWIPConfig, userConfig);
-    }
+// Helper functions
+AWIPConfig.getRepositoryConfig = function(type) {
+    return this.repositories[type] || null;
 };
 
-// Environment-specific configuration overrides
-const EnvironmentConfig = {
-    development: {
-        environment: { debug: true, logging: { level: "debug" } },
-        development: { hotReload: { enabled: true } },
-        features: { aiAssistance: true }
-    },
-
-    staging: {
-        environment: { debug: false, logging: { level: "info" } },
-        api: { base: "https://staging-api.awip.platform" }
-    },
-
-    production: {
-        environment: { debug: false, logging: { level: "warn" } },
-        development: { debugging: { performance: false } },
-        api: { base: "https://api.awip.platform" }
-    }
+AWIPConfig.getAgentConfig = function(agentId) {
+    return this.agents[`agent_${agentId}`] || null;
 };
 
-// Apply environment-specific overrides
-if (EnvironmentConfig[AWIPConfig.environment.mode]) {
-    ConfigHelper.merge(EnvironmentConfig[AWIPConfig.environment.mode]);
-}
+AWIPConfig.isFeatureEnabled = function(feature) {
+    return this.features[feature] === true;
+};
 
-// Validate configuration on load
-const validation = ConfigValidator.validate();
-if (!validation.valid) {
-    console.error('AWIP Configuration Validation Failed:', validation.errors);
-}
+AWIPConfig.getOperationalStandard = function(category) {
+    return this.operationalStandards[category] || null;
+};
 
-// Export configuration
-if (typeof module !== 'undefined' && module.exports) {
-    module.exports = { AWIPConfig, ConfigHelper, ConfigValidator };
-} else {
+// Initialize configuration
+if (typeof window !== 'undefined') {
     window.AWIPConfig = AWIPConfig;
-    window.ConfigHelper = ConfigHelper;
-    window.ConfigValidator = ConfigValidator;
+    AWIPConfig.validate();
+    AWIPConfig.loadEnvironment();
 }
 
-console.log('AWIP Enhanced Configuration Loaded - Version', AWIPConfig.system.version);
+// Export for Node.js environments
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = AWIPConfig;
+}
+
+console.log('🚀 AWIP Enhanced Configuration loaded with dual-repository operational standards');

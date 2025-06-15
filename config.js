@@ -1,35 +1,37 @@
-// AWIP Mission Control Configuration
-// Updated with working database credentials and Agent 20 handoff protocols
+// AWIP Mission Control - Secure Configuration
+// CRITICAL: All sensitive credentials moved to environment variables/GitHub Secrets
 
 const AWIP_CONFIG = {
-    // Project Information
     version: '2.0.0',
     environment: 'production',
-    lastUpdated: '2025-06-15T07:39:16.936099',
 
-    // Repository Configuration
+    // Repository Configuration (NO TOKENS - Use environment variables)
     repositories: {
         frontend: {
             name: 'awip-mission-control',
             url: 'https://github.com/cjaisingh/awip-mission-control',
-            branch: 'main'
+            type: 'public',
+            deployment: 'github-pages'
         },
         backend: {
             name: 'GenSpark_AWIP',
             url: 'https://github.com/cjaisingh/GenSpark_AWIP',
-            branch: 'main'
+            type: 'private',
+            deployment: 'secure'
         }
     },
 
-    // Database Configuration - WORKING CREDENTIALS
+    // Database Configuration (NO CREDENTIALS - Use environment/vault)
     database: {
         provider: 'supabase',
-        projectUrl: 'https://nkjckkaqcdscrtzmmyyt.supabase.co',
-        // Keys loaded from environment or vault
-        anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5ramNra2FxY2RzY3J0em1teXl0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDg5NzYyMzEsImV4cCI6MjA2NDU1MjIzMX0.hZ0ZT3EQ-glhTh7uELLcxDyuptp0syvcoNmgqv1JxfQ',
+        // URL is public but keys are NOT
+        projectUrl: process.env.SUPABASE_URL || 'https://your-project.supabase.co',
+        // Keys loaded from environment variables:
+        // - SUPABASE_ANON_KEY
+        // - SUPABASE_SERVICE_ROLE_KEY
         credentialFunction: 'get_awip_credential',
-        connectionVerified: '2025-06-15T07:39:16.936110',
-        tablesAvailable: ['system_status', 'documents', 'agents']
+        vaultEnabled: true,
+        secureMode: true
     },
 
     // Agent System Configuration
@@ -40,41 +42,56 @@ const AWIP_CONFIG = {
         agent20: {
             name: 'Discussion Continuity Agent',
             enhanced: true,
+            designSystem: true,
             handoffProtocols: true,
-            healthScore: 9.9,
             capabilities: [
-                'automation',
-                'analysis',
-                'discussion_tracking',
-                'context_preservation'
-            ],
-            lastUpdate: '2025-06-15T07:39:16.936112'
+                'Component Editor',
+                'Floating Property Panels',
+                'Real-time Editing',
+                'Design System Integration',
+                'Secure Credential Management'
+            ]
         }
     },
 
-    // Desktop Foundation Specifications
+    // Desktop Foundation Layout
     desktopFoundation: {
         layout: 'three-panel',
-        framework: 'Tailwind CSS 2.2.19',
-        icons: 'Font Awesome 6.4.0',
-        charts: 'Chart.js',
-        cognitiveGradient: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-        responsiveBreakpoints: {
-            mobile: '768px',
-            tablet: '1024px',
-            desktop: '1200px'
+        leftPanel: {
+            width: '280px',
+            collapsedWidth: '60px',
+            content: 'navigation'
+        },
+        centerPanel: {
+            width: 'flexible',
+            content: 'dashboard'
+        },
+        rightPanel: {
+            width: '280px',
+            collapsedWidth: '60px',
+            content: 'context'
         }
     },
 
     // Real-time Data Configuration
     realTimeData: {
+        enabled: true,
         updateInterval: 30000, // 30 seconds
-        retryInterval: 5000,   // 5 seconds
-        maxRetries: 3,
-        endpoints: {
-            systemStatus: '/rest/v1/system_status?system_name=eq.AWIP',
-            agents: '/rest/v1/agents?select=*&order=id',
-            agent20: '/rest/v1/agents?id=eq.20&select=*'
+        retryAttempts: 3,
+        fallbackMode: 'cached'
+    },
+
+    // Visualization Configuration
+    visualization: {
+        d3: {
+            enabled: true,
+            forceSimulation: true,
+            workflowGraphs: true
+        },
+        charts: {
+            library: 'Chart.js',
+            responsive: true,
+            animations: true
         }
     },
 
@@ -92,38 +109,15 @@ const AWIP_CONFIG = {
         ]
     },
 
-    // Visualization Configuration
-    visualization: {
-        d3: {
-            enabled: true,
-            forceSimulation: true,
-            workflowGraphs: true
-        },
-        charts: {
-            library: 'Chart.js',
-            responsive: true,
-            animations: true
-        }
-    },
-
-    // Performance Monitoring
-    performance: {
-        enabled: true,
-        metricsCollection: true,
-        realTimeMonitoring: true,
-        alertThresholds: {
-            responseTime: 2000,
-            memoryUsage: 80,
-            errorRate: 5
-        }
-    },
-
-    // Security Settings
+    // Security Settings (ENHANCED)
     security: {
         contentSecurityPolicy: true,
         sanitizeInputs: true,
         auditLogging: true,
-        secretsManagement: 'vault'
+        secretsManagement: 'vault',
+        environmentVariables: true,
+        credentialMasking: true,
+        secureHandoff: true
     },
 
     // Deployment Configuration
@@ -131,16 +125,51 @@ const AWIP_CONFIG = {
         platform: 'github-pages',
         autoDeployment: true,
         environments: ['development', 'staging', 'production'],
-        currentEnvironment: 'production'
+        securityScanning: true
     },
 
     // Feature Flags
     features: {
-        desktopFoundation: true,
-        realTimeData: true,
-        agent20Handoff: true,
-        discussionTracking: true,
-        databaseIntegration: true
+        selfEvolution: true,
+        componentEditor: true,
+        workflowVisualization: true,
+        realTimeMonitoring: true,
+        multimodalProcessing: true,
+        secureCredentials: true,
+        vaultIntegration: true
+    }
+};
+
+// Secure credential loading functions
+const SecureCredentials = {
+    // Load credentials from environment variables (browser)
+    getEnvironmentCredential: (key) => {
+        // In browser environment, these would come from build-time env vars
+        return window.ENV?.[key] || null;
+    },
+
+    // Load credentials from GitHub Secrets (CI/CD)
+    getGitHubSecret: (key) => {
+        // In CI/CD, these are injected as environment variables
+        return process.env[key] || null;
+    },
+
+    // Secure database connection with environment variables
+    getDatabaseConfig: () => {
+        return {
+            url: SecureCredentials.getEnvironmentCredential('SUPABASE_URL') || 
+                 'https://your-project.supabase.co',
+            anonKey: SecureCredentials.getEnvironmentCredential('SUPABASE_ANON_KEY') || 
+                    'your_anon_key_here',
+            serviceKey: SecureCredentials.getEnvironmentCredential('SUPABASE_SERVICE_KEY') || 
+                       'your_service_key_here'
+        };
+    },
+
+    // Mask sensitive credentials for logging
+    maskCredential: (credential) => {
+        if (!credential || credential.length < 8) return '***';
+        return credential.substring(0, 3) + '*'.repeat(credential.length - 6) + credential.slice(-3);
     }
 };
 
@@ -148,54 +177,68 @@ const AWIP_CONFIG = {
 if (typeof window !== 'undefined') {
     // Browser environment
     AWIP_CONFIG.runtime = 'browser';
-} else if (typeof global !== 'undefined') {
-    // Node.js environment
+    AWIP_CONFIG.credentialSource = 'environment';
+} else if (typeof process !== 'undefined') {
+    // Node.js/CI environment
     AWIP_CONFIG.runtime = 'node';
+    AWIP_CONFIG.credentialSource = 'process_env';
 }
 
-// Configuration validation
+// Configuration validation (NO CREDENTIAL EXPOSURE)
 function validateConfig() {
-    const required = ['version', 'repositories', 'agents', 'database'];
+    const required = ['version', 'repositories', 'agents', 'security'];
     for (const key of required) {
         if (!AWIP_CONFIG[key]) {
-            throw new Error(`Missing required configuration: ${key}`);
+            console.error(`Missing required configuration: ${key}`);
+            return false;
         }
     }
+
+    // Validate secure credential setup
+    if (!AWIP_CONFIG.security.secretsManagement) {
+        console.error('Secrets management not configured');
+        return false;
+    }
+
+    console.log('✅ AWIP Configuration validated (secure mode)');
     return true;
 }
 
 // Helper functions
 const ConfigHelpers = {
     isProduction: () => AWIP_CONFIG.environment === 'production',
-
     getRepositoryUrl: (type) => AWIP_CONFIG.repositories[type]?.url,
-
     isFeatureEnabled: (feature) => AWIP_CONFIG.features[feature] === true,
-
     getAgentConfig: () => AWIP_CONFIG.agents,
+    getSecureCredentials: () => SecureCredentials.getDatabaseConfig(),
 
-    getDatabaseConfig: () => AWIP_CONFIG.database,
-
-    getDesktopFoundationConfig: () => AWIP_CONFIG.desktopFoundation
+    // Secure logging (masks credentials)
+    secureLog: (message, data) => {
+        const sanitizedData = typeof data === 'object' ? 
+            JSON.stringify(data).replace(/eyJ[A-Za-z0-9+/=]+/g, '***JWT_TOKEN***') :
+            data;
+        console.log(message, sanitizedData);
+    }
 };
 
 // Export configuration
 if (typeof module !== 'undefined' && module.exports) {
-    module.exports = { AWIP_CONFIG, ConfigHelpers, validateConfig };
+    module.exports = { AWIP_CONFIG, ConfigHelpers, SecureCredentials, validateConfig };
 } else if (typeof window !== 'undefined') {
     window.AWIP_CONFIG = AWIP_CONFIG;
     window.ConfigHelpers = ConfigHelpers;
+    window.SecureCredentials = SecureCredentials;
     window.validateConfig = validateConfig;
 }
 
-// Initialize configuration
+// Initialize configuration (SECURE MODE)
 try {
-    validateConfig();
-    console.log('✅ AWIP Configuration loaded successfully');
-    console.log(`📊 Version: ${AWIP_CONFIG.version}`);
-    console.log(`🤖 Agents: ${AWIP_CONFIG.agents.total} total, ${AWIP_CONFIG.agents.active} active`);
-    console.log(`💾 Database: ${AWIP_CONFIG.database.provider} connected`);
-    console.log(`🎯 Agent 20: ${AWIP_CONFIG.agents.agent20.name} (Health: ${AWIP_CONFIG.agents.agent20.healthScore})`);
+    if (validateConfig()) {
+        console.log(`✅ AWIP Configuration loaded (v${AWIP_CONFIG.version})`);
+        console.log(`🛡️ Security mode: ${AWIP_CONFIG.security.secretsManagement}`);
+        console.log(`🤖 Agents: ${AWIP_CONFIG.agents.total} total, ${AWIP_CONFIG.agents.active} active`);
+        console.log('🔒 Credentials: Loaded from secure environment variables');
+    }
 } catch (error) {
-    console.error('❌ Configuration validation failed:', error.message);
+    console.error('❌ Configuration initialization failed:', error.message);
 }

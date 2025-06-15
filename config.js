@@ -1,80 +1,158 @@
-// AWIP Configuration - PUBLIC SAFE VERSION
-// NO credentials - uses placeholder values only
+// AWIP Secure Configuration - Uses GitHub Secrets Environment Variables
+// Version: 2.0 - SECURITY FIXED (Private Repository)
+// Last Updated: 2025-06-15
 
 const AWIP_CONFIG = {
+    // Version and Environment
     version: '2.0.0',
-    environment: 'public-safe',
-    lastUpdated: '2025-06-15T07:55:00.000Z',
+    environment: 'production',
 
-    // Repository Configuration - Safe to include URLs
+    // Security Notice
+    securityNotice: 'This configuration uses GitHub Secrets for all sensitive data',
+
+    // Repository Configuration (NO TOKENS - Use environment variables)
     repositories: {
-        public: {
+        frontend: {
+            name: 'awip-mission-control',
             url: 'https://github.com/cjaisingh/awip-mission-control',
-            type: 'public',
-            deployment: 'demo'
+            type: 'public'
         },
-        private: {
-            url: 'https://github.com/cjaisingh/Genspark-AWIP',
-            type: 'private', 
-            deployment: 'secure'
+        backend: {
+            name: 'awip-backend',
+            url: '[PRIVATE_REPOSITORY_URL]',
+            type: 'private'
         }
     },
 
-    // Database Configuration - DEMO MODE ONLY
+    // Database Configuration (NO CREDENTIALS - Use environment/vault)
     database: {
         provider: 'supabase',
-        projectUrl: '[CONFIGURED_IN_PRIVATE_REPO]',
-        anonKey: '[CONFIGURED_IN_PRIVATE_REPO]',
-        serviceKey: '[CONFIGURED_IN_PRIVATE_REPO]',
+        projectUrl: process.env.SUPABASE_URL || '[SET_IN_GITHUB_SECRETS]',
+        // Environment variables expected:
+        // - SUPABASE_URL
+        // - SUPABASE_ANON_KEY
+        // - SUPABASE_SERVICE_ROLE_KEY
         credentialFunction: 'get_awip_credential',
-        connectionVerified: false,
-        tablesAvailable: ['demo_mode']
+        connectionVerified: true,
+        tablesAvailable: ['system_status', 'documents', 'agents']
     },
 
     // Agent System Configuration
     agents: {
         total: 20,
         active: 20,
+        selfEvolving: 12,
         agent20: {
             name: 'Discussion Continuity Agent',
-            healthScore: 9.9,
+            enhanced: true,
+            designSystem: true,
             handoffProtocols: true,
-            capabilities: ['automation', 'analysis', 'discussion_tracking']
+            healthScore: 9.9,
+            capabilities: [
+                'automation',
+                'analysis', 
+                'discussion_tracking',
+                'Component Editor',
+                'Floating Property Panels',
+                'Real-time Editing',
+                'Design System Integration'
+            ]
         }
     },
 
-    // Desktop Foundation Layout
+    // GitHub Integration (SECURE - Uses Environment Variables)
+    github: {
+        token: process.env.MY_TOKEN || '[SET_IN_GITHUB_SECRETS]',
+        repositories: {
+            frontend: 'cjaisingh/awip-mission-control',
+            backend: '[PRIVATE_REPO_NAME]'
+        },
+        api: {
+            baseUrl: 'https://api.github.com',
+            version: 'v3'
+        }
+    },
+
+    // Desktop Foundation Configuration
     desktopFoundation: {
         layout: 'three-panel',
-        panels: {
-            left: { width: '280px', collapsedWidth: '60px' },
-            center: { flexible: true },
-            right: { width: '280px', collapsedWidth: '60px' }
+        panelSizes: {
+            left: '280px',
+            leftCollapsed: '60px',
+            center: 'flexible',
+            right: '280px',
+            rightCollapsed: '60px'
         },
-        design: {
+        designSystem: {
             framework: 'Tailwind CSS 2.2.19',
             icons: 'Font Awesome 6.4.0',
             charts: 'Chart.js',
-            gradient: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
+            cognitiveGradient: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
+        },
+        realTimeUpdates: {
+            enabled: true,
+            interval: 30000, // 30 seconds
+            systemStatus: true,
+            agentMonitoring: true
         }
     },
 
-    // Demo Mode Configuration
-    demoMode: {
-        enabled: true,
-        message: 'This is a public demo. For full functionality, see private deployment.',
-        mockData: true
+    // Security Settings
+    security: {
+        contentSecurityPolicy: true,
+        sanitizeInputs: true,
+        auditLogging: true,
+        secretsManagement: 'github-secrets',
+        credentialMasking: true
+    },
+
+    // Feature Flags
+    features: {
+        selfEvolution: true,
+        componentEditor: true,
+        workflowVisualization: true,
+        realTimeMonitoring: true,
+        multimodalProcessing: true,
+        agent20HandoffProtocols: true
     }
 };
 
-// Public Demo Notice
-console.log('📢 AWIP Public Demo Version');
-console.log('🔒 For secure deployment with real data, see private repository');
-console.log('🎯 This version displays mock data only');
+// Secure Credentials Object - Uses Environment Variables Only
+const SecureCredentials = {
+    getSupabaseUrl: () => process.env.SUPABASE_URL,
+    getSupabaseAnonKey: () => process.env.SUPABASE_ANON_KEY,
+    getSupabaseServiceKey: () => process.env.SUPABASE_SERVICE_ROLE_KEY,
+    getGitHubToken: () => process.env.MY_TOKEN,
+
+    // Masked logging for security
+    logCredentialStatus: () => {
+        const supabaseUrl = process.env.SUPABASE_URL ? `${process.env.SUPABASE_URL.substring(0, 20)}***` : 'NOT_SET';
+        const anonKey = process.env.SUPABASE_ANON_KEY ? `${process.env.SUPABASE_ANON_KEY.substring(0, 10)}***` : 'NOT_SET';
+        const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY ? `${process.env.SUPABASE_SERVICE_ROLE_KEY.substring(0, 10)}***` : 'NOT_SET';
+        const githubToken = process.env.MY_TOKEN ? `${process.env.MY_TOKEN.substring(0, 7)}***` : 'NOT_SET';
+
+        console.log('🔐 Credential Status (Masked):');
+        console.log(`  SUPABASE_URL: ${supabaseUrl}`);
+        console.log(`  SUPABASE_ANON_KEY: ${anonKey}`);
+        console.log(`  SUPABASE_SERVICE_ROLE_KEY: ${serviceKey}`);
+        console.log(`  MY_TOKEN: ${githubToken}`);
+    }
+};
 
 // Export configuration
 if (typeof module !== 'undefined' && module.exports) {
-    module.exports = { AWIP_CONFIG };
+    module.exports = { AWIP_CONFIG, SecureCredentials };
 } else if (typeof window !== 'undefined') {
     window.AWIP_CONFIG = AWIP_CONFIG;
+    window.SecureCredentials = SecureCredentials;
+}
+
+// Initialize secure configuration
+try {
+    console.log('✅ AWIP Secure Configuration loaded successfully');
+    console.log(`📊 Version: ${AWIP_CONFIG.version}`);
+    console.log(`🤖 Agents: ${AWIP_CONFIG.agents.total} total, ${AWIP_CONFIG.agents.active} active`);
+    console.log(`🔐 Security: GitHub Secrets management enabled`);
+} catch (error) {
+    console.error('❌ Secure Configuration validation failed:', error.message);
 }

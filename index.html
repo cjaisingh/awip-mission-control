@@ -3,317 +3,249 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AWIP Mission Control - Desktop Foundation</title>
+    <title>AWIP Mission Control - Public Demo</title>
 
     <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com/2.2.19"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    backgroundImage: {
+                        'cognitive-gradient': 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
+                    }
+                }
+            }
+        }
+    </script>
 
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <!-- Chart.js -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-    <!-- Custom CSS for AWIP Cognitive Gradient -->
     <style>
-        .cognitive-gradient {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        }
-
-        .panel-transition {
-            transition: all 0.3s ease;
-        }
-
-        .panel-collapsed {
-            width: 60px;
-        }
-
-        .panel-expanded {
-            width: 280px;
-        }
-
-        .glass-effect {
-            backdrop-filter: blur(10px);
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-
-        .agent-card {
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-        }
-
-        .agent-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-        }
-
-        .pulse-animation {
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.7; }
-        }
+        .panel-transition { transition: all 0.3s ease; }
+        .cognitive-gradient { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
     </style>
 </head>
 <body class="bg-gray-50 font-sans">
+
+    <!-- Demo Notice for Public Repository -->
+    <div id="demo-notice" class="bg-blue-50 border-l-4 border-blue-400 p-4 mb-4">
+        <div class="flex">
+            <i class="fas fa-info-circle text-blue-400 mr-3 mt-1"></i>
+            <div>
+                <p class="text-sm text-blue-700">
+                    <strong>📢 Public Demo Version</strong> - This displays mock data only. For secure deployment with real data, see private repository.
+                </p>
+            </div>
+        </div>
+    </div>
+
     <!-- Main Container -->
-    <div class="flex h-screen">
-        <!-- Left Panel - Navigation -->
-        <div id="leftPanel" class="panel-transition panel-expanded bg-white shadow-lg border-r border-gray-200 flex flex-col">
-            <!-- Panel Header -->
-            <div class="cognitive-gradient text-white p-4 flex items-center justify-between">
-                <div class="flex items-center">
-                    <i class="fas fa-brain text-2xl mr-3"></i>
-                    <span id="leftPanelTitle" class="font-bold text-lg">AWIP Mission Control</span>
-                </div>
-                <button id="leftPanelToggle" class="text-white hover:bg-white hover:bg-opacity-20 rounded p-1">
-                    <i class="fas fa-chevron-left"></i>
-                </button>
-            </div>
+    <div class="min-h-screen flex flex-col">
 
-            <!-- Navigation Content -->
-            <div id="leftPanelContent" class="flex-1 overflow-y-auto p-4">
-                <!-- Cognitive Domains -->
-                <div class="space-y-4">
-                    <div class="cognitive-domain">
-                        <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-2">
-                            <i class="fas fa-shield-alt mr-2"></i>AI Governance
-                        </h3>
-                        <ul class="space-y-1">
-                            <li><a href="#" class="nav-item text-sm text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-md px-3 py-2 block">
-                                <i class="fas fa-key mr-2"></i>Agent Policies
-                            </a></li>
-                            <li><a href="#" class="nav-item text-sm text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-md px-3 py-2 block">
-                                <i class="fas fa-vault mr-2"></i>Secrets Manager
-                            </a></li>
-                            <li><a href="#" class="nav-item text-sm text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-md px-3 py-2 block">
-                                <i class="fas fa-microphone mr-2"></i>Voice Control
-                            </a></li>
-                        </ul>
-                    </div>
-
-                    <div class="cognitive-domain">
-                        <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-2">
-                            <i class="fas fa-project-diagram mr-2"></i>Cognitive Products
-                        </h3>
-                        <ul class="space-y-1">
-                            <li><a href="#" class="nav-item text-sm text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-md px-3 py-2 block">
-                                <i class="fas fa-chart-line mr-2"></i>Project Intelligence
-                            </a></li>
-                            <li><a href="#" class="nav-item text-sm text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-md px-3 py-2 block">
-                                <i class="fas fa-dollar-sign mr-2"></i>Finance AI
-                            </a></li>
-                            <li><a href="#" class="nav-item text-sm text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-md px-3 py-2 block">
-                                <i class="fas fa-building mr-2"></i>Facilities TFM
-                            </a></li>
-                        </ul>
-                    </div>
-
-                    <div class="cognitive-domain">
-                        <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-2">
-                            <i class="fas fa-brain mr-2"></i>AI Operations
-                        </h3>
-                        <ul class="space-y-1">
-                            <li><a href="#" class="nav-item text-sm text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-md px-3 py-2 block">
-                                <i class="fas fa-monitor-heart-rate mr-2"></i>SLM/LLM Monitor
-                            </a></li>
-                            <li><a href="#" class="nav-item text-sm text-gray-600 hover:text-blue-50 rounded-md px-3 py-2 block">
-                                <i class="fas fa-crystal-ball mr-2"></i>Scenario Planner
-                            </a></li>
-                            <li><a href="#" class="nav-item text-sm text-gray-600 hover:text-red-600 hover:bg-red-50 rounded-md px-3 py-2 block">
-                                <i class="fas fa-exclamation-triangle mr-2"></i>Emergency Override
-                            </a></li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Center Panel - Main Dashboard -->
-        <div class="flex-1 flex flex-col">
-            <!-- Center Panel Header -->
-            <div class="bg-white shadow-sm border-b border-gray-200 p-4">
+        <!-- Header -->
+        <header class="bg-white shadow-sm border-b border-gray-200">
+            <div class="px-6 py-4">
                 <div class="flex items-center justify-between">
-                    <h1 class="text-2xl font-bold text-gray-800">
-                        <i class="fas fa-tachometer-alt mr-2 text-blue-600"></i>
-                        Desktop Foundation
-                    </h1>
+                    <div class="flex items-center space-x-3">
+                        <div class="w-10 h-10 cognitive-gradient rounded-lg flex items-center justify-center">
+                            <i class="fas fa-brain text-white text-xl"></i>
+                        </div>
+                        <div>
+                            <h1 class="text-2xl font-bold text-gray-900">AWIP Mission Control</h1>
+                            <span class="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full">Public Demo</span>
+                        </div>
+                    </div>
+
                     <div class="flex items-center space-x-4">
-                        <span class="text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full">
-                            <i class="fas fa-circle text-green-500 mr-1"></i>System Operational
-                        </span>
-                        <span class="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full">
-                            Agent 20: Active
-                        </span>
+                        <div class="text-sm text-gray-600">
+                            <i class="fas fa-eye mr-2"></i>
+                            <span>Demo Mode</span>
+                        </div>
+                        <div class="text-sm text-gray-600">
+                            <i class="fas fa-github mr-2"></i>
+                            <span>Public Repository</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content Area -->
+        <div class="flex-1 flex">
+
+            <!-- Left Panel - Navigation -->
+            <div id="left-panel" class="bg-white border-r border-gray-200 panel-transition" style="width: 280px;">
+                <div class="p-6">
+                    <h2 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-4">Cognitive Domains</h2>
+
+                    <!-- AI Governance -->
+                    <div class="mb-6">
+                        <h3 class="text-sm font-medium text-gray-900 mb-2">AI Governance</h3>
+                        <ul class="space-y-1">
+                            <li><a href="#" class="text-sm text-gray-600 hover:text-gray-900 flex items-center py-1"><i class="fas fa-shield-alt mr-2"></i>Agent Policies</a></li>
+                            <li><a href="#" class="text-sm text-gray-600 hover:text-gray-900 flex items-center py-1"><i class="fas fa-key mr-2"></i>Secrets Manager</a></li>
+                            <li><a href="#" class="text-sm text-gray-600 hover:text-gray-900 flex items-center py-1"><i class="fas fa-microphone mr-2"></i>Voice Control</a></li>
+                        </ul>
+                    </div>
+
+                    <!-- Cognitive Products -->
+                    <div class="mb-6">
+                        <h3 class="text-sm font-medium text-gray-900 mb-2">Cognitive Products</h3>
+                        <ul class="space-y-1">
+                            <li><a href="#" class="text-sm text-gray-600 hover:text-gray-900 flex items-center py-1"><i class="fas fa-project-diagram mr-2"></i>Project Intelligence</a></li>
+                            <li><a href="#" class="text-sm text-gray-600 hover:text-gray-900 flex items-center py-1"><i class="fas fa-dollar-sign mr-2"></i>Finance AI</a></li>
+                            <li><a href="#" class="text-sm text-gray-600 hover:text-gray-900 flex items-center py-1"><i class="fas fa-building mr-2"></i>Facilities TFM</a></li>
+                        </ul>
+                    </div>
+
+                    <!-- AI Operations -->
+                    <div class="mb-6">
+                        <h3 class="text-sm font-medium text-gray-900 mb-2">AI Operations</h3>
+                        <ul class="space-y-1">
+                            <li><a href="#" class="text-sm text-gray-600 hover:text-gray-900 flex items-center py-1"><i class="fas fa-brain mr-2"></i>SLM/LLM Monitor</a></li>
+                            <li><a href="#" class="text-sm text-gray-600 hover:text-gray-900 flex items-center py-1"><i class="fas fa-crystal-ball mr-2"></i>Scenario Planner</a></li>
+                            <li><a href="#" class="text-sm text-gray-600 hover:text-gray-900 flex items-center py-1"><i class="fas fa-exclamation-triangle mr-2"></i>Emergency Override</a></li>
+                        </ul>
                     </div>
                 </div>
             </div>
 
-            <!-- Main Content Area -->
-            <div class="flex-1 p-6 overflow-y-auto">
+            <!-- Center Panel - Main Dashboard -->
+            <div class="flex-1 p-6">
+
                 <!-- System Health Overview -->
-                <div class="mb-6">
-                    <h2 class="text-xl font-bold text-gray-800 mb-4">System Health Overview</h2>
+                <div class="mb-8">
+                    <h2 class="text-xl font-bold text-gray-900 mb-4">System Health Overview (Demo Data)</h2>
                     <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-                        <div class="agent-card bg-green-50 border border-green-200 rounded-lg p-4">
+
+                        <div class="bg-white p-4 rounded-lg border border-gray-200">
                             <div class="flex items-center">
-                                <i class="fas fa-check-circle text-green-600 text-2xl mr-3"></i>
-                                <div>
-                                    <h3 class="font-semibold text-green-900">System Status</h3>
-                                    <p id="systemStatus" class="text-green-600">Loading...</p>
+                                <div class="p-2 bg-green-100 rounded-lg">
+                                    <i class="fas fa-heart text-green-600"></i>
+                                </div>
+                                <div class="ml-4">
+                                    <p class="text-sm font-medium text-gray-600">System Status</p>
+                                    <p class="text-lg font-semibold text-gray-900">Demo Mode</p>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="agent-card bg-blue-50 border border-blue-200 rounded-lg p-4">
+                        <div class="bg-white p-4 rounded-lg border border-gray-200">
                             <div class="flex items-center">
-                                <i class="fas fa-heartbeat text-blue-600 text-2xl mr-3"></i>
-                                <div>
-                                    <h3 class="font-semibold text-blue-900">Uptime</h3>
-                                    <p id="systemUptime" class="text-blue-600">Loading...</p>
+                                <div class="p-2 bg-blue-100 rounded-lg">
+                                    <i class="fas fa-clock text-blue-600"></i>
+                                </div>
+                                <div class="ml-4">
+                                    <p class="text-sm font-medium text-gray-600">Uptime</p>
+                                    <p class="text-lg font-semibold text-gray-900">99.97%</p>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="agent-card bg-purple-50 border border-purple-200 rounded-lg p-4">
+                        <div class="bg-white p-4 rounded-lg border border-gray-200">
                             <div class="flex items-center">
-                                <i class="fas fa-robot text-purple-600 text-2xl mr-3"></i>
-                                <div>
-                                    <h3 class="font-semibold text-purple-900">Active Agents</h3>
-                                    <p id="activeAgents" class="text-purple-600">Loading...</p>
+                                <div class="p-2 bg-purple-100 rounded-lg">
+                                    <i class="fas fa-robot text-purple-600"></i>
+                                </div>
+                                <div class="ml-4">
+                                    <p class="text-sm font-medium text-gray-600">Active Agents</p>
+                                    <p class="text-lg font-semibold text-gray-900">20/20</p>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="agent-card bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                        <div class="bg-white p-4 rounded-lg border border-gray-200">
                             <div class="flex items-center">
-                                <i class="fas fa-database text-yellow-600 text-2xl mr-3"></i>
-                                <div>
-                                    <h3 class="font-semibold text-yellow-900">Database</h3>
-                                    <p id="databaseStatus" class="text-yellow-600">Loading...</p>
+                                <div class="p-2 bg-yellow-100 rounded-lg">
+                                    <i class="fas fa-database text-yellow-600"></i>
+                                </div>
+                                <div class="ml-4">
+                                    <p class="text-sm font-medium text-gray-600">Database</p>
+                                    <p class="text-lg font-semibold text-gray-900">Mock Data</p>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Agent Status Dashboard -->
-                <div class="mb-6">
-                    <h2 class="text-xl font-bold text-gray-800 mb-4">Agent Status Dashboard</h2>
-                    <div id="agentGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-                        <!-- Agent cards will be populated by JavaScript -->
-                        <div class="agent-card bg-white border border-gray-200 rounded-lg p-4 text-center">
-                            <div class="pulse-animation">
-                                <i class="fas fa-spinner fa-spin text-gray-400 text-3xl mb-2"></i>
-                                <p class="text-gray-500">Loading agents...</p>
+                <!-- Demo Information -->
+                <div class="mb-8">
+                    <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-6">
+                        <h3 class="text-lg font-semibold text-yellow-900 mb-4">
+                            <i class="fas fa-info-circle mr-2"></i>
+                            Public Demo Information
+                        </h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <h4 class="font-medium text-yellow-900">What You're Seeing</h4>
+                                <ul class="text-sm text-yellow-800 mt-2 space-y-1">
+                                    <li>• Desktop foundation layout</li>
+                                    <li>• Three-panel responsive design</li>
+                                    <li>• Mock agent data</li>
+                                    <li>• Demo system metrics</li>
+                                </ul>
                             </div>
+                            <div>
+                                <h4 class="font-medium text-yellow-900">Private Deployment Features</h4>
+                                <ul class="text-sm text-yellow-800 mt-2 space-y-1">
+                                    <li>• Real-time database integration</li>
+                                    <li>• Live agent monitoring</li>
+                                    <li>• Secure credential management</li>
+                                    <li>• Agent 20 handoff protocols</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="mt-4 p-3 bg-yellow-100 rounded">
+                            <p class="text-sm text-yellow-900">
+                                <strong>Security Note:</strong> All sensitive credentials have been removed from this public repository. 
+                                The secure version with real database integration is deployed privately.
+                            </p>
                         </div>
                     </div>
                 </div>
 
-                <!-- Agent 20 Spotlight -->
-                <div class="mb-6">
-                    <h2 class="text-xl font-bold text-gray-800 mb-4">
-                        <i class="fas fa-star text-yellow-500 mr-2"></i>Agent 20 - Discussion Continuity
-                    </h2>
-                    <div class="bg-gradient-to-r from-purple-50 to-blue-50 border border-purple-200 rounded-lg p-6">
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                            <div class="text-center">
-                                <i class="fas fa-heartbeat text-green-500 text-3xl mb-2"></i>
-                                <h3 class="font-semibold text-gray-800">Health Score</h3>
-                                <p id="agent20Health" class="text-2xl font-bold text-green-600">Loading...</p>
-                            </div>
-                            <div class="text-center">
-                                <i class="fas fa-comments text-blue-500 text-3xl mb-2"></i>
-                                <h3 class="font-semibold text-gray-800">Handoff Protocols</h3>
-                                <p id="agent20Handoff" class="text-lg font-semibold text-blue-600">Loading...</p>
-                            </div>
-                            <div class="text-center">
-                                <i class="fas fa-clock text-purple-500 text-3xl mb-2"></i>
-                                <h3 class="font-semibold text-gray-800">Last Heartbeat</h3>
-                                <p id="agent20Heartbeat" class="text-sm text-purple-600">Loading...</p>
-                            </div>
+                <!-- Agent 20 Demo -->
+                <div class="bg-white p-6 rounded-lg border border-gray-200">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">
+                        <i class="fas fa-star text-yellow-500 mr-2"></i>
+                        Agent 20 - Discussion Continuity (Demo)
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div>
+                            <p class="text-sm text-gray-600">Health Score</p>
+                            <p class="text-2xl font-bold text-green-600">9.9/10</p>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-600">Status</p>
+                            <p class="text-lg font-medium">Demo Mode</p>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-600">Handoff Protocols</p>
+                            <p class="text-lg font-medium">Demo Data</p>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Right Panel - Context & Tools -->
-        <div id="rightPanel" class="panel-transition panel-expanded bg-white shadow-lg border-l border-gray-200 flex flex-col">
-            <!-- Panel Header -->
-            <div class="cognitive-gradient text-white p-4 flex items-center justify-between">
-                <span id="rightPanelTitle" class="font-bold text-lg">Context & Tools</span>
-                <button id="rightPanelToggle" class="text-white hover:bg-white hover:bg-opacity-20 rounded p-1">
-                    <i class="fas fa-chevron-right"></i>
-                </button>
-            </div>
+            <!-- Right Panel - Demo Info -->
+            <div id="right-panel" class="bg-white border-l border-gray-200 panel-transition" style="width: 280px;">
+                <div class="p-6">
+                    <h2 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-4">Demo Information</h2>
 
-            <!-- Tab Navigation -->
-            <div class="border-b border-gray-200">
-                <nav class="flex">
-                    <button class="tab-button active px-4 py-2 text-sm font-medium border-b-2 border-blue-500 text-blue-600" data-tab="workflow">
-                        <i class="fas fa-project-diagram mr-1"></i>Workflow
-                    </button>
-                    <button class="tab-button px-4 py-2 text-sm font-medium border-b-2 border-transparent text-gray-500 hover:text-gray-700" data-tab="discussions">
-                        <i class="fas fa-comments mr-1"></i>Discussions
-                    </button>
-                    <button class="tab-button px-4 py-2 text-sm font-medium border-b-2 border-transparent text-gray-500 hover:text-gray-700" data-tab="config">
-                        <i class="fas fa-cog mr-1"></i>Configuration
-                    </button>
-                </nav>
-            </div>
-
-            <!-- Tab Content -->
-            <div id="rightPanelContent" class="flex-1 overflow-y-auto p-4">
-                <!-- Workflow Tab -->
-                <div id="workflowTab" class="tab-content">
-                    <h3 class="text-lg font-semibold text-gray-800 mb-4">Agent Pipeline</h3>
-                    <div class="space-y-3">
-                        <div class="bg-green-50 border border-green-200 rounded-lg p-3">
-                            <div class="flex items-center justify-between">
-                                <span class="text-sm font-medium text-green-800">Database Connection</span>
-                                <i class="fas fa-check-circle text-green-600"></i>
-                            </div>
+                    <div class="space-y-4">
+                        <div class="p-3 bg-blue-50 rounded-lg">
+                            <h4 class="text-sm font-medium text-blue-900">Repository</h4>
+                            <p class="text-sm text-blue-700">Public Demo Version</p>
                         </div>
-                        <div class="bg-blue-50 border border-blue-200 rounded-lg p-3">
-                            <div class="flex items-center justify-between">
-                                <span class="text-sm font-medium text-blue-800">Agent Monitoring</span>
-                                <i class="fas fa-eye text-blue-600"></i>
-                            </div>
+                        <div class="p-3 bg-yellow-50 rounded-lg">
+                            <h4 class="text-sm font-medium text-yellow-900">Data</h4>
+                            <p class="text-sm text-yellow-700">Mock Data Only</p>
                         </div>
-                        <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
-                            <div class="flex items-center justify-between">
-                                <span class="text-sm font-medium text-yellow-800">Credential Management</span>
-                                <i class="fas fa-shield-alt text-yellow-600"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Discussions Tab -->
-                <div id="discussionsTab" class="tab-content hidden">
-                    <h3 class="text-lg font-semibold text-gray-800 mb-4">Discussion Memory</h3>
-                    <div id="discussionMemory" class="space-y-3">
-                        <div class="bg-gray-50 border border-gray-200 rounded-lg p-3">
-                            <p class="text-sm text-gray-600">Loading discussion context...</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Configuration Tab -->
-                <div id="configTab" class="tab-content hidden">
-                    <h3 class="text-lg font-semibold text-gray-800 mb-4">System Configuration</h3>
-                    <div class="space-y-3">
-                        <div class="bg-white border border-gray-200 rounded-lg p-3">
-                            <label class="text-sm font-medium text-gray-700">Database Mode</label>
-                            <p id="databaseMode" class="text-sm text-green-600">Secure Environment Variables</p>
-                        </div>
-                        <div class="bg-white border border-gray-200 rounded-lg p-3">
-                            <label class="text-sm font-medium text-gray-700">Security Status</label>
-                            <p id="securityStatus" class="text-sm text-green-600">Credentials Protected</p>
+                        <div class="p-3 bg-green-50 rounded-lg">
+                            <h4 class="text-sm font-medium text-green-900">Security</h4>
+                            <p class="text-sm text-green-700">No Credentials Exposed</p>
                         </div>
                     </div>
                 </div>
@@ -321,285 +253,15 @@
         </div>
     </div>
 
-    <!-- JavaScript for Secure Database Integration -->
     <script>
-        // SECURE DATABASE CONNECTION (NO EXPOSED CREDENTIALS)
-        class SecureAWIPConnection {
-            constructor() {
-                this.isConnected = false;
-                this.retryAttempts = 0;
-                this.maxRetries = 3;
-                this.fallbackData = this.getFallbackData();
-            }
+        console.log('📢 AWIP Mission Control - Public Demo');
+        console.log('🔒 This version displays mock data only');
+        console.log('🎯 For secure deployment with real data, see private repository');
+        console.log('🛡️ No credentials are exposed in this public version');
 
-            // Get credentials securely from environment/configuration
-            getSecureCredentials() {
-                // In production, these come from environment variables
-                return {
-                    url: window.ENV?.SUPABASE_URL || 'https://your-project.supabase.co',
-                    anonKey: window.ENV?.SUPABASE_ANON_KEY || 'your_anon_key_here',
-                    serviceKey: window.ENV?.SUPABASE_SERVICE_KEY || 'your_service_key_here'
-                };
-            }
-
-            // Initialize secure connection
-            async initializeConnection() {
-                try {
-                    console.log('🔒 Initializing secure database connection...');
-
-                    // Simulate secure connection (replace with actual Supabase connection)
-                    const credentials = this.getSecureCredentials();
-
-                    // Mock connection for demo (replace with real Supabase client)
-                    this.isConnected = true;
-                    console.log('✅ Secure connection established');
-
-                    await this.loadSystemData();
-                } catch (error) {
-                    console.error('❌ Connection failed:', error);
-                    this.handleConnectionFailure();
-                }
-            }
-
-            // Load system data securely
-            async loadSystemData() {
-                try {
-                    if (this.isConnected) {
-                        // In production, this would query the actual database
-                        const systemData = await this.getSecureSystemData();
-                        this.updateUI(systemData);
-                    } else {
-                        this.updateUI(this.fallbackData);
-                    }
-                } catch (error) {
-                    console.error('❌ Data loading failed:', error);
-                    this.updateUI(this.fallbackData);
-                }
-            }
-
-            // Get secure system data (placeholder for real database queries)
-            async getSecureSystemData() {
-                // This would use the secure Supabase connection
-                return {
-                    systemStatus: 'Operational',
-                    uptime: '99.97%',
-                    activeAgents: '20/20',
-                    databaseStatus: 'Connected (Secure)',
-                    agents: this.generateMockAgents(),
-                    agent20: {
-                        health: '9.9/10',
-                        handoff: 'Enabled',
-                        heartbeat: new Date().toLocaleString()
-                    }
-                };
-            }
-
-            // Fallback data when database is unavailable
-            getFallbackData() {
-                return {
-                    systemStatus: 'Offline Mode',
-                    uptime: 'Unavailable',
-                    activeAgents: 'Cached: 20/20',
-                    databaseStatus: 'Disconnected',
-                    agents: this.generateMockAgents(),
-                    agent20: {
-                        health: 'Cached: 9.9/10',
-                        handoff: 'Cached',
-                        heartbeat: 'Last known: ' + new Date().toLocaleString()
-                    }
-                };
-            }
-
-            // Generate mock agent data
-            generateMockAgents() {
-                const agents = [];
-                for (let i = 1; i <= 20; i++) {
-                    agents.push({
-                        id: i,
-                        name: i === 20 ? 'Discussion Continuity Agent' : `Agent ${i}`,
-                        status: 'active',
-                        health: i === 20 ? 9.9 : Math.random() * 2 + 8,
-                        type: i <= 5 ? 'monitoring' : i <= 10 ? 'management' : 'analysis'
-                    });
-                }
-                return agents;
-            }
-
-            // Update UI with system data
-            updateUI(data) {
-                // Update system health overview
-                document.getElementById('systemStatus').textContent = data.systemStatus;
-                document.getElementById('systemUptime').textContent = data.uptime;
-                document.getElementById('activeAgents').textContent = data.activeAgents;
-                document.getElementById('databaseStatus').textContent = data.databaseStatus;
-
-                // Update Agent 20 spotlight
-                document.getElementById('agent20Health').textContent = data.agent20.health;
-                document.getElementById('agent20Handoff').textContent = data.agent20.handoff;
-                document.getElementById('agent20Heartbeat').textContent = data.agent20.heartbeat;
-
-                // Update agent grid
-                this.updateAgentGrid(data.agents);
-
-                // Update configuration tab
-                document.getElementById('databaseMode').textContent = 'Secure Environment Variables';
-                document.getElementById('securityStatus').textContent = 'Credentials Protected';
-            }
-
-            // Update agent grid
-            updateAgentGrid(agents) {
-                const agentGrid = document.getElementById('agentGrid');
-                agentGrid.innerHTML = '';
-
-                agents.forEach(agent => {
-                    const statusColor = agent.status === 'active' ? 'green' : 'red';
-                    const healthColor = agent.health >= 9 ? 'green' : agent.health >= 7 ? 'yellow' : 'red';
-
-                    const agentCard = document.createElement('div');
-                    agentCard.className = 'agent-card bg-white border border-gray-200 rounded-lg p-4';
-                    agentCard.innerHTML = `
-                        <div class="text-center">
-                            <div class="w-12 h-12 bg-${statusColor}-100 rounded-full flex items-center justify-center mx-auto mb-2">
-                                <i class="fas fa-robot text-${statusColor}-600 text-xl"></i>
-                            </div>
-                            <h3 class="font-semibold text-gray-800 text-sm mb-1">${agent.name}</h3>
-                            <p class="text-xs text-gray-500 mb-2">${agent.type}</p>
-                            <div class="flex items-center justify-center space-x-2">
-                                <span class="text-xs bg-${statusColor}-100 text-${statusColor}-800 px-2 py-1 rounded-full">
-                                    ${agent.status}
-                                </span>
-                                <span class="text-xs bg-${healthColor}-100 text-${healthColor}-800 px-2 py-1 rounded-full">
-                                    ${agent.health.toFixed(1)}
-                                </span>
-                            </div>
-                        </div>
-                    `;
-                    agentGrid.appendChild(agentCard);
-                });
-            }
-
-            // Handle connection failures
-            handleConnectionFailure() {
-                this.retryAttempts++;
-                if (this.retryAttempts < this.maxRetries) {
-                    console.log(`⚠️ Retrying connection (${this.retryAttempts}/${this.maxRetries})...`);
-                    setTimeout(() => this.initializeConnection(), 5000);
-                } else {
-                    console.log('⚠️ Using fallback data (offline mode)');
-                    this.updateUI(this.fallbackData);
-                }
-            }
-        }
-
-        // UI Management
-        class AWIPDesktopUI {
-            constructor() {
-                this.initializeUI();
-                this.setupEventListeners();
-            }
-
-            initializeUI() {
-                // Initialize panel states
-                this.leftPanelExpanded = true;
-                this.rightPanelExpanded = true;
-                this.activeTab = 'workflow';
-            }
-
-            setupEventListeners() {
-                // Panel toggle functionality
-                document.getElementById('leftPanelToggle').addEventListener('click', () => {
-                    this.togglePanel('left');
-                });
-
-                document.getElementById('rightPanelToggle').addEventListener('click', () => {
-                    this.togglePanel('right');
-                });
-
-                // Tab switching
-                document.querySelectorAll('.tab-button').forEach(button => {
-                    button.addEventListener('click', (e) => {
-                        this.switchTab(e.target.dataset.tab);
-                    });
-                });
-
-                // Update data every 30 seconds
-                setInterval(() => {
-                    if (window.awipConnection) {
-                        window.awipConnection.loadSystemData();
-                    }
-                }, 30000);
-            }
-
-            togglePanel(side) {
-                const panel = document.getElementById(`${side}Panel`);
-                const toggle = document.getElementById(`${side}PanelToggle`);
-                const content = document.getElementById(`${side}PanelContent`);
-                const title = document.getElementById(`${side}PanelTitle`);
-
-                if (side === 'left') {
-                    this.leftPanelExpanded = !this.leftPanelExpanded;
-                    if (this.leftPanelExpanded) {
-                        panel.classList.remove('panel-collapsed');
-                        panel.classList.add('panel-expanded');
-                        toggle.innerHTML = '<i class="fas fa-chevron-left"></i>';
-                        title.style.display = 'block';
-                        content.style.display = 'block';
-                    } else {
-                        panel.classList.remove('panel-expanded');
-                        panel.classList.add('panel-collapsed');
-                        toggle.innerHTML = '<i class="fas fa-chevron-right"></i>';
-                        title.style.display = 'none';
-                        content.style.display = 'none';
-                    }
-                } else {
-                    this.rightPanelExpanded = !this.rightPanelExpanded;
-                    if (this.rightPanelExpanded) {
-                        panel.classList.remove('panel-collapsed');
-                        panel.classList.add('panel-expanded');
-                        toggle.innerHTML = '<i class="fas fa-chevron-right"></i>';
-                        title.style.display = 'block';
-                    } else {
-                        panel.classList.remove('panel-expanded');
-                        panel.classList.add('panel-collapsed');
-                        toggle.innerHTML = '<i class="fas fa-chevron-left"></i>';
-                        title.style.display = 'none';
-                    }
-                }
-            }
-
-            switchTab(tabName) {
-                // Update tab buttons
-                document.querySelectorAll('.tab-button').forEach(button => {
-                    button.classList.remove('active', 'border-blue-500', 'text-blue-600');
-                    button.classList.add('border-transparent', 'text-gray-500');
-                });
-
-                document.querySelector(`[data-tab="${tabName}"]`).classList.add('active', 'border-blue-500', 'text-blue-600');
-                document.querySelector(`[data-tab="${tabName}"]`).classList.remove('border-transparent', 'text-gray-500');
-
-                // Update tab content
-                document.querySelectorAll('.tab-content').forEach(content => {
-                    content.classList.add('hidden');
-                });
-
-                document.getElementById(`${tabName}Tab`).classList.remove('hidden');
-                this.activeTab = tabName;
-            }
-        }
-
-        // Initialize application when DOM is loaded
+        // Demo mode only - no real database connections
         document.addEventListener('DOMContentLoaded', () => {
-            console.log('🚀 Initializing AWIP Desktop Foundation (Secure Mode)');
-
-            // Initialize secure connection
-            window.awipConnection = new SecureAWIPConnection();
-            window.awipConnection.initializeConnection();
-
-            // Initialize UI
-            window.awipUI = new AWIPDesktopUI();
-
-            console.log('✅ AWIP Desktop Foundation initialized');
-            console.log('🔒 Security: All credentials protected by environment variables');
+            console.log('✅ Public demo loaded successfully');
         });
     </script>
 </body>

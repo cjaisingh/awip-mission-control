@@ -2,33 +2,81 @@
   "name": "awip-mission-control",
   "version": "2.1.0",
   "description": "AWIP Mission Control Dashboard - Enhanced with Operational Standards",
-  "main": "index.html",
+  "main": "src/index.js",
   "scripts": {
-    "start": "python -m http.server 8000",
-    "test": "echo \"Test suite: HTML validation and JavaScript syntax check\" && exit 0",
-    "build": "echo \"Build process: Static files ready for deployment\" && exit 0",
-    "deploy": "echo \"Deploy to GitHub Pages\" && exit 0",
-    "security-scan": "echo \"Security scan completed\" && exit 0"
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "generate-docs": "node -e \"const { documentationService } = require('./src/services/documentationService.js'); documentationService.generateAllDocs();\""
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^6.5.1",
-    "tailwindcss": "^3.4.1",
+    "@google-cloud/storage": "^7.16.0",
+    "@langchain/community": "^0.3.50",
+    "@langchain/core": "^0.3.67",
+    "@langchain/openai": "^0.6.4",
+    "@supabase/auth-helpers-react": "^0.5.0",
+    "@supabase/auth-ui-react": "^0.4.7",
+    "@supabase/auth-ui-shared": "^0.1.8",
+    "@supabase/supabase-js": "^2.54.0",
     "chart.js": "^4.4.1",
     "d3": "^7.8.5",
-    "sortablejs": "^1.15.0"
+    "googleapis": "^155.0.0",
+    "langchain": "^0.3.30",
+    "react": "^18.2.0",
+    "react-chartjs-2": "^5.2.0",
+    "react-dom": "^18.2.0",
+    "react-icons": "^5.0.1",
+    "react-router-dom": "^6.22.0",
+    "react-scripts": "5.0.1",
+    "sortablejs": "^1.15.0",
+    "tailwindcss": "^3.4.1",
+    "zustand": "^5.0.7"
   },
   "devDependencies": {
+    "@tailwindcss/forms": "^0.5.10",
+    "@testing-library/dom": "^10.4.1",
+    "@testing-library/jest-dom": "^6.6.4",
+    "@testing-library/react": "^16.3.0",
+    "@types/jest": "^30.0.0",
+    "@types/node": "^24.0.3",
+    "@types/react": "^19.1.8",
+    "@types/react-dom": "^19.1.6",
+    "@typescript-eslint/eslint-plugin": "^8.39.0",
+    "@typescript-eslint/parser": "^8.39.0",
+    "autoprefixer": "^10.4.17",
     "eslint": "^8.56.0",
-    "prettier": "^3.2.4"
+    "postcss": "^8.4.35",
+    "prettier": "^3.2.4",
+    "typescript": "^5.8.3"
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/cjaisingh/awip-mission-control.git"
   },
-  "keywords": ["awip", "mission-control", "ai", "dashboard", "monitoring"],
+  "keywords": [
+    "awip",
+    "mission-control",
+    "ai",
+    "dashboard",
+    "monitoring"
+  ],
   "author": "AWIP Development Team",
   "license": "MIT",
   "engines": {
     "node": ">=18.0.0"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
   }
 }

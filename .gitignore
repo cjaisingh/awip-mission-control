@@ -48,3 +48,4 @@ logs/
 # Coverage reports
 coverage/
 .nyc_output
+REACT_APP_API_URL=http://localhost:3001

@@ -9,24 +9,53 @@
 </head>
 <body>
     <div class="container">
-        <!-- Header -->
+        <!-- Enhanced Header -->
         <header class="header">
-            <div class="logo">
-                <i class="fas fa-robot"></i>
-                <span>AWIP Mission Control</span>
+            <div class="header-left">
+                <div class="logo">
+                    <i class="fas fa-robot"></i>
+                    <span>AWIP Mission Control</span>
+                </div>
+                <div class="search-bar">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Search agents, logs, or settings...">
+                </div>
             </div>
-            <div class="header-stats">
-                <div class="stat-item">
-                    <span class="stat-label">System Status</span>
-                    <span class="stat-value status-active">ACTIVE</span>
+            <div class="header-right">
+                <div class="header-stats">
+                    <div class="stat-item">
+                        <span class="stat-label">System Status</span>
+                        <span class="stat-value status-active">
+                            <i class="fas fa-circle"></i>
+                            ACTIVE
+                        </span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Agents Online</span>
+                        <span class="stat-value">
+                            <i class="fas fa-users"></i>
+                            19/19
+                        </span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Time</span>
+                        <span class="stat-value" id="current-time">
+                            <i class="fas fa-clock"></i>
+                            --:--:--
+                        </span>
+                    </div>
                 </div>
-                <div class="stat-item">
-                    <span class="stat-label">Agents Online</span>
-                    <span class="stat-value">19/19</span>
-                </div>
-                <div class="stat-item">
-                    <span class="stat-label">Time</span>
-                    <span class="stat-value" id="current-time">--:--:--</span>
+                <div class="quick-actions">
+                    <button class="action-btn" title="Refresh">
+                        <i class="fas fa-sync-alt"></i>
+                    </button>
+                    <button class="action-btn" title="Notifications">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-badge">3</span>
+                    </button>
+                    <button class="action-btn" title="Settings">
+                        <i class="fas fa-cog"></i>
+                    </button>
                 </div>
             </div>
         </header>
@@ -37,33 +66,76 @@
             <div class="panel left-panel" id="left-panel">
                 <div class="panel-header">
                     <h3><i class="fas fa-chart-line"></i> System Overview</h3>
+                    <button class="panel-action" title="Expand">
+                        <i class="fas fa-expand"></i>
+                    </button>
                 </div>
                 <div class="panel-content">
                     <div class="metrics-grid">
                         <div class="metric-card">
+                            <div class="metric-icon">
+                                <i class="fas fa-heartbeat"></i>
+                            </div>
                             <div class="metric-value">98.5%</div>
                             <div class="metric-label">System Health</div>
+                            <div class="metric-trend positive">
+                                <i class="fas fa-arrow-up"></i>
+                                0.2%
+                            </div>
                         </div>
                         <div class="metric-card">
+                            <div class="metric-icon">
+                                <i class="fas fa-clock"></i>
+                            </div>
                             <div class="metric-value">99.97%</div>
                             <div class="metric-label">Uptime</div>
+                            <div class="metric-trend positive">
+                                <i class="fas fa-arrow-up"></i>
+                                0.01%
+                            </div>
                         </div>
                         <div class="metric-card">
+                            <div class="metric-icon">
+                                <i class="fas fa-tachometer-alt"></i>
+                            </div>
                             <div class="metric-value">1.2s</div>
                             <div class="metric-label">Response Time</div>
+                            <div class="metric-trend negative">
+                                <i class="fas fa-arrow-down"></i>
+                                0.1s
+                            </div>
                         </div>
                         <div class="metric-card">
+                            <div class="metric-icon">
+                                <i class="fas fa-dollar-sign"></i>
+                            </div>
                             <div class="metric-value">Zero</div>
                             <div class="metric-label">Operational Cost</div>
+                            <div class="metric-trend neutral">
+                                <i class="fas fa-minus"></i>
+                                Stable
+                            </div>
                         </div>
                     </div>
                     <div class="system-info">
                         <h4>Infrastructure</h4>
                         <ul>
-                            <li>Database: 28 tables, 25 indexes</li>
-                            <li>CDN: Global distribution</li>
-                            <li>Security: Multi-layer auth</li>
-                            <li>Backup: Real-time sync</li>
+                            <li>
+                                <i class="fas fa-database"></i>
+                                Database: 28 tables, 25 indexes
+                            </li>
+                            <li>
+                                <i class="fas fa-globe"></i>
+                                CDN: Global distribution
+                            </li>
+                            <li>
+                                <i class="fas fa-shield-alt"></i>
+                                Security: Multi-layer auth
+                            </li>
+                            <li>
+                                <i class="fas fa-sync"></i>
+                                Backup: Real-time sync
+                            </li>
                         </ul>
                     </div>
                 </div>
@@ -74,6 +146,17 @@
             <div class="panel center-panel">
                 <div class="panel-header">
                     <h3><i class="fas fa-users"></i> Agent Dashboard</h3>
+                    <div class="panel-actions">
+                        <button class="panel-action" title="Grid View">
+                            <i class="fas fa-th"></i>
+                        </button>
+                        <button class="panel-action" title="List View">
+                            <i class="fas fa-list"></i>
+                        </button>
+                        <button class="panel-action" title="Refresh">
+                            <i class="fas fa-sync-alt"></i>
+                        </button>
+                    </div>
                 </div>
                 <div class="panel-content">
                     <div class="agents-grid" id="agents-grid">
@@ -87,37 +170,59 @@
                 <div class="panel-header">
                     <div class="tab-navigation">
                         <button class="tab-btn active" data-tab="logs">
-                            <i class="fas fa-file-alt"></i> Logs
+                            <i class="fas fa-file-alt"></i>
+                            <span>Logs</span>
+                            <span class="tab-badge">3</span>
                         </button>
                         <button class="tab-btn" data-tab="config">
-                            <i class="fas fa-cog"></i> Config
+                            <i class="fas fa-cog"></i>
+                            <span>Config</span>
                         </button>
                         <button class="tab-btn" data-tab="deploy">
-                            <i class="fas fa-rocket"></i> Deploy
+                            <i class="fas fa-rocket"></i>
+                            <span>Deploy</span>
+                            <span class="tab-badge">1</span>
                         </button>
                         <button class="tab-btn" data-tab="monitor">
-                            <i class="fas fa-chart-bar"></i> Monitor
+                            <i class="fas fa-chart-bar"></i>
+                            <span>Monitor</span>
                         </button>
                     </div>
                 </div>
                 <div class="panel-content">
                     <!-- Logs Tab -->
                     <div class="tab-content active" id="logs-tab">
+                        <div class="log-filters">
+                            <button class="filter-btn active">All</button>
+                            <button class="filter-btn">Info</button>
+                            <button class="filter-btn">Success</button>
+                            <button class="filter-btn">Warning</button>
+                            <button class="filter-btn">Error</button>
+                        </div>
                         <div class="log-container">
                             <div class="log-entry">
                                 <span class="log-time">14:32:15</span>
                                 <span class="log-level info">INFO</span>
                                 <span class="log-message">Agent 20 context compression completed</span>
+                                <button class="log-action" title="Copy">
+                                    <i class="fas fa-copy"></i>
+                                </button>
                             </div>
                             <div class="log-entry">
                                 <span class="log-time">14:31:42</span>
                                 <span class="log-level success">SUCCESS</span>
                                 <span class="log-message">Memory retention at 97.2%</span>
+                                <button class="log-action" title="Copy">
+                                    <i class="fas fa-copy"></i>
+                                </button>
                             </div>
                             <div class="log-entry">
                                 <span class="log-time">14:30:18</span>
                                 <span class="log-level info">INFO</span>
                                 <span class="log-message">All 19 agents operational</span>
+                                <button class="log-action" title="Copy">
+                                    <i class="fas fa-copy"></i>
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -128,15 +233,30 @@
                             <h4>System Configuration</h4>
                             <div class="config-item">
                                 <label>Memory Retention:</label>
-                                <span>97.2%</span>
+                                <div class="config-value">
+                                    <span>97.2%</span>
+                                    <button class="config-action" title="Edit">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                </div>
                             </div>
                             <div class="config-item">
                                 <label>Context Compression:</label>
-                                <span>Enabled</span>
+                                <div class="config-value">
+                                    <span>Enabled</span>
+                                    <button class="config-action" title="Edit">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                </div>
                             </div>
                             <div class="config-item">
                                 <label>Agent Pool Size:</label>
-                                <span>19</span>
+                                <div class="config-value">
+                                    <span>19</span>
+                                    <button class="config-action" title="Edit">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -149,14 +269,17 @@
                                 <div class="status-item">
                                     <i class="fas fa-check-circle"></i>
                                     <span>Desktop Version: Deployed</span>
+                                    <span class="status-time">2m ago</span>
                                 </div>
                                 <div class="status-item">
                                     <i class="fas fa-check-circle"></i>
                                     <span>Mobile Version: Active</span>
+                                    <span class="status-time">5m ago</span>
                                 </div>
                                 <div class="status-item">
                                     <i class="fas fa-spinner fa-spin"></i>
                                     <span>Real-time Updates: Processing</span>
+                                    <span class="status-time">Just now</span>
                                 </div>
                             </div>
                         </div>

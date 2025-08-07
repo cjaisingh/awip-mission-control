@@ -7,6 +7,7 @@ import Settings from './pages/Settings';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import Layout from './components/Layout';
 import { initializeSSOTFromStorage } from './store/ssotStore';
+import './styles/ssot-variables.css';
 
 const App: React.FC = () => {
   // Initialize SSOT from localStorage on app start

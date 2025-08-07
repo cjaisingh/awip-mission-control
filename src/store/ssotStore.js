@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { subscribeWithSelector } from 'zustand/middleware';
+import { SSOT_CONFIG } from '../config/ssot';
 
 // SSOT (Single Source of Truth) Store
 // This centralizes all application state and provides a single source of truth
@@ -12,17 +13,17 @@ export const useSSOTStore = create(
       health: 98,
       uptime: '99.97%',
       lastUpdated: new Date(),
-      version: '2.1.0'
+      version: SSOT_CONFIG.app.version
     },
 
     // Agent State
     agents: {
       list: [],
       activeCount: 0,
-      totalCount: 0,
+      totalCount: SSOT_CONFIG.agents.total,
       agent20: {
         status: 'operational',
-        healthScore: 9.9,
+        healthScore: SSOT_CONFIG.agents.agent20.healthScore,
         lastActivity: new Date(),
         toolsAvailable: ['get_system_status', 'update_agent_status', 'generate_handoff_prompt', 'analyze_system_health']
       }
@@ -204,15 +205,15 @@ export const useSSOTStore = create(
         health: 98,
         uptime: '99.97%',
         lastUpdated: new Date(),
-        version: '2.1.0'
+        version: SSOT_CONFIG.app.version
       },
       agents: {
         list: [],
         activeCount: 0,
-        totalCount: 0,
+        totalCount: SSOT_CONFIG.agents.total,
         agent20: {
           status: 'operational',
-          healthScore: 9.9,
+          healthScore: SSOT_CONFIG.agents.agent20.healthScore,
           lastActivity: new Date(),
           toolsAvailable: ['get_system_status', 'update_agent_status', 'generate_handoff_prompt', 'analyze_system_health']
         }

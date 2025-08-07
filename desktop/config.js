@@ -1,27 +1,19 @@
-// AWIP Mission Control Configuration
+// AWIP Mission Control Configuration - SSOT COMPLIANT
+const { SSOT_CONFIG } = require('../src/config/ssot');
+
 const AWIPConfig = {
-    // System Configuration
+    // System Configuration - Now sourced from SSOT
     system: {
-        name: 'AWIP Mission Control',
-        version: '2.1.0',
-        environment: 'production',
+        name: SSOT_CONFIG.app.name,
+        version: SSOT_CONFIG.app.version,
+        environment: SSOT_CONFIG.app.environment,
         debug: false,
-        refreshInterval: 30000, // 30 seconds
-        maxLogEntries: 50
+        refreshInterval: SSOT_CONFIG.system.refreshInterval,
+        maxLogEntries: SSOT_CONFIG.system.maxLogEntries
     },
 
-    // API Configuration
-    api: {
-        baseUrl: window.location.origin,
-        endpoints: {
-            agents: '/api/agents',
-            metrics: '/api/metrics',
-            logs: '/api/logs',
-            system: '/api/system'
-        },
-        timeout: 10000,
-        retryAttempts: 3
-    },
+    // API Configuration - Now sourced from SSOT
+    api: SSOT_CONFIG.api,
 
     // UI Configuration
     ui: {
@@ -60,31 +52,16 @@ const AWIPConfig = {
         }
     },
 
-    // Agent Configuration
+    // Agent Configuration - Now sourced from SSOT
     agents: {
-        maxCount: 20,
-        healthCheckInterval: 15000,
-        statusUpdateInterval: 30000,
-        healthThresholds: {
-            excellent: 95,
-            good: 85,
-            warning: 70,
-            critical: 50
-        }
+        maxCount: SSOT_CONFIG.agents.total,
+        healthCheckInterval: SSOT_CONFIG.system.healthCheckInterval,
+        statusUpdateInterval: SSOT_CONFIG.system.statusUpdateInterval,
+        healthThresholds: SSOT_CONFIG.agents.healthThresholds
     },
 
-    // Monitoring Configuration
-    monitoring: {
-        metricsInterval: 5000,
-        logUpdateInterval: 10000,
-        systemStatsInterval: 30000,
-        alertThresholds: {
-            cpu: 80,
-            memory: 85,
-            network: 90,
-            disk: 90
-        }
-    },
+    // Monitoring Configuration - Now sourced from SSOT
+    monitoring: SSOT_CONFIG.monitoring,
 
     // Deployment Configuration
     deployment: {
@@ -94,16 +71,11 @@ const AWIPConfig = {
         path: '/desktop/',
         url: 'https://cjaisingh.github.io/awip-mission-control/desktop/',
         lastDeployed: new Date().toISOString(),
-        version: '2.1.0'
+        version: SSOT_CONFIG.app.version
     },
 
-    // Security Configuration
-    security: {
-        enableCSP: true,
-        enableHTTPS: true,
-        sessionTimeout: 3600000, // 1 hour
-        maxLoginAttempts: 3
-    },
+    // Security Configuration - Now sourced from SSOT
+    security: SSOT_CONFIG.security,
 
     // Logging Configuration
     logging: {

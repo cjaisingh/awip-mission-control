@@ -1,4 +1,6 @@
-// Mock API service to handle missing backend endpoints
+import { SSOT_CONFIG } from '../config/ssot';
+
+// Mock API service to handle missing backend endpoints - SSOT Compliant
 const mockData = {
   systemStatus: {
     database: true,
@@ -81,6 +83,133 @@ const mockData = {
       performance_score: 90,
       last_heartbeat: new Date().toISOString(),
       capabilities: ['Automation', 'Orchestration', 'Scheduling']
+    },
+    // Additional agents to match SSOT configuration
+    {
+      id: 6,
+      name: 'Communication Agent',
+      domain: 'Communication',
+      status: 'active',
+      performance_score: 93,
+      last_heartbeat: new Date().toISOString(),
+      capabilities: ['Messaging', 'Notifications', 'Integration']
+    },
+    {
+      id: 7,
+      name: 'Quality Agent',
+      domain: 'Quality Assurance',
+      status: 'active',
+      performance_score: 89,
+      last_heartbeat: new Date().toISOString(),
+      capabilities: ['Testing', 'Validation', 'Standards']
+    },
+    {
+      id: 8,
+      name: 'Performance Agent',
+      domain: 'Performance',
+      status: 'active',
+      performance_score: 91,
+      last_heartbeat: new Date().toISOString(),
+      capabilities: ['Optimization', 'Monitoring', 'Analysis']
+    },
+    {
+      id: 9,
+      name: 'Finance Agent',
+      domain: 'Finance',
+      status: 'active',
+      performance_score: 94,
+      last_heartbeat: new Date().toISOString(),
+      capabilities: ['Budgeting', 'Cost Analysis', 'Reporting']
+    },
+    {
+      id: 10,
+      name: 'Compliance Agent',
+      domain: 'Compliance',
+      status: 'active',
+      performance_score: 86,
+      last_heartbeat: new Date().toISOString(),
+      capabilities: ['Regulatory', 'Audit', 'Standards']
+    },
+    {
+      id: 11,
+      name: 'Integration Agent',
+      domain: 'Integration',
+      status: 'active',
+      performance_score: 88,
+      last_heartbeat: new Date().toISOString(),
+      capabilities: ['API Management', 'Data Sync', 'Connectivity']
+    },
+    {
+      id: 12,
+      name: 'Backup Agent',
+      domain: 'Backup & Recovery',
+      status: 'active',
+      performance_score: 92,
+      last_heartbeat: new Date().toISOString(),
+      capabilities: ['Backup', 'Recovery', 'Disaster Planning']
+    },
+    {
+      id: 13,
+      name: 'Notification Agent',
+      domain: 'Notifications',
+      status: 'active',
+      performance_score: 90,
+      last_heartbeat: new Date().toISOString(),
+      capabilities: ['Alerts', 'Messaging', 'Delivery']
+    },
+    {
+      id: 14,
+      name: 'Reporting Agent',
+      domain: 'Reporting',
+      status: 'active',
+      performance_score: 87,
+      last_heartbeat: new Date().toISOString(),
+      capabilities: ['Analytics', 'Dashboards', 'Insights']
+    },
+    {
+      id: 15,
+      name: 'UI/UX Agent',
+      domain: 'User Experience',
+      status: 'active',
+      performance_score: 93,
+      last_heartbeat: new Date().toISOString(),
+      capabilities: ['Design', 'Usability', 'Accessibility']
+    },
+    {
+      id: 16,
+      name: 'Learning Agent',
+      domain: 'Machine Learning',
+      status: 'active',
+      performance_score: 89,
+      last_heartbeat: new Date().toISOString(),
+      capabilities: ['Training', 'Prediction', 'Optimization']
+    },
+    {
+      id: 17,
+      name: 'Prediction Agent',
+      domain: 'Predictive Analytics',
+      status: 'active',
+      performance_score: 91,
+      last_heartbeat: new Date().toISOString(),
+      capabilities: ['Forecasting', 'Modeling', 'Analysis']
+    },
+    {
+      id: 18,
+      name: 'Master Coordinator Agent',
+      domain: 'Coordination',
+      status: 'active',
+      performance_score: 96,
+      last_heartbeat: new Date().toISOString(),
+      capabilities: ['Orchestration', 'Management', 'Coordination']
+    },
+    {
+      id: 19,
+      name: SSOT_CONFIG.agents.agent20.name,
+      domain: 'Continuity',
+      status: 'active',
+      performance_score: 99,
+      last_heartbeat: new Date().toISOString(),
+      capabilities: SSOT_CONFIG.agents.agent20.capabilities
     }
   ]
 };

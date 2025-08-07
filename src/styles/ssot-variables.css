@@ -1,0 +1,143 @@
+/* AWIP Mission Control - SSOT CSS Variables */
+/* This file serves as the single source of truth for all design tokens */
+
+:root {
+  /* Import SSOT configuration for CSS variables */
+  --awip-version: '2.1.0';
+  
+  /* Color System - Sourced from SSOT */
+  --awip-primary-50: #f0f9ff;
+  --awip-primary-100: #e0f2fe;
+  --awip-primary-200: #bae6fd;
+  --awip-primary-300: #7dd3fc;
+  --awip-primary-400: #38bdf8;
+  --awip-primary-500: #0ea5e9;
+  --awip-primary-600: #0284c7;
+  --awip-primary-700: #0369a1;
+  --awip-primary-800: #075985;
+  --awip-primary-900: #0c4a6e;
+  
+  /* Gradients - Single Source of Truth */
+  --cognitive-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  
+  /* Agent-specific gradients - centralized */
+  --agent-backup-gradient: linear-gradient(135deg, #DC2626 0%, #764ba2 100%);
+  --agent-ui-ux-gradient: linear-gradient(135deg, #BE185D 0%, #764ba2 100%);
+  --agent-workflow-gradient: linear-gradient(135deg, #8B5CF6 0%, #764ba2 100%);
+  --agent-integration-gradient: linear-gradient(135deg, #059669 0%, #764ba2 100%);
+  --agent-reporting-gradient: linear-gradient(135deg, #1E40AF 0%, #764ba2 100%);
+  --agent-quality-gradient: linear-gradient(135deg, #F59E0B 0%, #764ba2 100%);
+  --agent-learning-gradient: linear-gradient(135deg, #9333EA 0%, #764ba2 100%);
+  --agent-prediction-gradient: linear-gradient(135deg, #0891B2 0%, #764ba2 100%);
+  --agent-notification-gradient: linear-gradient(135deg, #7C2D12 0%, #764ba2 100%);
+  --agent-finance-gradient: linear-gradient(135deg, #06B6D4 0%, #764ba2 100%);
+  --agent-compliance-gradient: linear-gradient(135deg, #7C3AED 0%, #764ba2 100%);
+  --agent-communication-gradient: linear-gradient(135deg, #10B981 0%, #764ba2 100%);
+  --agent-performance-gradient: linear-gradient(135deg, #EF4444 0%, #764ba2 100%);
+  --agent-master-coordinator-gradient: linear-gradient(135deg, #1F2937 0%, #4F46E5 50%, #7C3AED 100%);
+  
+  /* System Configuration */
+  --awip-agent-total: 20;
+  --awip-agent-active: 20;
+  --awip-agent-self-evolving: 12;
+  
+  /* Panel Sizes */
+  --panel-left-default: 300px;
+  --panel-left-min: 200px;
+  --panel-left-max: 600px;
+  --panel-right-default: 350px;
+  --panel-right-min: 200px;
+  --panel-right-max: 600px;
+  
+  /* Intervals */
+  --refresh-interval: 30000ms;
+  --health-check-interval: 15000ms;
+  --status-update-interval: 30000ms;
+  --metrics-interval: 5000ms;
+  --log-update-interval: 10000ms;
+  --system-stats-interval: 30000ms;
+  
+  /* Thresholds */
+  --health-excellent: 95;
+  --health-good: 85;
+  --health-warning: 70;
+  --health-critical: 50;
+  --alert-cpu: 80;
+  --alert-memory: 85;
+  --alert-network: 90;
+  --alert-disk: 90;
+  
+  /* Security */
+  --session-timeout: 3600000ms;
+  --max-login-attempts: 3;
+  
+  /* Typography */
+  --font-sans: 'Inter', system-ui, sans-serif;
+}
+
+/* Utility classes for gradients */
+.cognitive-gradient {
+  background: var(--cognitive-gradient);
+}
+
+.primary-gradient {
+  background: var(--primary-gradient);
+}
+
+/* Agent-specific gradient classes */
+.agent-backup-gradient {
+  background: var(--agent-backup-gradient);
+}
+
+.agent-ui-ux-gradient {
+  background: var(--agent-ui-ux-gradient);
+}
+
+.agent-workflow-gradient {
+  background: var(--agent-workflow-gradient);
+}
+
+.agent-integration-gradient {
+  background: var(--agent-integration-gradient);
+}
+
+.agent-reporting-gradient {
+  background: var(--agent-reporting-gradient);
+}
+
+.agent-quality-gradient {
+  background: var(--agent-quality-gradient);
+}
+
+.agent-learning-gradient {
+  background: var(--agent-learning-gradient);
+}
+
+.agent-prediction-gradient {
+  background: var(--agent-prediction-gradient);
+}
+
+.agent-notification-gradient {
+  background: var(--agent-notification-gradient);
+}
+
+.agent-finance-gradient {
+  background: var(--agent-finance-gradient);
+}
+
+.agent-compliance-gradient {
+  background: var(--agent-compliance-gradient);
+}
+
+.agent-communication-gradient {
+  background: var(--agent-communication-gradient);
+}
+
+.agent-performance-gradient {
+  background: var(--agent-performance-gradient);
+}
+
+.agent-master-coordinator-gradient {
+  background: var(--agent-master-coordinator-gradient);
+}

@@ -8,7 +8,9 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "generate-docs": "node -e \"const { documentationService } = require('./src/services/documentationService.js'); documentationService.generateAllDocs();\""
+    "generate-docs": "node -e \"const { documentationService } = require('./src/services/documentationService.js'); documentationService.generateAllDocs();\"",
+    "validate:ssot": "node scripts/validate-ssot.js",
+    "validate": "npm run validate:ssot"
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^6.5.1",

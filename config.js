@@ -1,11 +1,14 @@
 // AWIP Secure Configuration - Uses GitHub Secrets Environment Variables
-// Version: 2.0 - SECURITY FIXED (Private Repository)
-// Last Updated: 2025-06-15
+// Version: 2.1.0 - SSOT COMPLIANT
+// Last Updated: 2025-01-15
+
+// Import SSOT configuration
+const { SSOT_CONFIG } = require('./src/config/ssot');
 
 const AWIP_CONFIG = {
-    // Version and Environment
-    version: '2.0.0',
-    environment: 'production',
+    // Version and Environment - Now sourced from SSOT
+    version: SSOT_CONFIG.app.version,
+    environment: SSOT_CONFIG.app.environment,
 
     // Security Notice
     securityNotice: 'This configuration uses GitHub Secrets for all sensitive data',
@@ -37,28 +40,8 @@ const AWIP_CONFIG = {
         tablesAvailable: ['system_status', 'documents', 'agents']
     },
 
-    // Agent System Configuration
-    agents: {
-        total: 20,
-        active: 20,
-        selfEvolving: 12,
-        agent20: {
-            name: 'Discussion Continuity Agent',
-            enhanced: true,
-            designSystem: true,
-            handoffProtocols: true,
-            healthScore: 9.9,
-            capabilities: [
-                'automation',
-                'analysis', 
-                'discussion_tracking',
-                'Component Editor',
-                'Floating Property Panels',
-                'Real-time Editing',
-                'Design System Integration'
-            ]
-        }
-    },
+    // Agent System Configuration - Now sourced from SSOT
+    agents: SSOT_CONFIG.agents,
 
     // GitHub Integration (SECURE - Uses Environment Variables)
     github: {
@@ -87,7 +70,7 @@ const AWIP_CONFIG = {
             framework: 'Tailwind CSS 2.2.19',
             icons: 'Font Awesome 6.4.0',
             charts: 'Chart.js',
-            cognitiveGradient: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
+            cognitiveGradient: SSOT_CONFIG.design.colors.gradients.cognitive
         },
         realTimeUpdates: {
             enabled: true,

@@ -174,7 +174,7 @@ Send message to LangChain agent
 ### Get System Status
 
 ```javascript
-const response = await fetch('/api/system-status');
+const response = await fetch(SSOT_CONFIG.api.endpoints.system);
 const data = await response.json();
 console.log(data);
 ```
@@ -183,7 +183,7 @@ console.log(data);
 ### Send Chat Message
 
 ```javascript
-const response = await fetch('/api/chat', {
+const response = await fetch(SSOT_CONFIG.api.endpoints.chat, {
   method: 'POST',
   headers: { 'Content-Type': 'application/json' },
   body: JSON.stringify({ message: 'Hello Agent 20' })

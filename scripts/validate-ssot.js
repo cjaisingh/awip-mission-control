@@ -28,7 +28,8 @@ const EXCLUDE_PATTERNS = [
   'ssot-variables.css',
   'ssotStore.js',
   'apiService.ts',
-  'package-lock.json'
+  'package-lock.json',
+  'validate-ssot.js'
 ];
 
 // Violations found

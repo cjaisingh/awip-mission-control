@@ -105,7 +105,7 @@ class DocumentationService {
     return [
       {
         method: 'GET',
-        path: '/api/system-status',
+        path: SSOT_CONFIG.api.endpoints.system,
         description: 'Get current system status',
         parameters: [],
         response: {
@@ -137,7 +137,7 @@ class DocumentationService {
       },
       {
         method: 'POST',
-        path: '/api/chat',
+        path: SSOT_CONFIG.api.endpoints.chat,
         description: 'Send message to LangChain agent',
         parameters: [
           { name: 'message', type: 'string', required: true }
@@ -434,13 +434,13 @@ ${Object.entries(tool.parameters).map(([name, param]) => `- \`${name}\` (${param
     return [
       {
         title: 'Get System Status',
-        code: `const response = await fetch('/api/system-status');
+        code: `const response = await fetch(SSOT_CONFIG.api.endpoints.system);
 const data = await response.json();
 console.log(data);`
       },
       {
         title: 'Send Chat Message',
-        code: `const response = await fetch('/api/chat', {
+        code: `const response = await fetch(SSOT_CONFIG.api.endpoints.chat, {
   method: 'POST',
   headers: { 'Content-Type': 'application/json' },
   body: JSON.stringify({ message: 'Hello Agent 20' })

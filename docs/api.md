@@ -6,7 +6,7 @@
 ## Endpoints
 
 
-### GET /api/system-status
+### GET SSOT_CONFIG.api.endpoints.system
 
 Get current system status
 

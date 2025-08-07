@@ -10,11 +10,11 @@ const path = require('path');
 
 // SSOT Configuration constants
 const SSOT_CONSTANTS = {
-  VERSION: '2.1.0',
-  AGENT_TOTAL: 20,
-  AGENT_ACTIVE: 20,
-  COGNITIVE_GRADIENT: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-  PRIMARY_COLOR: '#0ea5e9'
+  VERSION: 'SSOT_CONFIG.app.version',
+  AGENT_TOTAL: 'SSOT_CONFIG.agents.total',
+  AGENT_ACTIVE: 'SSOT_CONFIG.agents.active',
+  COGNITIVE_GRADIENT: 'var(--cognitive-gradient)',
+  PRIMARY_COLOR: 'var(--awip-primary-500)'
 };
 
 // Files to exclude from validation

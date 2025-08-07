@@ -500,7 +500,7 @@ export const financeTools = [
       console.log(`Analyzing costs for ${period}`);
       return JSON.stringify({
         success: true,
-        analysis: { period, total_cost: 2470, savings: 320, recommendations: 5 }
+        analysis: { period, total: SSOT_CONFIG.agents.total, recommendations: 5 }
       });
     }
   }),

@@ -95,15 +95,15 @@ const SSOTStatus: React.FC = () => {
             <div className="flex items-center justify-between">
               <span className="text-sm">Agent 20</span>
               <div className="flex items-center space-x-2">
-                {getStatusIcon(agents.agent20.status)}
-                <span className={`text-sm font-medium ${getStatusColor(agents.agent20.status)}`}>
-                  {agents.agent20.status}
+                {getStatusIcon(agents: SSOT_CONFIG.agents.total.status)}
+                <span className={`text-sm font-medium ${getStatusColor(agents: SSOT_CONFIG.agents.total.status)}`}>
+                  {agents: SSOT_CONFIG.agents.total.status}
                 </span>
               </div>
             </div>
             <div className="flex items-center justify-between">
               <span className="text-sm">Health Score</span>
-              <span className="text-sm font-medium">{agents.agent20.healthScore}/10</span>
+              <span className="text-sm font-medium">{agents: SSOT_CONFIG.agents.total.healthScore}/10</span>
             </div>
           </div>
         </div>

@@ -126,28 +126,36 @@ class AWIPMissionControl {
     }
 
     setupAgents() {
-        this.agents = [
-            { id: 1, name: 'Memory Manager', status: 'active', retention: '97.2%', type: 'Core' },
-            { id: 2, name: 'Personal Assistant', status: 'active', efficiency: '96.8%', type: 'Interface' },
-            { id: 3, name: 'Data Processor', status: 'active', throughput: '94.1%', type: 'Processing' },
-            { id: 4, name: 'Security Monitor', status: 'active', alerts: '0', type: 'Security' },
-            { id: 5, name: 'API Gateway', status: 'active', requests: '1.2K/min', type: 'Network' },
-            { id: 6, name: 'Cache Manager', status: 'active', hit_rate: '89.3%', type: 'Performance' },
-            { id: 7, name: 'Load Balancer', status: 'active', distribution: '98.7%', type: 'Network' },
-            { id: 8, name: 'Database Monitor', status: 'active', connections: '47/100', type: 'Database' },
-            { id: 9, name: 'File Manager', status: 'active', operations: '234/min', type: 'Storage' },
-            { id: 10, name: 'Task Scheduler', status: 'active', queue: '12 tasks', type: 'Processing' },
-            { id: 11, name: 'Backup Agent', status: 'idle', last_backup: '2h ago', type: 'Storage' },
-            { id: 12, name: 'Analytics Engine', status: 'active', insights: '87 new', type: 'Analytics' },
-            { id: 13, name: 'Notification Hub', status: 'active', sent: '156 today', type: 'Communication' },
-            { id: 14, name: 'Health Monitor', status: 'active', uptime: '99.97%', type: 'Monitoring' },
-            { id: 15, name: 'Resource Manager', status: 'active', efficiency: '92.1%', type: 'Management' },
-            { id: 16, name: 'Deployment Agent', status: 'active', version: 'v2.1.0', type: 'DevOps' },
-            { id: 17, name: 'Error Handler', status: 'active', resolved: '23/24', type: 'Monitoring' },
-            { id: 18, name: 'Config Manager', status: 'active', synced: '100%', type: 'Management' },
-            { id: 19, name: 'Audit Logger', status: 'active', entries: '1.4K today', type: 'Security' },
-            { id: 20, name: 'Discussion Agent', status: 'active', context: '98.5%', type: 'AI' }
-        ];
+        // Generate agents dynamically based on SSOT_CONFIG
+        this.agents = Array.from({ length: SSOT_CONFIG.agents.total }, (_, i) => {
+            const agentId = i + 1;
+            const agentNames = [
+                'Memory Manager', 'Personal Assistant', 'Data Processor', 'Security Monitor', 'API Gateway',
+                'Cache Manager', 'Load Balancer', 'Database Monitor', 'File Manager', 'Task Scheduler',
+                'Backup Agent', 'Analytics Engine', 'Notification Hub', 'Health Monitor', 'Resource Manager',
+                'Deployment Agent', 'Error Handler', 'Config Manager', 'Audit Logger', 'Discussion Agent'
+            ];
+            const agentTypes = [
+                'Core', 'Interface', 'Processing', 'Security', 'Network',
+                'Performance', 'Network', 'Database', 'Storage', 'Processing',
+                'Storage', 'Analytics', 'Communication', 'Monitoring', 'Management',
+                'DevOps', 'Monitoring', 'Management', 'Security', 'AI'
+            ];
+            const metrics = [
+                { retention: '97.2%' }, { efficiency: '96.8%' }, { throughput: '94.1%' }, { alerts: '0' }, { requests: '1.2K/min' },
+                { hit_rate: '89.3%' }, { distribution: '98.7%' }, { connections: '47/100' }, { operations: '234/min' }, { queue: '12 tasks' },
+                { last_backup: '2h ago' }, { insights: '87 new' }, { sent: '156 today' }, { uptime: '99.97%' }, { efficiency: '92.1%' },
+                { version: 'v2.1.0' }, { resolved: '23/24' }, { synced: '100%' }, { entries: '1.4K today' }, { context: '98.5%' }
+            ];
+            
+            return {
+                id: agentId,
+                name: agentNames[i] || `Agent ${agentId}`,
+                status: 'active',
+                type: agentTypes[i] || 'General',
+                ...metrics[i]
+            };
+        });
 
         this.renderAgents();
     }

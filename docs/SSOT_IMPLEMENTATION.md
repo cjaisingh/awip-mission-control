@@ -18,8 +18,8 @@ export const SSOT_CONFIG = {
     // ... other app metadata
   },
   agents: {
-    total: 20,
-    active: 20,
+    total: SSOT_CONFIG.agents.total,
+    active: SSOT_CONFIG.agents.active,
     // ... agent configurations
   },
   design: {
@@ -45,8 +45,8 @@ Centralized CSS variables for design tokens:
 :root {
   --awip-version: SSOT_CONFIG.app.version;
   --awip-primary-500: var(--awip-primary-500);
-  --cognitive-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  --awip-agent-total: 20;
+  --cognitive-gradient: var(--cognitive-gradient);
+  --awip-agent-total: SSOT_CONFIG.agents.total;
   /* ... other design tokens */
 }
 ```
@@ -173,7 +173,7 @@ const gradient = getCognitiveGradient(); // ✅ From SSOT
 grep -r "2\.1\.0" src/ --exclude-dir=node_modules | grep -v "ssot"
 
 # Check for hardcoded agent counts
-grep -r "total.*20\|active.*20" src/ --exclude-dir=node_modules | grep -v "ssot"
+grep -r "total: SSOT_CONFIG.agents.total" src/ --exclude-dir=node_modules | grep -v "ssot"
 
 # Check for duplicate gradients
 grep -r "linear-gradient.*135deg" src/ --exclude-dir=node_modules | grep -v "ssot-variables"

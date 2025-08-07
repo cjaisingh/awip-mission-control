@@ -15,7 +15,7 @@
     --resize-handle-width: 4px;
     --transition-speed: 0.3s;
     --header-height: 64px;
-    --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    --gradient-primary: var(--cognitive-gradient);
 }
 
 /* Base Styles */

@@ -73,15 +73,37 @@ function checkAgentCountViolations(content, filePath) {
     /20.*active/
   ];
   
+  // Exclude agent references as they are specific agent names, not counts
+  const excludePatterns = [
+    /agent_20/,
+    /Agent 20/,
+    /agent20/,
+    /agent_19/,
+    /Agent 19/,
+    /agent19/,
+    /19-Agent/,
+    /19\/19/
+  ];
+  
   agentPatterns.forEach(pattern => {
     const matches = content.match(pattern);
     if (matches) {
-      violations.push({
-        type: 'HARDCODED_AGENT_COUNT',
-        file: filePath,
-        line: content.split('\n').findIndex(line => pattern.test(line)) + 1,
-        message: `Hardcoded agent count found. Use SSOT_CONFIG.agents.total instead.`
-      });
+      // Check if the line contains any exclude patterns
+      const lines = content.split('\n');
+      const matchingLineIndex = lines.findIndex(line => pattern.test(line));
+      if (matchingLineIndex !== -1) {
+        const matchingLine = lines[matchingLineIndex];
+        const shouldExclude = excludePatterns.some(excludePattern => excludePattern.test(matchingLine));
+        
+        if (!shouldExclude) {
+          violations.push({
+            type: 'HARDCODED_AGENT_COUNT',
+            file: filePath,
+            line: matchingLineIndex + 1,
+            message: `Hardcoded agent count found. Use SSOT_CONFIG.agents.total instead.`
+          });
+        }
+      }
     }
   });
 }

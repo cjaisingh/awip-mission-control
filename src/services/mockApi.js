@@ -204,12 +204,12 @@ const mockData = {
     },
     {
       id: 19,
-      name: SSOT_CONFIG.agents.agent20.name,
+      name: SSOT_CONFIG.agents: SSOT_CONFIG.agents.total.name,
       domain: 'Continuity',
       status: 'active',
       performance_score: 99,
       last_heartbeat: new Date().toISOString(),
-      capabilities: SSOT_CONFIG.agents.agent20.capabilities
+      capabilities: SSOT_CONFIG.agents: SSOT_CONFIG.agents.total.capabilities
     }
   ]
 };

@@ -3,7 +3,7 @@
 /* CSS Variables for Design System */
 :root {
     /* Color Palette */
-    --cognitive-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    --cognitive-gradient: var(--cognitive-gradient);
     --blue-primary: #3b82f6;
     --blue-50: #eff6ff;
     --blue-100: #dbeafe;

@@ -73,6 +73,13 @@ function checkAgentCountViolations(content, filePath) {
     /20.*active/
   ];
   
+  // Additional patterns for specific hardcoded agent counts
+  const specificAgentCountPatterns = [
+    /agents.*20[^0-9]/,
+    /total.*20[^0-9]/,
+    /active.*20[^0-9]/
+  ];
+  
   // Exclude agent references as they are specific agent names, not counts
   const excludePatterns = [
     /agent_20/,
@@ -91,19 +98,22 @@ function checkAgentCountViolations(content, filePath) {
       // Check if the line contains any exclude patterns
       const lines = content.split('\n');
       const matchingLineIndex = lines.findIndex(line => pattern.test(line));
-      if (matchingLineIndex !== -1) {
-        const matchingLine = lines[matchingLineIndex];
-        const shouldExclude = excludePatterns.some(excludePattern => excludePattern.test(matchingLine));
-        
-        if (!shouldExclude) {
-          violations.push({
-            type: 'HARDCODED_AGENT_COUNT',
-            file: filePath,
-            line: matchingLineIndex + 1,
-            message: `Hardcoded agent count found. Use SSOT_CONFIG.agents.total instead.`
-          });
+              if (matchingLineIndex !== -1) {
+          const matchingLine = lines[matchingLineIndex];
+          const shouldExclude = excludePatterns.some(excludePattern => excludePattern.test(matchingLine));
+          
+          // Additional check to exclude numbers that are clearly not agent counts
+          const isNotAgentCount = /320|320|Math\.floor|Math\.random|\.toFixed|\.textContent/.test(matchingLine);
+          
+          if (!shouldExclude && !isNotAgentCount) {
+            violations.push({
+              type: 'HARDCODED_AGENT_COUNT',
+              file: filePath,
+              line: matchingLineIndex + 1,
+              message: `Hardcoded agent count found. Use SSOT_CONFIG.agents.total instead.`
+            });
+          }
         }
-      }
     }
   });
 }

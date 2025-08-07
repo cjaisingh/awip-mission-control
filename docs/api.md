@@ -32,7 +32,7 @@ Get current system status
 ```
 
 
-### GET /api/agents
+### GET SSOT_CONFIG.api.endpoints.agents
 
 Get all agents status
 

@@ -20,7 +20,7 @@ class DocumentationService {
   generateAPIDocs() {
     const apiDocs = {
       title: 'AWIP Mission Control API Documentation',
-      version: '2.1.0',
+      version: SSOT_CONFIG.app.version,
       lastUpdated: new Date().toISOString(),
       endpoints: this.extractAPIEndpoints(),
       schemas: this.extractSchemas(),
@@ -35,7 +35,7 @@ class DocumentationService {
   generateComponentDocs() {
     const componentDocs = {
       title: 'Component Library Documentation',
-      version: '2.1.0',
+      version: SSOT_CONFIG.app.version,
       lastUpdated: new Date().toISOString(),
       components: this.extractComponents(),
       props: this.extractComponentProps(),
@@ -74,7 +74,7 @@ class DocumentationService {
   generateDatabaseDocs() {
     const dbDocs = {
       title: 'Database Schema Documentation',
-      version: '2.1.0',
+      version: SSOT_CONFIG.app.version,
       lastUpdated: new Date().toISOString(),
       tables: this.extractDatabaseTables(),
       relationships: this.extractRelationships(),
@@ -89,7 +89,7 @@ class DocumentationService {
   generateAgentDocs() {
     const agentDocs = {
       title: 'Agent System Documentation',
-      version: '2.1.0',
+      version: SSOT_CONFIG.app.version,
       lastUpdated: new Date().toISOString(),
       agents: this.extractAgents(),
       tools: this.extractAgentTools(),
@@ -119,7 +119,7 @@ class DocumentationService {
       },
       {
         method: 'GET',
-        path: '/api/agents',
+        path: SSOT_CONFIG.api.endpoints.agents,
         description: 'Get all agents status',
         parameters: [],
         response: {

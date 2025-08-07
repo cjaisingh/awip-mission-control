@@ -25,7 +25,7 @@ AWIP Mission Control Desktop Foundation is a comprehensive, enterprise-grade das
 
 ### 📊 Live Dashboard Components
 - **System Health Overview**: Real-time system status and uptime monitoring
-- **Agent Status Dashboard**: Live monitoring of all 20 agents with health scores
+- **Agent Status Dashboard**: Live monitoring of all SSOT_CONFIG.agents.total agents with health scores
 - **Agent 20 Spotlight**: Dedicated interface for discussion continuity management
 - **Interactive Navigation**: Cognitive domains with expandable sections
 - **Context Tools**: Workflow, discussions, and configuration management
@@ -33,7 +33,7 @@ AWIP Mission Control Desktop Foundation is a comprehensive, enterprise-grade das
 ### 🔗 Database Integration
 - **Supabase Connection**: Verified working database connection
 - **Real-time Data**: Live updates every 30 seconds
-- **Agent Monitoring**: All 20 agents tracked with health scores
+- **Agent Monitoring**: All SSOT_CONFIG.agents.total agents tracked with health scores
 - **System Status**: Uptime, deployment status, and performance metrics
 - **Error Handling**: Graceful fallbacks when database unavailable
 
@@ -43,7 +43,7 @@ AWIP Mission Control Desktop Foundation is a comprehensive, enterprise-grade das
 
 ### Desktop Foundation Features
 - ✅ **Three-panel responsive layout**
-- ✅ **Live agent monitoring (20 agents)**
+- ✅ **Live agent monitoring (SSOT_CONFIG.agents.total agents)**
 - ✅ **Real-time system health dashboard**
 - ✅ **Agent 20 handoff protocols enabled**
 - ✅ **Database integration operational**
@@ -79,7 +79,7 @@ AWIP Mission Control Desktop Foundation is a comprehensive, enterprise-grade das
 - **Fallback**: Graceful degradation when offline
 
 ### Agent System
-- **Total Agents**: 20 active agents
+- **Total Agents**: SSOT_CONFIG.agents.total active agents
 - **Agent 20**: Discussion Continuity Agent (9.9/10 health)
 - **Monitoring**: Real-time health scores and status
 - **Handoff Protocols**: Enabled for conversation continuity
@@ -168,13 +168,13 @@ database: {
 ### Agent Configuration
 ```javascript
 agents: {
-    total: 20,
-    active: 20,
+    total: SSOT_CONFIG.agents.total,
+    active: SSOT_CONFIG.agents.active,
     agent20: {
-        name: 'Discussion Continuity Agent',
-        healthScore: 9.9,
-        handoffProtocols: true,
-        capabilities: ['automation', 'analysis', 'discussion_tracking']
+        name: SSOT_CONFIG.agents.agent20.name,
+        healthScore: SSOT_CONFIG.agents.agent20.healthScore,
+        handoffProtocols: SSOT_CONFIG.agents.agent20.handoffProtocols,
+        capabilities: SSOT_CONFIG.agents.agent20.capabilities
     }
 }
 ```

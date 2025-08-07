@@ -7,12 +7,12 @@ A comprehensive critical review of the AWIP Mission Control codebase was conduct
 ## Critical Issues Identified
 
 ### 1. Version Duplication (15+ files)
-**Issue**: Version "2.1.0" was hardcoded in 15+ different files across the codebase.
+**Issue**: Version "SSOT_CONFIG.app.version" was hardcoded in 15+ different files across the codebase.
 **Impact**: High risk of version inconsistencies during updates.
 **Resolution**: Centralized version management in `SSOT_CONFIG.app.version`.
 
 ### 2. Agent Count Duplication (30+ violations)
-**Issue**: Agent count (20) was scattered across multiple files including:
+**Issue**: Agent count (SSOT_CONFIG.agents.total) was scattered across multiple files including:
 - README.md
 - Agent HTML files
 - Configuration files

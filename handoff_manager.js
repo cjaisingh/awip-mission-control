@@ -169,7 +169,7 @@ Conversation ID: ${this.currentConversationId}`;
         const snapshot = {
             conversation_id: this.currentConversationId,
             system_health: this.systemState.system_health_percentage || 75,
-            active_agents: metrics.activeAgents || 20,
+            active_agents: metrics.activeAgents || SSOT_CONFIG.agents.total,
             system_phase: this.systemState.current_phase || 'active_development',
             key_metrics: {
                 conversation_count: metrics.conversationCount || 1,
@@ -226,7 +226,7 @@ Conversation ID: ${this.currentConversationId}`;
 
         if (success) {
             await this.createSnapshot({
-                activeAgents: 20,
+                activeAgents: SSOT_CONFIG.agents.total,
                 conversationCount: reportData.conversationCount || 1,
                 creditsUsed: reportData.creditsUsed || 0,
                 successRate: reportData.successRate || 0.5

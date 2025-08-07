@@ -63,10 +63,13 @@ function checkVersionViolations(content, filePath) {
  */
 function checkAgentCountViolations(content, filePath) {
   const agentPatterns = [
-    /total.*20/,
-    /active.*20/,
-    /agents.*20/,
-    /count.*20/
+    /total.*20[^0-9]/,
+    /active.*20[^0-9]/,
+    /agents.*20[^0-9]/,
+    /count.*20[^0-9]/,
+    /20.*agents/,
+    /20.*total/,
+    /20.*active/
   ];
   
   agentPatterns.forEach(pattern => {

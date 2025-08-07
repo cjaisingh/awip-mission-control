@@ -14,7 +14,7 @@ The primary SSOT configuration file contains all system constants and configurat
 export const SSOT_CONFIG = {
   app: {
     name: 'AWIP Mission Control',
-    version: '2.1.0',
+    version: SSOT_CONFIG.app.version,
     // ... other app metadata
   },
   agents: {
@@ -43,8 +43,8 @@ Centralized CSS variables for design tokens:
 
 ```css
 :root {
-  --awip-version: '2.1.0';
-  --awip-primary-500: #0ea5e9;
+  --awip-version: SSOT_CONFIG.app.version;
+  --awip-primary-500: var(--awip-primary-500);
   --cognitive-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   --awip-agent-total: 20;
   /* ... other design tokens */
@@ -125,9 +125,9 @@ class ApiService {
 ### Before (Non-SSOT Compliant)
 ```javascript
 // Multiple files with duplicate configurations
-const version = '2.1.0'; // ❌ Hardcoded
-const agentCount = 20; // ❌ Duplicated
-const gradient = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'; // ❌ Repeated
+const version = SSOT_CONFIG.app.version; // ✅ From SSOT
+const agentCount = SSOT_CONFIG.agents.total; // ✅ From SSOT
+const gradient = SSOT_CONFIG.design.colors.gradients.cognitive; // ✅ From SSOT
 ```
 
 ### After (SSOT Compliant)

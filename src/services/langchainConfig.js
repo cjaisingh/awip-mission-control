@@ -260,6 +260,8 @@ Use the available tools to help manage the system. Always provide clear, actiona
 
 Question: {input}
 
+{agent_scratchpad}
+
 Response: `);
 
 // Create the agent
@@ -286,7 +288,8 @@ export const conversationChain = RunnableSequence.from([
       return docs.map(doc => doc.pageContent).join('\n');
     },
     input: (input) => input.input,
-    tools: () => tools.map(tool => tool.name).join(', ')
+    tools: () => tools.map(tool => tool.name).join(', '),
+    agent_scratchpad: () => ''
   },
   prompt,
   llm,
@@ -323,7 +326,8 @@ export const agentManager = {
     try {
       const result = await agentExecutor.invoke({
         input,
-        context: await this.getConversationHistory(sessionId).then(history => history.join('\n'))
+        context: await this.getConversationHistory(sessionId).then(history => history.join('\n')),
+        agent_scratchpad: ''
       });
       
       // Add to memory

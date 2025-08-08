@@ -3,6 +3,22 @@
 
 import { createClient } from '@supabase/supabase-js';
 
+// Type definitions for TypeScript
+interface ProcessingResult {
+  success: boolean;
+  fileName: string;
+  triplesCount?: number;
+  error?: string;
+}
+
+interface TripleStats {
+  totalTriples: number;
+  uniqueSubjects: number;
+  uniqueRelations: number;
+  uniqueObjects: number;
+  sourceFiles: number;
+}
+
 class FileIngestionAgent {
   constructor() {
     // Initialize Supabase client with fallback values
@@ -96,7 +112,7 @@ class FileIngestionAgent {
   }
 
   // Local file processing
-  async processLocalFile(file) {
+  async processLocalFile(file): Promise<ProcessingResult> {
     try {
       console.log(`Processing local file: ${file.name}`);
       
@@ -161,7 +177,7 @@ class FileIngestionAgent {
   }
 
   // Get triple statistics
-  async getTripleStats() {
+  async getTripleStats(): Promise<TripleStats | null> {
     try {
       const { data, error } = await this.supabase
         .from('graph_triples')
@@ -342,19 +358,22 @@ class FileIngestionAgent {
 }
 
 // Export singleton instance with error handling
-let fileIngestionAgent;
+let fileIngestionAgent: FileIngestionAgent | {
+  processLocalFile: (file: File) => Promise<ProcessingResult>;
+  getTripleStats: () => Promise<TripleStats | null>;
+};
 try {
   fileIngestionAgent = new FileIngestionAgent();
 } catch (error) {
   console.error('Error initializing FileIngestionAgent:', error);
   // Create a fallback instance with minimal functionality
   fileIngestionAgent = {
-    processLocalFile: async (file) => ({
+    processLocalFile: async (file): Promise<ProcessingResult> => ({
       success: false,
       fileName: file.name,
       error: 'FileIngestionAgent initialization failed'
     }),
-    getTripleStats: async () => null
+    getTripleStats: async (): Promise<TripleStats | null> => null
   };
 }
 

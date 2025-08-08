@@ -20,6 +20,8 @@ import AgentCapabilities from '../components/AgentCapabilities';
 import FileIngestionInterface from '../components/FileIngestionInterface';
 import DatabaseStatus from '../components/DatabaseStatus';
 import KnowledgeGraphVisualization from '../components/KnowledgeGraphVisualization';
+import ExcelStyleDataView from '../components/ExcelStyleDataView';
+import GraphRAGChart from '../components/GraphRAGChart';
 
 ChartJS.register(
   CategoryScale,
@@ -93,6 +95,12 @@ function Dashboard() {
 
       {/* Knowledge Graph Visualization Section */}
       <KnowledgeGraphVisualization />
+
+      {/* Excel-Style Data View Section */}
+      <ExcelStyleDataView />
+
+      {/* GraphRAG Chart Section */}
+      <GraphRAGChart />
 
       {/* LangChain Agent Tools Section */}
       <div className="bg-white p-6 rounded-lg shadow">

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useSSOTStore } from '../store/ssotStore';
 import { SSOT_CONFIG } from '../config/ssot';
 import { FaDatabase, FaServer, FaRobot, FaSync, FaCheckCircle, FaExclamationTriangle } from 'react-icons/fa';
@@ -18,8 +18,14 @@ const SSOTStatus: React.FC = () => {
     getOverallHealth,
     isDatabaseConnected,
     isRealtimeConnected,
-    isLangChainInitialized
+    isLangChainInitialized,
+    testDatabaseConnection
   } = useSSOTStore();
+
+  // Test database connection on component mount
+  useEffect(() => {
+    testDatabaseConnection();
+  }, [testDatabaseConnection]);
 
   const getStatusIcon = (status: string) => {
     switch (status) {

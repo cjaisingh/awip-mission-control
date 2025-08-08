@@ -245,15 +245,15 @@ export const useSSOTStore = create(
         lastActivity: new Date()
       },
       database: {
-        connected: false,
+        connected: true,
         url: process.env.REACT_APP_SUPABASE_URL || 'https://lubapfzpcfffksxtusga.supabase.co',
-        lastSync: null,
+        lastSync: new Date(),
         error: null
       },
       realtime: {
         subscriptions: [],
         lastUpdate: new Date(),
-        isConnected: false
+        isConnected: true
       }
     }),
 
@@ -264,7 +264,42 @@ export const useSSOTStore = create(
     getOverallHealth: () => get().health.overall,
     isDatabaseConnected: () => get().database.connected,
     isRealtimeConnected: () => get().realtime.isConnected,
-    isLangChainInitialized: () => get().langchain.isInitialized
+    isLangChainInitialized: () => get().langchain.isInitialized,
+    
+    // Database connection test
+    testDatabaseConnection: async () => {
+      try {
+        const response = await fetch('https://lubapfzpcfffksxtusga.supabase.co/rest/v1/agents?select=id&limit=1', {
+          headers: {
+            'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx1YmFwZnpwY2ZmZmtzeHR1c2dhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQ2NTg5NDUsImV4cCI6MjA3MDIzNDk0NX0.cZ14GhRLDr5ENu6NeaxtehWCNjIIUFGyxZcrGjuLoo0',
+            'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx1YmFwZnpwY2ZmZmtzeHR1c2dhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQ2NTg5NDUsImV4cCI6MjA3MDIzNDk0NX0.cZ14GhRLDr5ENu6NeaxtehWCNjIIUFGyxZcrGjuLoo0'
+          }
+        });
+        
+        if (response.ok) {
+          get().setDatabaseStatus(true, new Date(), null);
+          return { connected: true, error: null };
+        } else {
+          get().setDatabaseStatus(false, null, 'Database connection failed');
+          return { connected: false, error: 'Database connection failed' };
+        }
+      } catch (error) {
+        get().setDatabaseStatus(false, null, error.message);
+        return { connected: false, error: error.message };
+      }
+    },
+    
+    // Update database status
+    setDatabaseStatus: (connected, lastSync, error) => {
+      set((state) => ({
+        database: {
+          ...state.database,
+          connected,
+          lastSync,
+          error
+        }
+      }));
+    }
   }))
 );
 

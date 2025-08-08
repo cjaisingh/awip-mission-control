@@ -10,6 +10,13 @@ interface ProcessingStatus {
   error: string | null;
 }
 
+interface ProcessingResult {
+  success: boolean;
+  fileName: string;
+  triplesCount?: number;
+  error?: string;
+}
+
 const FileIngestionInterface: React.FC = () => {
   const [status, setStatus] = useState<ProcessingStatus>({
     isProcessing: false,
@@ -60,10 +67,10 @@ const FileIngestionInterface: React.FC = () => {
           currentFile: file.name
         }));
 
-        const result = await fileIngestionAgent.processLocalFile(file);
+        const result: ProcessingResult = await fileIngestionAgent.processLocalFile(file);
         
         if (result.success) {
-          totalTriples += result.triplesCount;
+          totalTriples += result.triplesCount || 0;
           setStatus(prev => ({
             ...prev,
             processedFiles: i + 1,

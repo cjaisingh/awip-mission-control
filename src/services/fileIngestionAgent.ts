@@ -40,7 +40,7 @@ class FileIngestionAgent {
   async extractTriples(text: string): Promise<any[]> {
     try {
       const openaiKey = process.env.REACT_APP_OPENAI_API_KEY;
-      if (!openaiKey) {
+      if (!openaiKey || openaiKey === 'your_openai_api_key_here') {
         console.warn('OpenAI API key not found, using mock triples');
         // Return mock triples for demonstration
         return [

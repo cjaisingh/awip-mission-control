@@ -19,6 +19,7 @@ import SSOTStatus from '../components/SSOTStatus';
 import AgentCapabilities from '../components/AgentCapabilities';
 import FileIngestionInterface from '../components/FileIngestionInterface';
 import DatabaseStatus from '../components/DatabaseStatus';
+import KnowledgeGraphVisualization from '../components/KnowledgeGraphVisualization';
 
 ChartJS.register(
   CategoryScale,
@@ -89,6 +90,9 @@ function Dashboard() {
 
       {/* File Ingestion Agent Section */}
       <FileIngestionInterface />
+
+      {/* Knowledge Graph Visualization Section */}
+      <KnowledgeGraphVisualization />
 
       {/* LangChain Agent Tools Section */}
       <div className="bg-white p-6 rounded-lg shadow">

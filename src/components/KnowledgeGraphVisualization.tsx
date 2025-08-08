@@ -26,24 +26,27 @@ const KnowledgeGraphVisualization: React.FC = () => {
   const loadTriples = async () => {
     try {
       setLoading(true);
+      let triplesData: Triple[] = [];
+      
       // Query all triples from the database
       if ('queryTriples' in fileIngestionAgent) {
-        const data = await fileIngestionAgent.queryTriples('');
-        setTriples(data);
+        triplesData = await fileIngestionAgent.queryTriples('');
+        setTriples(triplesData);
       } else {
         // Fallback to mock data if queryTriples is not available
-        setTriples([
+        triplesData = [
           { subject: 'Document', relation: 'contains', object: 'information', source_file: 'uploaded_file.txt' },
           { subject: 'Text', relation: 'processed_by', object: 'AI', source_file: 'uploaded_file.txt' },
           { subject: 'File', relation: 'uploaded_by', object: 'User', source_file: 'uploaded_file.txt' }
-        ]);
+        ];
+        setTriples(triplesData);
       }
       
       // Convert to graph format
       const nodes = new Set<string>();
       const edges: Array<{ from: string; to: string; label: string }> = [];
       
-      data.forEach((triple: Triple) => {
+      triplesData.forEach((triple: Triple) => {
         nodes.add(triple.subject);
         nodes.add(triple.object);
         edges.push({

@@ -41,13 +41,9 @@ class FileIngestionAgent {
     try {
       const openaiKey = process.env.REACT_APP_OPENAI_API_KEY;
       if (!openaiKey || openaiKey === 'your_openai_api_key_here') {
-        console.warn('OpenAI API key not found, using mock triples');
-        // Return mock triples for demonstration
-        return [
-          { subject: 'Document', relation: 'contains', object: 'information' },
-          { subject: 'Text', relation: 'processed_by', object: 'AI' },
-          { subject: 'File', relation: 'uploaded_by', object: 'User' }
-        ];
+        console.warn('OpenAI API key not found, using structured data parsing');
+        // Parse structured data manually
+        return this.parseStructuredData(text);
       }
       
       // Use OpenAI to extract subject-relation-object triples
@@ -62,9 +58,15 @@ class FileIngestionAgent {
           messages: [
             {
               role: 'system',
-              content: `Extract subject-relation-object triples from the following text. 
+              content: `Extract subject-relation-object triples from the following structured data. 
+              Each line contains: City, Company, Center Name, Numbers, Type, Country, etc.
+              Extract meaningful relationships like:
+              - Company operates in City
+              - Center belongs to Company
+              - Company has Type facility
+              - City is in Country
               Return only valid triples in JSON format: [{"subject": "...", "relation": "...", "object": "..."}]
-              Focus on factual relationships, entities, and their connections.`
+              Focus on business relationships and geographical connections.`
             },
             {
               role: 'user',
@@ -80,8 +82,65 @@ class FileIngestionAgent {
       return triples;
     } catch (error) {
       console.error('Error extracting triples:', error);
-      return [];
+      // Fallback to structured data parsing
+      return this.parseStructuredData(text);
     }
+  }
+
+  // Parse structured data manually
+  parseStructuredData(text: string): any[] {
+    const triples: any[] = [];
+    const lines = text.split('\n').filter(line => line.trim());
+    
+    lines.forEach(line => {
+      const parts = line.split('\t');
+      if (parts.length >= 6) {
+        const [city, company, centerName, num1, num2, type, country] = parts;
+        
+        // Extract meaningful triples
+        if (city && company) {
+          triples.push({
+            subject: company.trim(),
+            relation: 'operates_in',
+            object: city.trim()
+          });
+        }
+        
+        if (company && centerName) {
+          triples.push({
+            subject: company.trim(),
+            relation: 'owns_center',
+            object: centerName.trim()
+          });
+        }
+        
+        if (company && type) {
+          triples.push({
+            subject: company.trim(),
+            relation: 'has_facility_type',
+            object: type.trim()
+          });
+        }
+        
+        if (city && country) {
+          triples.push({
+            subject: city.trim(),
+            relation: 'located_in',
+            object: country.trim()
+          });
+        }
+        
+        if (centerName && city) {
+          triples.push({
+            subject: centerName.trim(),
+            relation: 'located_in',
+            object: city.trim()
+          });
+        }
+      }
+    });
+    
+    return triples;
   }
 
   // Process text chunks and convert to triples

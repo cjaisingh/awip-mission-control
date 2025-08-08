@@ -23,6 +23,7 @@ import KnowledgeGraphVisualization from '../components/KnowledgeGraphVisualizati
 import ExcelStyleDataView from '../components/ExcelStyleDataView';
 import GraphRAGChart from '../components/GraphRAGChart';
 import DebugEnvironment from '../components/DebugEnvironment';
+import DebugFileIngestion from '../components/DebugFileIngestion';
 
 ChartJS.register(
   CategoryScale,
@@ -90,6 +91,9 @@ function Dashboard() {
 
       {/* Debug Environment Section */}
       <DebugEnvironment />
+
+      {/* Debug File Ingestion Section */}
+      <DebugFileIngestion />
 
       {/* Agent Capabilities Section */}
       <AgentCapabilities />

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { mockApi } from '../services/mockApi';
+import { getSystemMetrics } from '../services/supabase';
 import { useSSOTStore } from '../store/ssotStore';
 
 interface SystemMetrics {
@@ -23,7 +23,7 @@ export const useSystemMetrics = () => {
   useEffect(() => {
     const fetchMetrics = async () => {
       try {
-        const data = await mockApi.getSystemMetrics();
+        const data = await getSystemMetrics();
         setMetrics(data);
         
         // Update SSOT store

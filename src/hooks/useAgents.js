@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { mockApi } from '../services/mockApi';
+import { getAgents } from '../services/supabase';
 import { useSSOTStore } from '../store/ssotStore';
 
 export const useAgents = () => {
@@ -16,7 +16,7 @@ export const useAgents = () => {
     const fetchAgents = async () => {
       try {
         setLoading(true);
-        const data = await mockApi.getAgents();
+        const data = await getAgents();
         if (mounted) {
           setAgents(data);
           setError(null);

@@ -13,6 +13,7 @@ import {
 import { useSystemHealth } from '../hooks/useSystemHealth';
 import { useSystemMetrics } from '../hooks/useSystemMetrics';
 import { useAgents } from '../hooks/useAgents';
+import { useSystemMetricsChart } from '../hooks/useSystemMetricsChart';
 import AgentTools from '../components/AgentTools';
 import SSOTStatus from '../components/SSOTStatus';
 import AgentCapabilities from '../components/AgentCapabilities';
@@ -33,6 +34,7 @@ function Dashboard() {
   const systemHealth = useSystemHealth();
   const systemMetrics = useSystemMetrics();
   const { agents, loading: agentsLoading } = useAgents();
+  const { chartData: systemMetricsChart, loading: chartLoading } = useSystemMetricsChart();
 
   const systemHealthData = {
     labels: ['00:00', '04:00', '08:00', '12:00', '16:00', '20:00'],
@@ -106,12 +108,18 @@ function Dashboard() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="bg-white p-6 rounded-lg shadow">
-          <h3 className="text-lg font-semibold mb-4">System Health Trend</h3>
-          <Line data={systemHealthData} />
+          <h3 className="text-lg font-semibold mb-4">System Metrics (Real Data)</h3>
+          {chartLoading ? (
+            <div className="flex items-center justify-center h-64">
+              <div className="text-gray-500">Loading real-time metrics...</div>
+            </div>
+          ) : (
+            <Line data={systemMetricsChart} />
+          )}
         </div>
         
         <div className="bg-white p-6 rounded-lg shadow">
-          <h3 className="text-lg font-semibold mb-4">Agent Performance</h3>
+          <h3 className="text-lg font-semibold mb-4">Agent Performance (Real Data)</h3>
           <Line data={agentPerformanceData} />
         </div>
       </div>

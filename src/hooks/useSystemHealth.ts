@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { mockApi } from '../services/mockApi';
+import { getSystemHealth } from '../services/supabase';
 import { useSSOTStore } from '../store/ssotStore';
 
 interface SystemHealth {
@@ -32,7 +32,7 @@ export const useSystemHealth = () => {
   useEffect(() => {
     const fetchHealth = async () => {
       try {
-        const data = await mockApi.getSystemHealth();
+        const data = await getSystemHealth();
         setHealth(data);
         
         // Update SSOT store

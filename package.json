@@ -1,6 +1,6 @@
 {
   "name": "awip-mission-control",
-  "version": "SSOT_CONFIG.app.version",
+  "version": "2.1.0",
   "description": "AWIP Mission Control Dashboard - Enhanced with Operational Standards",
   "main": "src/index.js",
   "scripts": {

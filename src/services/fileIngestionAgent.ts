@@ -409,6 +409,7 @@ class FileIngestionAgent {
 let fileIngestionAgent: FileIngestionAgent | {
   processLocalFile: (file: File) => Promise<ProcessingResult>;
   getTripleStats: () => Promise<TripleStats | null>;
+  queryTriples: (query: string) => Promise<any[]>;
 };
 try {
   fileIngestionAgent = new FileIngestionAgent();
@@ -421,7 +422,8 @@ try {
       fileName: file.name,
       error: 'FileIngestionAgent initialization failed'
     }),
-    getTripleStats: async (): Promise<TripleStats | null> => null
+    getTripleStats: async (): Promise<TripleStats | null> => null,
+    queryTriples: async (query: string): Promise<any[]> => []
   };
 }
 

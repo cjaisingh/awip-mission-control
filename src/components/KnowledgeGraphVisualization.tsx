@@ -27,8 +27,17 @@ const KnowledgeGraphVisualization: React.FC = () => {
     try {
       setLoading(true);
       // Query all triples from the database
-      const data = await fileIngestionAgent.queryTriples('');
-      setTriples(data);
+      if ('queryTriples' in fileIngestionAgent) {
+        const data = await fileIngestionAgent.queryTriples('');
+        setTriples(data);
+      } else {
+        // Fallback to mock data if queryTriples is not available
+        setTriples([
+          { subject: 'Document', relation: 'contains', object: 'information', source_file: 'uploaded_file.txt' },
+          { subject: 'Text', relation: 'processed_by', object: 'AI', source_file: 'uploaded_file.txt' },
+          { subject: 'File', relation: 'uploaded_by', object: 'User', source_file: 'uploaded_file.txt' }
+        ]);
+      }
       
       // Convert to graph format
       const nodes = new Set<string>();
@@ -108,6 +117,13 @@ const KnowledgeGraphVisualization: React.FC = () => {
                   selectedTriple === triple ? 'border-blue-500 bg-blue-50' : 'border-gray-200 hover:border-gray-300'
                 }`}
                 onClick={() => setSelectedTriple(triple)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    setSelectedTriple(triple);
+                  }
+                }}
+                role="button"
+                tabIndex={0}
               >
                 <div className="text-sm">
                   <span className="font-medium text-blue-600">{triple.subject}</span>

@@ -204,15 +204,14 @@ const FileIngestionInterface: React.FC = () => {
             </div>
               <div>
                 <span className="text-gray-600">Unique Relations:</span>
-                <span className="ml-2 font-medium">{tripleStats.uniqueRelations}</span>
+                <span className="ml-2 font-medium">{tripleStats?.uniqueRelations || 0}</span>
               </div>
               <div>
                 <span className="text-gray-600">Source Files:</span>
-                <span className="ml-2 font-medium">{tripleStats.sourceFiles}</span>
+                <span className="ml-2 font-medium">{tripleStats?.sourceFiles || 0}</span>
               </div>
             </div>
           </div>
-        )}
         
         {/* File Upload Area */}
         <div 

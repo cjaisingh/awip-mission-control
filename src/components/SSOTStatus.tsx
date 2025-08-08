@@ -6,6 +6,7 @@ const SSOTStatus: React.FC = () => {
   const {
     system,
     agents,
+    metrics,
     database,
     realtime,
     langchain,

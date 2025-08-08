@@ -128,6 +128,16 @@ CREATE TABLE IF NOT EXISTS conversation_handoffs (
     completed_at TIMESTAMP WITH TIME ZONE
 );
 
+-- Graph Triples Table for File Ingestion Agent
+CREATE TABLE IF NOT EXISTS graph_triples (
+    id SERIAL PRIMARY KEY,
+    subject TEXT NOT NULL,
+    relation TEXT NOT NULL,
+    object TEXT NOT NULL,
+    source_file TEXT,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
 -- Insert initial data
 INSERT INTO current_system_state (system_status, overall_health, active_agents, total_agents) 
 VALUES ('operational', 98, 20, 20)
@@ -174,6 +184,10 @@ CREATE INDEX IF NOT EXISTS idx_agent_metrics_timestamp ON agent_metrics(timestam
 CREATE INDEX IF NOT EXISTS idx_system_metrics_timestamp ON system_metrics(timestamp);
 CREATE INDEX IF NOT EXISTS idx_system_alerts_created_at ON system_alerts(created_at);
 CREATE INDEX IF NOT EXISTS idx_conversation_handoffs_conversation_id ON conversation_handoffs(conversation_id);
+CREATE INDEX IF NOT EXISTS idx_graph_triples_subject ON graph_triples(subject);
+CREATE INDEX IF NOT EXISTS idx_graph_triples_relation ON graph_triples(relation);
+CREATE INDEX IF NOT EXISTS idx_graph_triples_object ON graph_triples(object);
+CREATE INDEX IF NOT EXISTS idx_graph_triples_source_file ON graph_triples(source_file);
 
 -- Enable Row Level Security (RLS)
 ALTER TABLE current_system_state ENABLE ROW LEVEL SECURITY;
@@ -186,6 +200,7 @@ ALTER TABLE system_health ENABLE ROW LEVEL SECURITY;
 ALTER TABLE system_metrics ENABLE ROW LEVEL SECURITY;
 ALTER TABLE system_alerts ENABLE ROW LEVEL SECURITY;
 ALTER TABLE conversation_handoffs ENABLE ROW LEVEL SECURITY;
+ALTER TABLE graph_triples ENABLE ROW LEVEL SECURITY;
 
 -- Create policies for public read access (for demo purposes)
 CREATE POLICY "Allow public read access" ON current_system_state FOR SELECT USING (true);
@@ -198,6 +213,7 @@ CREATE POLICY "Allow public read access" ON system_health FOR SELECT USING (true
 CREATE POLICY "Allow public read access" ON system_metrics FOR SELECT USING (true);
 CREATE POLICY "Allow public read access" ON system_alerts FOR SELECT USING (true);
 CREATE POLICY "Allow public read access" ON conversation_handoffs FOR SELECT USING (true);
+CREATE POLICY "Allow public read access" ON graph_triples FOR SELECT USING (true);
 
 -- Create policies for authenticated insert/update access
 CREATE POLICY "Allow authenticated insert" ON current_system_state FOR INSERT WITH CHECK (true);
@@ -213,6 +229,8 @@ CREATE POLICY "Allow authenticated insert" ON system_alerts FOR INSERT WITH CHEC
 CREATE POLICY "Allow authenticated update" ON system_alerts FOR UPDATE USING (true);
 CREATE POLICY "Allow authenticated insert" ON conversation_handoffs FOR INSERT WITH CHECK (true);
 CREATE POLICY "Allow authenticated update" ON conversation_handoffs FOR UPDATE USING (true);
+CREATE POLICY "Allow authenticated insert" ON graph_triples FOR INSERT WITH CHECK (true);
+CREATE POLICY "Allow authenticated update" ON graph_triples FOR UPDATE USING (true);
 
 -- Create a function to update system status
 CREATE OR REPLACE FUNCTION update_system_status()

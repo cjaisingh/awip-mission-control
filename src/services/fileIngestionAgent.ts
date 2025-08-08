@@ -20,16 +20,23 @@ interface TripleStats {
 }
 
 class FileIngestionAgent {
+  private supabase: any;
+
   constructor() {
-    // Initialize Supabase client with fallback values
-    const supabaseUrl = process.env.REACT_APP_SUPABASE_URL || 'https://lubapfzpcfffksxtusga.supabase.co';
-    const supabaseKey = process.env.REACT_APP_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx1YmFwZnpwY2ZmZmtzeHR1c2dhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQ2NTg5NDUsImV4cCI6MjA3MDIzNDk0NX0.cZ14GhRLDr5ENu6NeaxtehWCNjIIUFGyxZcrGjuLoo0';
+    // Initialize Supabase client with environment variables only
+    const supabaseUrl = process.env.REACT_APP_SUPABASE_URL;
+    const supabaseKey = process.env.REACT_APP_SUPABASE_ANON_KEY;
     
-    this.supabase = createClient(supabaseUrl, supabaseKey);
+    if (supabaseUrl && supabaseKey) {
+      this.supabase = createClient(supabaseUrl, supabaseKey);
+    } else {
+      console.warn('Supabase credentials not found, using mock mode');
+      this.supabase = null;
+    }
   }
 
   // GraphRAG Triple Extraction using OpenAI
-  async extractTriples(text) {
+  async extractTriples(text: string): Promise<any[]> {
     try {
       const openaiKey = process.env.REACT_APP_OPENAI_API_KEY;
       if (!openaiKey) {
@@ -77,7 +84,7 @@ class FileIngestionAgent {
   }
 
   // Process text chunks and convert to triples
-  async processTextChunks(chunks) {
+  async processTextChunks(chunks: string[]): Promise<any[]> {
     const allTriples = [];
     
     for (const chunk of chunks) {
@@ -89,8 +96,13 @@ class FileIngestionAgent {
   }
 
   // Store triples in Supabase
-  async storeTriples(triples, sourceFile) {
+  async storeTriples(triples: any[], sourceFile: string): Promise<any> {
     try {
+      if (!this.supabase) {
+        console.warn('Supabase not available, skipping triple storage');
+        return null;
+      }
+
       const { data, error } = await this.supabase
         .from('graph_triples')
         .insert(
@@ -133,13 +145,13 @@ class FileIngestionAgent {
       return {
         success: false,
         fileName: file.name,
-        error: error.message
+        error: error instanceof Error ? error.message : 'Unknown error'
       };
     }
   }
 
   // Read file content
-  async readFileContent(file) {
+  async readFileContent(file: File): Promise<string> {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
       reader.onload = (e) => resolve(e.target.result);
@@ -149,7 +161,7 @@ class FileIngestionAgent {
   }
 
   // Split text into chunks
-  splitIntoChunks(text, chunkSize) {
+  splitIntoChunks(text: string, chunkSize: number): string[] {
     const words = text.split(' ');
     const chunks = [];
     
@@ -161,8 +173,13 @@ class FileIngestionAgent {
   }
 
   // Query triples from Supabase
-  async queryTriples(query) {
+  async queryTriples(query: string): Promise<any[]> {
     try {
+      if (!this.supabase) {
+        console.warn('Supabase not available, returning empty results');
+        return [];
+      }
+
       const { data, error } = await this.supabase
         .from('graph_triples')
         .select('*')
@@ -179,6 +196,17 @@ class FileIngestionAgent {
   // Get triple statistics
   async getTripleStats(): Promise<TripleStats | null> {
     try {
+      if (!this.supabase) {
+        console.warn('Supabase not available, returning mock stats');
+        return {
+          totalTriples: 0,
+          uniqueSubjects: 0,
+          uniqueRelations: 0,
+          uniqueObjects: 0,
+          sourceFiles: 0
+        };
+      }
+
       const { data, error } = await this.supabase
         .from('graph_triples')
         .select('*');
@@ -187,10 +215,10 @@ class FileIngestionAgent {
 
       const stats = {
         totalTriples: data.length,
-        uniqueSubjects: new Set(data.map(t => t.subject)).size,
-        uniqueRelations: new Set(data.map(t => t.relation)).size,
-        uniqueObjects: new Set(data.map(t => t.object)).size,
-        sourceFiles: new Set(data.map(t => t.source_file)).size
+        uniqueSubjects: new Set(data.map((t: any) => t.subject)).size,
+        uniqueRelations: new Set(data.map((t: any) => t.relation)).size,
+        uniqueObjects: new Set(data.map((t: any) => t.object)).size,
+        sourceFiles: new Set(data.map((t: any) => t.source_file)).size
       };
 
       return stats;
@@ -201,7 +229,7 @@ class FileIngestionAgent {
   }
 
   // Batch process multiple files
-  async batchProcessFiles(files) {
+  async batchProcessFiles(files: File[]): Promise<ProcessingResult[]> {
     const results = [];
     
     for (const file of files) {
@@ -240,7 +268,7 @@ class FileIngestionAgent {
   }
 
   // Process Google Drive file (Mock implementation)
-  async processGoogleDriveFile(fileId, fileName) {
+  async processGoogleDriveFile(fileId: string, fileName: string): Promise<ProcessingResult> {
     try {
       console.log(`Processing Google Drive file: ${fileName} (${fileId})`);
       
@@ -271,6 +299,11 @@ class FileIngestionAgent {
   // Export triples to different formats
   async exportTriples(format = 'json') {
     try {
+      if (!this.supabase) {
+        console.warn('Supabase not available, returning empty export');
+        return format === 'json' ? '[]' : '';
+      }
+
       const { data, error } = await this.supabase
         .from('graph_triples')
         .select('*');
@@ -299,7 +332,7 @@ class FileIngestionAgent {
   }
 
   // Convert to CSV format
-  convertToCSV(data) {
+  convertToCSV(data: any[]): string {
     const headers = ['subject', 'relation', 'object', 'source_file', 'created_at'];
     const csv = [headers.join(',')];
     
@@ -312,7 +345,7 @@ class FileIngestionAgent {
   }
 
   // Convert to Neo4j Cypher format
-  convertToNeo4j(data) {
+  convertToNeo4j(data: any[]): string {
     const cypher = [];
     
     data.forEach(triple => {
@@ -325,8 +358,13 @@ class FileIngestionAgent {
   }
 
   // Get entity relationships
-  async getEntityRelationships(entity) {
+  async getEntityRelationships(entity: string): Promise<any[]> {
     try {
+      if (!this.supabase) {
+        console.warn('Supabase not available, returning empty relationships');
+        return [];
+      }
+
       const { data, error } = await this.supabase
         .from('graph_triples')
         .select('*')
@@ -341,8 +379,13 @@ class FileIngestionAgent {
   }
 
   // Search for patterns in triples
-  async searchPatterns(pattern) {
+  async searchPatterns(pattern: string): Promise<any[]> {
     try {
+      if (!this.supabase) {
+        console.warn('Supabase not available, returning empty search results');
+        return [];
+      }
+
       const { data, error } = await this.supabase
         .from('graph_triples')
         .select('*')
@@ -368,7 +411,7 @@ try {
   console.error('Error initializing FileIngestionAgent:', error);
   // Create a fallback instance with minimal functionality
   fileIngestionAgent = {
-    processLocalFile: async (file): Promise<ProcessingResult> => ({
+    processLocalFile: async (file: File): Promise<ProcessingResult> => ({
       success: false,
       fileName: file.name,
       error: 'FileIngestionAgent initialization failed'

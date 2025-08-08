@@ -227,15 +227,23 @@ const GraphRAGChart: React.FC = () => {
                 <h5 className="font-medium text-sm text-gray-700 mb-2">Nodes ({filteredGraphData.nodes.length})</h5>
                 <div className="space-y-2 max-h-64 overflow-y-auto">
                   {filteredGraphData.nodes.map(node => (
-                    <div
-                      key={node.id}
-                      className={`p-2 rounded border cursor-pointer transition-colors ${
-                        selectedNode === node.id 
-                          ? 'border-blue-500 bg-blue-50' 
-                          : 'border-gray-200 hover:border-gray-300'
-                      }`}
-                      onClick={() => setSelectedNode(selectedNode === node.id ? null : node.id)}
-                    >
+                                         <div
+                       key={node.id}
+                       className={`p-2 rounded border cursor-pointer transition-colors ${
+                         selectedNode === node.id 
+                           ? 'border-blue-500 bg-blue-50' 
+                           : 'border-gray-200 hover:border-gray-300'
+                       }`}
+                       onClick={() => setSelectedNode(selectedNode === node.id ? null : node.id)}
+                       onKeyDown={(e) => {
+                         if (e.key === 'Enter' || e.key === ' ') {
+                           e.preventDefault();
+                           setSelectedNode(selectedNode === node.id ? null : node.id);
+                         }
+                       }}
+                       role="button"
+                       tabIndex={0}
+                     >
                       <div className="flex items-center justify-between">
                         <span className="text-sm font-medium" style={{ color: node.color }}>
                           {node.label}

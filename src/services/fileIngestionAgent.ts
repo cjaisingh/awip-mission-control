@@ -4,14 +4,14 @@
 import { createClient } from '@supabase/supabase-js';
 
 // Type definitions for TypeScript
-interface ProcessingResult {
+export interface ProcessingResult {
   success: boolean;
   fileName: string;
   triplesCount?: number;
   error?: string;
 }
 
-interface TripleStats {
+export interface TripleStats {
   totalTriples: number;
   uniqueSubjects: number;
   uniqueRelations: number;
@@ -124,7 +124,7 @@ class FileIngestionAgent {
   }
 
   // Local file processing
-  async processLocalFile(file): Promise<ProcessingResult> {
+  async processLocalFile(file: File): Promise<ProcessingResult> {
     try {
       console.log(`Processing local file: ${file.name}`);
       
@@ -137,8 +137,7 @@ class FileIngestionAgent {
       return {
         success: true,
         fileName: file.name,
-        triplesCount: triples.length,
-        message: `Processed ${file.name} - extracted ${triples.length} triples`
+        triplesCount: triples.length
       };
     } catch (error) {
       console.error('Error processing local file:', error);
@@ -154,7 +153,13 @@ class FileIngestionAgent {
   async readFileContent(file: File): Promise<string> {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
-      reader.onload = (e) => resolve(e.target.result);
+      reader.onload = (e) => {
+        if (e.target && e.target.result) {
+          resolve(e.target.result as string);
+        } else {
+          reject(new Error('Failed to read file content'));
+        }
+      };
       reader.onerror = reject;
       reader.readAsText(file);
     });
@@ -283,15 +288,14 @@ class FileIngestionAgent {
       return {
         success: true,
         fileName,
-        triplesCount: mockTriples.length,
-        message: `Processed ${fileName} - extracted ${mockTriples.length} triples`
+        triplesCount: mockTriples.length
       };
     } catch (error) {
       console.error('Error processing Google Drive file:', error);
       return {
         success: false,
         fileName,
-        error: error.message
+        error: error instanceof Error ? error.message : 'Unknown error'
       };
     }
   }
@@ -346,9 +350,9 @@ class FileIngestionAgent {
 
   // Convert to Neo4j Cypher format
   convertToNeo4j(data: any[]): string {
-    const cypher = [];
+    const cypher: string[] = [];
     
-    data.forEach(triple => {
+    data.forEach((triple: any) => {
       cypher.push(`CREATE (s:Entity {name: "${triple.subject}"})`);
       cypher.push(`CREATE (o:Entity {name: "${triple.object}"})`);
       cypher.push(`CREATE (s)-[:${triple.relation}]->(o)`);

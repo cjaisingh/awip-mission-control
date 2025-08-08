@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import { fileIngestionAgent } from '../services/fileIngestionAgent';
+import { fileIngestionAgent, ProcessingResult } from '../services/fileIngestionAgent';
 
 interface ProcessingStatus {
   isProcessing: boolean;
@@ -8,13 +8,6 @@ interface ProcessingStatus {
   totalFiles: number;
   triplesExtracted: number;
   error: string | null;
-}
-
-interface ProcessingResult {
-  success: boolean;
-  fileName: string;
-  triplesCount?: number;
-  error?: string;
 }
 
 const FileIngestionInterface: React.FC = () => {

@@ -23,12 +23,13 @@ class FileIngestionAgent {
   private supabase: any;
 
   constructor() {
-    // Initialize Supabase client with environment variables only
-    const supabaseUrl = process.env.REACT_APP_SUPABASE_URL;
-    const supabaseKey = process.env.REACT_APP_SUPABASE_ANON_KEY;
+    // Initialize Supabase client with environment variables or fallback
+    const supabaseUrl = process.env.REACT_APP_SUPABASE_URL || 'https://lubapfzpcfffksxtusga.supabase.co';
+    const supabaseKey = process.env.REACT_APP_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx1YmFwZnpwY2ZmZmtzeHR1c2dhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQ2NTg5NDUsImV4cCI6MjA3MDIzNDk0NX0.cZ14GhRLDr5ENu6NeaxtehWCNjIIUFGyxZcrGjuLoo0';
     
     if (supabaseUrl && supabaseKey) {
       this.supabase = createClient(supabaseUrl, supabaseKey);
+      console.log('Supabase client initialized successfully');
     } else {
       console.warn('Supabase credentials not found, using mock mode');
       this.supabase = null;

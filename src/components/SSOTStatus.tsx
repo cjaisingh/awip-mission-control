@@ -1,21 +1,15 @@
 import React, { useEffect } from 'react';
 import { useSSOTStore } from '../store/ssotStore';
 import { SSOT_CONFIG } from '../config/ssot';
-import { FaDatabase, FaServer, FaRobot, FaSync, FaCheckCircle, FaExclamationTriangle } from 'react-icons/fa';
 
 const SSOTStatus: React.FC = () => {
   const {
     system,
     agents,
-    metrics,
-    health,
     database,
     realtime,
     langchain,
-    getSystemStatus,
-    getAgent20Status,
     getActiveAgentsCount,
-    getOverallHealth,
     isDatabaseConnected,
     isRealtimeConnected,
     isLangChainInitialized,

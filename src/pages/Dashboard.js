@@ -36,17 +36,7 @@ function Dashboard() {
   const { agents, loading: agentsLoading } = useAgents();
   const { chartData: systemMetricsChart, loading: chartLoading } = useSystemMetricsChart();
 
-  const systemHealthData = {
-    labels: ['00:00', '04:00', '08:00', '12:00', '16:00', '20:00'],
-    datasets: [
-      {
-        label: 'System Health',
-        data: [98, 99, 97, 99, 98, 99],
-        borderColor: 'rgb(75, 192, 192)',
-        tension: 0.1,
-      },
-    ],
-  };
+
 
   const agentPerformanceData = {
     labels: agents.map(agent => agent.name),

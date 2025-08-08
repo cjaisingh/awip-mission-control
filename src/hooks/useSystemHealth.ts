@@ -45,7 +45,7 @@ export const useSystemHealth = () => {
         });
         
         // Add alerts to SSOT store
-        data.alerts.forEach(alert => {
+        data.alerts.forEach((alert: any) => {
           addAlert(alert);
         });
       } catch (error) {

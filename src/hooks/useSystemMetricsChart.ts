@@ -27,10 +27,10 @@ export const useSystemMetricsChart = () => {
         
         // Sort by timestamp and take last 6 data points
         const sortedMetrics = metrics
-          .sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime())
+          .sort((a: any, b: any) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime())
           .slice(-6);
 
-        const labels = sortedMetrics.map((metric, index) => {
+        const labels = sortedMetrics.map((metric: any, index: number) => {
           const time = new Date(metric.timestamp);
           return time.toLocaleTimeString('en-US', { 
             hour: '2-digit', 
@@ -39,10 +39,10 @@ export const useSystemMetricsChart = () => {
           });
         });
 
-        const cpuData = sortedMetrics.map(m => m.cpu_usage);
-        const memoryData = sortedMetrics.map(m => m.memory_usage);
-        const networkData = sortedMetrics.map(m => m.network_usage);
-        const diskData = sortedMetrics.map(m => m.disk_usage);
+        const cpuData = sortedMetrics.map((m: any) => m.cpu_usage);
+        const memoryData = sortedMetrics.map((m: any) => m.memory_usage);
+        const networkData = sortedMetrics.map((m: any) => m.network_usage);
+        const diskData = sortedMetrics.map((m: any) => m.disk_usage);
 
         setChartData({
           labels,

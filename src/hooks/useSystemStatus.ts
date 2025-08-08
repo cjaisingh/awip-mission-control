@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { mockApi } from '../services/mockApi';
+import { getCurrentSystemState } from '../services/supabase';
 import { useSSOTStore } from '../store/ssotStore';
 
 interface SystemStatus {
@@ -21,7 +21,7 @@ export const useSystemStatus = () => {
   useEffect(() => {
     const fetchSystemStatus = async () => {
       try {
-        const data = await mockApi.getSystemStatus();
+        const data = await getCurrentSystemState();
         setSystemStatus(data);
         
         // Update SSOT store

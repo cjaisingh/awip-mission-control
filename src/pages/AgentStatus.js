@@ -2,6 +2,8 @@ import React from 'react';
 import { AgentGrid } from '../components/AgentGrid';
 
 export const AgentStatus = () => {
+  console.log('AgentStatus component rendered');
+  
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="mb-8">

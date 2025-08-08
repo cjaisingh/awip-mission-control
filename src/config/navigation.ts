@@ -10,8 +10,8 @@ export interface NavItem {
 
 export const navigationItems: NavItem[] = [
   { path: '/', icon: FaHome, label: 'Dashboard' },
-  { path: '/agents', icon: FaRobot, label: 'Agent Status' },
-  { path: '/system', icon: FaServer, label: 'System Health' },
+  { path: '/agent-status', icon: FaRobot, label: 'Agent Status' },
+  { path: '/system-health', icon: FaServer, label: 'System Health' },
   { path: '/settings', icon: FaCog, label: 'Settings' }
 ];
 

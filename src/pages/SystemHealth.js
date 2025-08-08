@@ -5,6 +5,8 @@ import { useSystemHealth } from '../hooks/useSystemHealth';
 import { useSystemMetrics } from '../hooks/useSystemMetrics';
 
 function SystemHealth() {
+  console.log('SystemHealth component rendered');
+  
   const systemHealth = useSystemHealth();
   const systemMetrics = useSystemMetrics();
 

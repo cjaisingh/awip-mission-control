@@ -19,27 +19,9 @@ const AgentCapabilities: React.FC = () => {
   const [selectedAgent, setSelectedAgent] = useState<string>('01');
   const [showDetails, setShowDetails] = useState(false);
 
-  const agentIcons = {
-    '01': <FaCogs className="text-blue-600" />,
-    '02': <FaDatabase className="text-green-600" />,
-    '03': <FaRoad className="text-purple-600" />,
-    '04': <FaShieldAlt className="text-red-600" />,
-    '05': <FaChartLine className="text-indigo-600" />,
-    '06': <FaProjectDiagram className="text-orange-600" />,
-    '07': <FaComments className="text-teal-600" />,
-    '08': <FaCheckCircle className="text-emerald-600" />,
-    '09': <FaTachometerAlt className="text-yellow-600" />,
-    '10': <FaDollarSign className="text-green-600" />,
-    '11': <FaClipboardCheck className="text-blue-600" />,
-    '12': <FaPlug className="text-purple-600" />,
-    '13': <FaHdd className="text-gray-600" />,
-    '14': <FaBell className="text-red-600" />,
-    '15': <FaFileAlt className="text-indigo-600" />,
-    '16': <FaPalette className="text-pink-600" />,
-    '17': <FaBrain className="text-cyan-600" />,
-    '18': <FaEye className="text-violet-600" />,
-    '19': <FaUsers className="text-orange-600" />,
-    '21': <FaFileAlt className="text-blue-600" />
+  const getAgentIcon = (agentId: string) => {
+    const AgentIcon = () => <span className="text-2xl">🤖</span>;
+    return AgentIcon;
   };
 
   const agentNames = {
@@ -103,7 +85,7 @@ const AgentCapabilities: React.FC = () => {
   const currentAgent: AgentInfo = {
     id: selectedAgent,
     name: agentNames[selectedAgent as keyof typeof agentNames],
-    icon: agentIcons[selectedAgent as keyof typeof agentIcons],
+    icon: getAgentIcon(selectedAgent)(),
     description: agentDescriptions[selectedAgent as keyof typeof agentDescriptions],
     capabilities: getAgentCapabilities(selectedAgent)
   };
@@ -111,7 +93,7 @@ const AgentCapabilities: React.FC = () => {
   return (
     <div className="bg-white p-6 rounded-lg shadow">
       <h3 className="text-lg font-semibold mb-4 flex items-center">
-        <FaRobot className="mr-2" />
+        <span className="mr-2">🤖</span>
         Agent Capabilities & Functions
       </h3>
 

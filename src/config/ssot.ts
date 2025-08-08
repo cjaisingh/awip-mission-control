@@ -74,7 +74,7 @@ export const SSOT_CONFIG = {
 
   // API Configuration
   api: {
-    baseUrl: process.env.REACT_APP_API_BASE_URL || window.location.origin,
+    baseUrl: process.env.REACT_APP_API_BASE_URL || (typeof window !== 'undefined' ? window.location.origin : 'http://localhost:3000'),
     endpoints: {
       agents: '/api/agents',
       metrics: '/api/metrics',

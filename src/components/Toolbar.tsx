@@ -20,7 +20,7 @@ const Toolbar: React.FC = memo(() => {
               className="w-full flex items-center space-x-3 p-3 rounded-lg text-gray-600 hover:bg-gray-50 transition-colors"
             >
               <span className="text-lg">
-                {React.createElement(tool.icon)}
+                📊
               </span>
               <span>{tool.label}</span>
             </button>

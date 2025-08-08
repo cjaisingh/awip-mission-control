@@ -26,7 +26,7 @@ const Sidebar: React.FC = memo(() => {
                 }
               >
                 <span className="text-lg">
-                  <item.icon />
+                  📊
                 </span>
                 <span>{item.label}</span>
               </NavLink>

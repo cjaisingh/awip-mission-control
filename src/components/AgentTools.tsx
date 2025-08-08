@@ -57,7 +57,7 @@ const AgentTools: React.FC = () => {
       <div className="flex items-center justify-between mb-6">
         <h3 className="text-lg font-semibold text-gray-800">Agent Tools</h3>
         <div className="flex items-center space-x-2 text-sm text-gray-500">
-          <FaHistory />
+          <span>⏰</span>
           <span>Last Activity: {lastActivity.toLocaleTimeString()}</span>
         </div>
       </div>
@@ -65,7 +65,7 @@ const AgentTools: React.FC = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
         <div className="bg-blue-50 p-4 rounded-lg">
           <div className="flex items-center space-x-2 mb-2">
-            <FaTools className="text-blue-500" />
+            <span className="text-blue-500">🔧</span>
             <span className="font-medium">Available Tools</span>
           </div>
           <div className="text-sm text-gray-600">
@@ -75,7 +75,7 @@ const AgentTools: React.FC = () => {
 
         <div className="bg-green-50 p-4 rounded-lg">
           <div className="flex items-center space-x-2 mb-2">
-            <FaCog className="text-green-500" />
+            <span className="text-green-500">⚙️</span>
             <span className="font-medium">Memory Usage</span>
           </div>
           <div className="text-sm text-gray-600">
@@ -99,7 +99,7 @@ const AgentTools: React.FC = () => {
                 disabled={isExecuting}
                 className="flex items-center space-x-2 px-3 py-1 bg-blue-500 text-white rounded text-sm hover:bg-blue-600 disabled:opacity-50"
               >
-                {isExecuting ? <FaStop /> : <FaPlay />}
+                {isExecuting ? <span>⏹️</span> : <span>▶️</span>}
                 <span>{isExecuting ? 'Executing...' : 'Execute'}</span>
               </button>
             </div>

@@ -49,7 +49,7 @@ const MobileInterface: React.FC = memo(() => {
       <header className="backdrop-blur-lg bg-white/10 border-b border-white/20 p-4 sticky top-0 z-50">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-3">
-            <FaSatellite className="text-blue-400 text-xl" />
+            <span className="text-blue-400 text-xl">🛰️</span>
             <h1 className="text-lg font-bold">AWIP Control</h1>
           </div>
           <div className="flex items-center space-x-2">
@@ -66,7 +66,7 @@ const MobileInterface: React.FC = memo(() => {
               onClick={() => setShowMenu(!showMenu)}
               className="min-h-[44px] min-w-[44px] flex items-center justify-center"
             >
-              <FaBars className="text-xl" />
+              <span className="text-xl">☰</span>
             </button>
           </div>
         </div>
@@ -83,7 +83,7 @@ const MobileInterface: React.FC = memo(() => {
                 activePanel === 'dashboard' ? 'bg-blue-500/30' : ''
               }`}
             >
-              <FaChartLine className="inline mr-3" /> Dashboard
+                              <span className="inline mr-3">📊</span> Dashboard
             </button>
             <button
               onClick={() => {
@@ -94,7 +94,7 @@ const MobileInterface: React.FC = memo(() => {
                 activePanel === 'chat' ? 'bg-blue-500/30' : ''
               }`}
             >
-              <FaComments className="inline mr-3" /> Agent Chat
+                              <span className="inline mr-3">💬</span> Agent Chat
             </button>
             <button
               onClick={() => {
@@ -105,7 +105,7 @@ const MobileInterface: React.FC = memo(() => {
                 activePanel === 'system' ? 'bg-blue-500/30' : ''
               }`}
             >
-              <FaCog className="inline mr-3" /> System
+                              <span className="inline mr-3">⚙️</span> System
             </button>
           </div>
         )}
@@ -146,11 +146,13 @@ const MobileInterface: React.FC = memo(() => {
                 <div className="flex items-center justify-between">
                   <span>Database</span>
                   <div className="flex items-center space-x-2">
-                    <FaCircle
+                    <span
                       className={`text-xs ${
                         systemStatus.database ? 'text-green-500' : 'text-red-500'
                       }`}
-                    />
+                    >
+                      ●
+                    </span>
                     <span className="text-sm">
                       {systemStatus.database ? 'Connected' : 'Disconnected'}
                     </span>
@@ -159,11 +161,13 @@ const MobileInterface: React.FC = memo(() => {
                 <div className="flex items-center justify-between">
                   <span>GitHub API</span>
                   <div className="flex items-center space-x-2">
-                    <FaCircle
+                    <span
                       className={`text-xs ${
                         systemStatus.github ? 'text-green-500' : 'text-red-500'
                       }`}
-                    />
+                    >
+                      ●
+                    </span>
                     <span className="text-sm">
                       {systemStatus.github ? 'Active' : 'Inactive'}
                     </span>
@@ -172,11 +176,13 @@ const MobileInterface: React.FC = memo(() => {
                 <div className="flex items-center justify-between">
                   <span>Agent 20</span>
                   <div className="flex items-center space-x-2">
-                    <FaCircle
+                    <span
                       className={`text-xs ${
                         systemStatus.agent20 ? 'text-green-500' : 'text-red-500'
                       }`}
-                    />
+                    >
+                      ●
+                    </span>
                     <span className="text-sm">
                       {systemStatus.agent20 ? 'Operational' : 'Offline'}
                     </span>
@@ -193,7 +199,7 @@ const MobileInterface: React.FC = memo(() => {
             <div className="backdrop-blur-lg bg-white/10 rounded-xl p-4">
               <div className="flex items-center space-x-3">
                 <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center">
-                  <FaRobot className="text-white" />
+                  <span className="text-white">🤖</span>
                 </div>
                 <div>
                   <div className="font-semibold">Agent 20</div>
@@ -246,7 +252,7 @@ const MobileInterface: React.FC = memo(() => {
                   disabled={!newMessage.trim()}
                   className="bg-blue-500 hover:bg-blue-600 disabled:bg-gray-600 rounded-lg px-4 py-2 min-h-[44px] min-w-[44px] flex items-center justify-center"
                 >
-                  <FaPaperPlane />
+                  <span>📤</span>
                 </button>
               </div>
             </div>

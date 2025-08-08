@@ -31,12 +31,12 @@ const ManagementInterface: React.FC = memo(() => {
         </div>
         <nav className="p-4">
           <NavItem
-            icon={<FaShieldAlt />}
+            icon={<span>🛡️</span>}
             label="Agent Policies"
             onClick={() => console.log('Agent Policies clicked')}
           />
           <NavItem
-            icon={<FaKey />}
+            icon={<span>🔑</span>}
             label="Secrets Manager"
             onClick={() => console.log('Secrets Manager clicked')}
           />

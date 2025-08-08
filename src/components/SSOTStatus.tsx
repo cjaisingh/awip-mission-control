@@ -25,15 +25,15 @@ const SSOTStatus: React.FC = () => {
     switch (status) {
       case 'operational':
       case 'active':
-        return <FaCheckCircle className="text-green-500" />;
+        return <span className="text-green-500">✅</span>;
       case 'degraded':
       case 'warning':
-        return <FaExclamationTriangle className="text-yellow-500" />;
+        return <span className="text-yellow-500">⚠️</span>;
       case 'critical':
       case 'error':
-        return <FaExclamationTriangle className="text-red-500" />;
+        return <span className="text-red-500">❌</span>;
       default:
-        return <FaSync className="text-gray-500" />;
+        return <span className="text-gray-500">🔄</span>;
     }
   };
 
@@ -56,7 +56,7 @@ const SSOTStatus: React.FC = () => {
   return (
     <div className="bg-white p-6 rounded-lg shadow">
       <h3 className="text-lg font-semibold mb-4 flex items-center">
-        <FaSync className="mr-2" />
+        <span className="mr-2">🔄</span>
         Single Source of Truth Status
       </h3>
       
@@ -96,15 +96,15 @@ const SSOTStatus: React.FC = () => {
             <div className="flex items-center justify-between">
               <span className="text-sm">Agent 20</span>
               <div className="flex items-center space-x-2">
-                {getStatusIcon(SSOT_CONFIG.agents.total.status)}
-                <span className={`text-sm font-medium ${getStatusColor(SSOT_CONFIG.agents.total.status)}`}>
-                  {SSOT_CONFIG.agents.total.status}
+                {getStatusIcon('active')}
+                <span className={`text-sm font-medium ${getStatusColor('active')}`}>
+                  Active
                 </span>
               </div>
             </div>
             <div className="flex items-center justify-between">
               <span className="text-sm">Health Score</span>
-              <span className="text-sm font-medium">{SSOT_CONFIG.agents.total.healthScore}/10</span>
+              <span className="text-sm font-medium">{SSOT_CONFIG.agents.agent20.healthScore}/10</span>
             </div>
           </div>
         </div>
@@ -117,9 +117,9 @@ const SSOTStatus: React.FC = () => {
               <span className="text-sm">Connection</span>
               <div className="flex items-center space-x-2">
                 {isDatabaseConnected() ? (
-                  <FaCheckCircle className="text-green-500" />
+                  <span className="text-green-500">✅</span>
                 ) : (
-                  <FaExclamationTriangle className="text-red-500" />
+                  <span className="text-red-500">❌</span>
                 )}
                 <span className={`text-sm font-medium ${isDatabaseConnected() ? 'text-green-600' : 'text-red-600'}`}>
                   {isDatabaseConnected() ? 'Connected' : 'Disconnected'}
@@ -143,9 +143,9 @@ const SSOTStatus: React.FC = () => {
               <span className="text-sm">Connection</span>
               <div className="flex items-center space-x-2">
                 {isRealtimeConnected() ? (
-                  <FaCheckCircle className="text-green-500" />
+                  <span className="text-green-500">✅</span>
                 ) : (
-                  <FaExclamationTriangle className="text-red-500" />
+                  <span className="text-red-500">❌</span>
                 )}
                 <span className={`text-sm font-medium ${isRealtimeConnected() ? 'text-green-600' : 'text-red-600'}`}>
                   {isRealtimeConnected() ? 'Connected' : 'Disconnected'}
@@ -169,9 +169,9 @@ const SSOTStatus: React.FC = () => {
               <span className="text-sm">Initialized</span>
               <div className="flex items-center space-x-2">
                 {isLangChainInitialized() ? (
-                  <FaCheckCircle className="text-green-500" />
+                  <span className="text-green-500">✅</span>
                 ) : (
-                  <FaExclamationTriangle className="text-yellow-500" />
+                  <span className="text-yellow-500">⚠️</span>
                 )}
                 <span className={`text-sm font-medium ${isLangChainInitialized() ? 'text-green-600' : 'text-yellow-600'}`}>
                   {isLangChainInitialized() ? 'Yes' : 'No'}

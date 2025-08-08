@@ -89,8 +89,8 @@ export const SSOT_CONFIG = {
   // Database Configuration
   database: {
     provider: 'supabase',
-    projectUrl: process.env.REACT_APP_SUPABASE_URL,
-    anonKey: process.env.REACT_APP_SUPABASE_ANON_KEY,
+    projectUrl: process.env.REACT_APP_SUPABASE_URL || 'https://lubapfzpcfffksxtusga.supabase.co',
+    anonKey: process.env.REACT_APP_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx1YmFwZnpwY2ZmZmtzeHR1c2dhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQ2NTg5NDUsImV4cCI6MjA3MDIzNDk0NX0.cZ14GhRLDr5ENu6NeaxtehWCNjIIUFGyxZcrGjuLoo0',
     serviceRoleKey: process.env.REACT_APP_SUPABASE_SERVICE_ROLE_KEY,
     tables: ['system_status', 'documents', 'agents', 'handoffs']
   },

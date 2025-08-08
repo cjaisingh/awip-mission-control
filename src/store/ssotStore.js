@@ -64,12 +64,12 @@ export const useSSOTStore = create(
     },
 
     // Database Connection
-    database: {
-      connected: false,
-      url: process.env.REACT_APP_SUPABASE_URL,
-      lastSync: null,
-      error: null
-    },
+          database: {
+        connected: true,
+        url: process.env.REACT_APP_SUPABASE_URL || 'https://lubapfzpcfffksxtusga.supabase.co',
+        lastSync: new Date(),
+        error: null
+      },
 
     // Real-time Updates
     realtime: {
@@ -246,7 +246,7 @@ export const useSSOTStore = create(
       },
       database: {
         connected: false,
-        url: process.env.REACT_APP_SUPABASE_URL,
+        url: process.env.REACT_APP_SUPABASE_URL || 'https://lubapfzpcfffksxtusga.supabase.co',
         lastSync: null,
         error: null
       },

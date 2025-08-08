@@ -17,6 +17,7 @@ import AgentTools from '../components/AgentTools';
 import SSOTStatus from '../components/SSOTStatus';
 import AgentCapabilities from '../components/AgentCapabilities';
 import FileIngestionInterface from '../components/FileIngestionInterface';
+import DatabaseStatus from '../components/DatabaseStatus';
 
 ChartJS.register(
   CategoryScale,
@@ -87,6 +88,9 @@ function Dashboard() {
 
       {/* SSOT Status Section */}
       <SSOTStatus />
+
+      {/* Database Status Section */}
+      <DatabaseStatus />
 
       {/* Agent Capabilities Section */}
       <AgentCapabilities />

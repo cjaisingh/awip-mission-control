@@ -22,6 +22,7 @@ import DatabaseStatus from '../components/DatabaseStatus';
 import KnowledgeGraphVisualization from '../components/KnowledgeGraphVisualization';
 import ExcelStyleDataView from '../components/ExcelStyleDataView';
 import GraphRAGChart from '../components/GraphRAGChart';
+import DebugEnvironment from '../components/DebugEnvironment';
 
 ChartJS.register(
   CategoryScale,
@@ -86,6 +87,9 @@ function Dashboard() {
 
       {/* Database Status Section */}
       <DatabaseStatus />
+
+      {/* Debug Environment Section */}
+      <DebugEnvironment />
 
       {/* Agent Capabilities Section */}
       <AgentCapabilities />

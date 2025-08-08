@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Database Connection Test</title>
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+</head>
+<body>
+    <h1>Database Connection Test</h1>
+    <div id="results"></div>
+
+    <script>
+        const SUPABASE_URL = 'https://lubapfzpcfffksxtusga.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx1YmFwZnpwY2ZmZmtzeHR1c2dhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQ2NTg5NDUsImV4cCI6MjA3MDIzNDk0NX0.cZ14GhRLDr5ENu6NeaxtehWCNjIIUFGyxZcrGjuLoo0';
+
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        async function testConnection() {
+            const results = document.getElementById('results');
+            
+            try {
+                // Test 1: Check if table exists
+                results.innerHTML += '<p>Testing table existence...</p>';
+                const { data: existingData, error: selectError } = await supabase
+                    .from('graph_triples')
+                    .select('*')
+                    .limit(1);
+                
+                if (selectError) {
+                    results.innerHTML += `<p style="color: red;">Error: ${selectError.message}</p>`;
+                    return;
+                }
+                
+                results.innerHTML += '<p style="color: green;">✅ Table exists!</p>';
+                
+                // Test 2: Insert a test triple
+                results.innerHTML += '<p>Testing triple insertion...</p>';
+                const { data: insertData, error: insertError } = await supabase
+                    .from('graph_triples')
+                    .insert([
+                        {
+                            subject: 'Test Subject',
+                            relation: 'test_relation',
+                            object: 'Test Object',
+                            source_file: 'test.html'
+                        }
+                    ])
+                    .select();
+                
+                if (insertError) {
+                    results.innerHTML += `<p style="color: red;">Insert Error: ${insertError.message}</p>`;
+                    return;
+                }
+                
+                results.innerHTML += '<p style="color: green;">✅ Triple inserted successfully!</p>';
+                results.innerHTML += `<p>Inserted: ${JSON.stringify(insertData)}</p>`;
+                
+                // Test 3: Query the inserted data
+                results.innerHTML += '<p>Testing query...</p>';
+                const { data: queryData, error: queryError } = await supabase
+                    .from('graph_triples')
+                    .select('*')
+                    .eq('subject', 'Test Subject');
+                
+                if (queryError) {
+                    results.innerHTML += `<p style="color: red;">Query Error: ${queryError.message}</p>`;
+                    return;
+                }
+                
+                results.innerHTML += '<p style="color: green;">✅ Query successful!</p>';
+                results.innerHTML += `<p>Found ${queryData.length} triples</p>`;
+                
+                // Test 4: Get stats
+                results.innerHTML += '<p>Testing stats...</p>';
+                const { data: allData, error: statsError } = await supabase
+                    .from('graph_triples')
+                    .select('*');
+                
+                if (statsError) {
+                    results.innerHTML += `<p style="color: red;">Stats Error: ${statsError.message}</p>`;
+                    return;
+                }
+                
+                const stats = {
+                    totalTriples: allData.length,
+                    uniqueSubjects: new Set(allData.map(t => t.subject)).size,
+                    uniqueRelations: new Set(allData.map(t => t.relation)).size,
+                    uniqueObjects: new Set(allData.map(t => t.object)).size
+                };
+                
+                results.innerHTML += '<p style="color: green;">✅ Stats calculated!</p>';
+                results.innerHTML += `<p>Stats: ${JSON.stringify(stats)}</p>`;
+                
+            } catch (error) {
+                results.innerHTML += `<p style="color: red;">General Error: ${error.message}</p>`;
+            }
+        }
+
+        testConnection();
+    </script>
+</body>
+</html>

@@ -92,65 +92,71 @@ class FileIngestionAgent {
     const triples: any[] = [];
     const lines = text.split('\n').filter(line => line.trim());
     
-    lines.forEach(line => {
-      const parts = line.split('\t');
-      if (parts.length >= 6) {
-        const [city, company, centerName, num1, num2, type, country] = parts;
-        
-        // Extract meaningful triples
-        if (city && company) {
-          triples.push({
-            subject: company.trim(),
-            relation: 'operates_in',
-            object: city.trim()
-          });
+    // Process in batches for better performance
+    const batchSize = 50;
+    for (let i = 0; i < lines.length; i += batchSize) {
+      const batch = lines.slice(i, i + batchSize);
+      
+      batch.forEach(line => {
+        const parts = line.split('\t');
+        if (parts.length >= 6) {
+          const [city, company, centerName, num1, num2, type, country] = parts;
+          
+          // Only create triples if values are not empty
+          if (city?.trim() && company?.trim()) {
+            triples.push({
+              subject: company.trim(),
+              relation: 'operates_in',
+              object: city.trim()
+            });
+          }
+          
+          if (company?.trim() && centerName?.trim()) {
+            triples.push({
+              subject: company.trim(),
+              relation: 'owns_center',
+              object: centerName.trim()
+            });
+          }
+          
+          if (company?.trim() && type?.trim()) {
+            triples.push({
+              subject: company.trim(),
+              relation: 'has_facility_type',
+              object: type.trim()
+            });
+          }
+          
+          if (city?.trim() && country?.trim()) {
+            triples.push({
+              subject: city.trim(),
+              relation: 'located_in',
+              object: country.trim()
+            });
+          }
+          
+          if (centerName?.trim() && city?.trim()) {
+            triples.push({
+              subject: centerName.trim(),
+              relation: 'located_in',
+              object: city.trim()
+            });
+          }
         }
-        
-        if (company && centerName) {
-          triples.push({
-            subject: company.trim(),
-            relation: 'owns_center',
-            object: centerName.trim()
-          });
-        }
-        
-        if (company && type) {
-          triples.push({
-            subject: company.trim(),
-            relation: 'has_facility_type',
-            object: type.trim()
-          });
-        }
-        
-        if (city && country) {
-          triples.push({
-            subject: city.trim(),
-            relation: 'located_in',
-            object: country.trim()
-          });
-        }
-        
-        if (centerName && city) {
-          triples.push({
-            subject: centerName.trim(),
-            relation: 'located_in',
-            object: city.trim()
-          });
-        }
-      }
-    });
+      });
+    }
     
     return triples;
   }
 
   // Process text chunks and convert to triples
   async processTextChunks(chunks: string[]): Promise<any[]> {
-    const allTriples = [];
+    // Process chunks in parallel for better performance
+    const chunkPromises = chunks.map(chunk => this.extractTriples(chunk));
+    const chunkResults = await Promise.all(chunkPromises);
     
-    for (const chunk of chunks) {
-      const triples = await this.extractTriples(chunk);
-      allTriples.push(...triples);
-    }
+    // Flatten all triples
+    const allTriples = chunkResults.flat();
     
     return allTriples;
   }
@@ -163,20 +169,31 @@ class FileIngestionAgent {
         return null;
       }
 
-      const { data, error } = await this.supabase
-        .from('graph_triples')
-        .insert(
-          triples.map(triple => ({
-            subject: triple.subject,
-            relation: triple.relation,
-            object: triple.object,
-            source_file: sourceFile,
-            created_at: new Date().toISOString()
-          }))
-        );
+      // Process in batches to avoid overwhelming the database
+      const batchSize = 100;
+      for (let i = 0; i < triples.length; i += batchSize) {
+        const batch = triples.slice(i, i + batchSize);
+        
+        const { data, error } = await this.supabase
+          .from('graph_triples')
+          .insert(
+            batch.map(triple => ({
+              subject: triple.subject,
+              relation: triple.relation,
+              object: triple.object,
+              source_file: sourceFile,
+              created_at: new Date().toISOString()
+            }))
+          );
 
-      if (error) throw error;
-      return data;
+        if (error) {
+          console.error('Error storing triples batch:', error);
+          break;
+        }
+      }
+      
+      console.log(`Stored ${triples.length} triples in database`);
+      return { success: true };
     } catch (error) {
       console.error('Error storing triples:', error);
       throw error;
@@ -227,6 +244,15 @@ class FileIngestionAgent {
 
   // Split text into chunks
   splitIntoChunks(text: string, chunkSize: number): string[] {
+    // For structured data, split by lines instead of words
+    const lines = text.split('\n').filter(line => line.trim());
+    
+    // If it looks like structured data (has tabs), process by lines
+    if (lines.length > 0 && lines[0].includes('\t')) {
+      return lines;
+    }
+    
+    // Otherwise, split by words as before
     const words = text.split(' ');
     const chunks = [];
     

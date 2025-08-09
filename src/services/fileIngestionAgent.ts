@@ -92,12 +92,9 @@ class FileIngestionAgent {
     const triples: any[] = [];
     const lines = text.split('\n').filter(line => line.trim());
     
-    // Process in batches for better performance
-    const batchSize = 50;
-    for (let i = 0; i < lines.length; i += batchSize) {
-      const batch = lines.slice(i, i + batchSize);
-      
-      batch.forEach(line => {
+    // For small datasets, process directly without batching overhead
+    if (lines.length <= 100) {
+      lines.forEach(line => {
         const parts = line.split('\t');
         if (parts.length >= 6) {
           const [city, company, centerName, num1, num2, type, country] = parts;
@@ -144,6 +141,60 @@ class FileIngestionAgent {
           }
         }
       });
+    } else {
+      // For larger datasets, use batching
+      const batchSize = 50;
+      for (let i = 0; i < lines.length; i += batchSize) {
+        const batch = lines.slice(i, i + batchSize);
+        
+        batch.forEach(line => {
+          const parts = line.split('\t');
+          if (parts.length >= 6) {
+            const [city, company, centerName, num1, num2, type, country] = parts;
+            
+            // Only create triples if values are not empty
+            if (city?.trim() && company?.trim()) {
+              triples.push({
+                subject: company.trim(),
+                relation: 'operates_in',
+                object: city.trim()
+              });
+            }
+            
+            if (company?.trim() && centerName?.trim()) {
+              triples.push({
+                subject: company.trim(),
+                relation: 'owns_center',
+                object: centerName.trim()
+              });
+            }
+            
+            if (company?.trim() && type?.trim()) {
+              triples.push({
+                subject: company.trim(),
+                relation: 'has_facility_type',
+                object: type.trim()
+              });
+            }
+            
+            if (city?.trim() && country?.trim()) {
+              triples.push({
+                subject: city.trim(),
+                relation: 'located_in',
+                object: country.trim()
+              });
+            }
+            
+            if (centerName?.trim() && city?.trim()) {
+              triples.push({
+                subject: centerName.trim(),
+                relation: 'located_in',
+                object: city.trim()
+              });
+            }
+          }
+        });
+      }
     }
     
     return triples;
@@ -206,16 +257,32 @@ class FileIngestionAgent {
       console.log(`Processing local file: ${file.name}`);
       
       const content = await this.readFileContent(file);
-      const chunks = this.splitIntoChunks(content, 1000);
-      const triples = await this.processTextChunks(chunks);
       
-      await this.storeTriples(triples, file.name);
-      
-      return {
-        success: true,
-        fileName: file.name,
-        triplesCount: triples.length
-      };
+      // Check if it's structured data (tab-separated)
+      if (content.includes('\t')) {
+        console.log('Detected structured data, processing directly...');
+        const triples = this.parseStructuredData(content);
+        await this.storeTriples(triples, file.name);
+        
+        return {
+          success: true,
+          fileName: file.name,
+          triplesCount: triples.length
+        };
+      } else {
+        // Fallback to chunk processing for unstructured data
+        console.log('Processing as unstructured data...');
+        const chunks = this.splitIntoChunks(content, 1000);
+        const triples = await this.processTextChunks(chunks);
+        
+        await this.storeTriples(triples, file.name);
+        
+        return {
+          success: true,
+          fileName: file.name,
+          triplesCount: triples.length
+        };
+      }
     } catch (error) {
       console.error('Error processing local file:', error);
       return {
